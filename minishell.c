@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/06 12:25:57 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/06 12:31:25 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,8 @@ int	ft_check_token(t_token *token, char **env)
 			|| ft_strncmp(token->input, "pwd", 3) == 0
 			|| ft_strncmp(token->input, "exit", 5) == 0)
 		{
-			ft_handle_one(token->input, env);
+			if (ft_handle_one(token->input, env) == 1)
+				return (1);
 		}
 		if (ft_strncmp(token->input, "|", 1) == 0)
 			token->type = 1;
