@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/06 15:19:36 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/06 15:45:35 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@
 /* ◦ env with no options or arguments */
 // ◦ exit with no options
 //
-// error on \, ;
 // single quote in order to keep special symboles as their original meanings
 // double quote to keep meaning of all char in the quote except $(...)
-// $(...) == replace it by a specifique string stated ahead
+// ARG="..." --> $ARG  replace it by a specifique string stated ahead
+//
 // <infile grep '$USER':"$USER"|wc -l>outfile
 #include "parsing.h"
 
@@ -98,6 +98,7 @@ int	ft_tokenise(char **tokens, t_token **token)
 // /!\ TO DO /!\
 // check for " and ' (also check for unclosed quotes)
 // check for $?
+// echo -n
 int	ft_check_token(t_token *token, char **env)
 {
 	//t_dollar	*dollar;
@@ -129,8 +130,6 @@ int	ft_check_token(t_token *token, char **env)
 			token->type = 6;
 		token = token->next;
 	}
-	//if (dollar->value != NULL)
-	//	free(dollar->value);
 	return (0);
 }
 
