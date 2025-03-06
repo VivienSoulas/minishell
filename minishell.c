@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/06 13:51:41 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/06 15:19:36 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 // single quote in order to keep special symboles as their original meanings
 // double quote to keep meaning of all char in the quote except $(...)
 // $(...) == replace it by a specifique string stated ahead
+// <infile grep '$USER':"$USER"|wc -l>outfile
 #include "parsing.h"
 
 int	main(int ac, char **av, char **envp)
@@ -51,57 +52,29 @@ int	main(int ac, char **av, char **envp)
 		}
 		add_history(input);
 		ft_parse_input(input, envp, &exit_status, &token);
-		// exec call
+// exec call
 		free(input);
 		ft_free_list(&token);
 	}
 	return (0);
 }
 
+/* split doesnt work for finding all args
+because not all args are separated by white space
+example : <infile grep '$USER':"$USER"|wc -l>outfile */
 int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 {
 	char		**tokens;
-	t_dollar	*dollar;
 
-	dollar = NULL;
 	tokens = ft_split(in, ' ');
 	if (tokens == NULL)
 		return (*exit_stat);
 	*exit_stat = ft_tokenise(tokens, token);
-	*exit_stat = ft_check_token(*token, env, dollar);
-	ft_free_split(tokens);
+	*exit_stat = ft_check_token(*token, env);
 	return (*exit_stat);
 }
 
-// could handle pwd better by looking for "pwd" in env & return its output
-int	ft_handle_one(char *input, char **env)
-{
-	int		i;
-	char	*pwd;
-	char	*buf;
-
-	buf = NULL;
-	if (ft_strncmp(input, "pwd", 3) == 0)
-	{
-		pwd = getcwd(buf, 1024);
-		printf("%s\n", pwd);
-		free(pwd);
-	}
-	else if (ft_strncmp(input, "env", 3) == 0)
-	{
-		i = 0;
-		while (env[i])
-		{
-			printf("%s\n", env[i]);
-			i++;
-		}
-	}
-	else if (ft_strncmp(input, "exit", 5) == 0)
-		return (1);
-	return (0);
-}
-
-// create a linked list with each parts of the command (aka token)
+// create a linked list with each parts of the command (aka tokens)
 int	ft_tokenise(char **tokens, t_token **token)
 {
 	int		i;
@@ -123,17 +96,22 @@ int	ft_tokenise(char **tokens, t_token **token)
 // check for forbidden / and ;
 // _____________________________________________________
 // /!\ TO DO /!\
-// check for $
 // check for " and ' (also check for unclosed quotes)
 // check for $?
-int	ft_check_token(t_token *token, char **env, t_dollar *dollar)
+int	ft_check_token(t_token *token, char **env)
 {
+	//t_dollar	*dollar;
+
+	//dollar = NULL;
 	while (token)
 	{
-		if (ft_strncmp(token->input, "env", 3) == 0 || ft_strncmp(token->input
-				, "pwd", 3) == 0 || ft_strncmp(token->input, "exit", 5) == 0)
-			if (ft_handle_one(token->input, env) == 1)
+		if (ft_strncmp(token->input, "env", 3) == 0
+			|| ft_strncmp(token->input, "pwd", 3) == 0
+			|| ft_strncmp(token->input, "exit", 5) == 0)
+			{
+				if (ft_handle_one(token->input, env) == 1)
 				return (1);
+			}
 		else if (ft_strncmp(token->input, "|", 1) == 0)
 			token->type = 1;
 		else if (ft_strncmp(token->input, "<<", 2) == 0)
@@ -147,19 +125,40 @@ int	ft_check_token(t_token *token, char **env, t_dollar *dollar)
 		else if (ft_strncmp(token->input, "/", 1) == 0
 			|| ft_strncmp(token->input, ";", 1) == 0)
 			return (0);
-		else if (token->input[0] == '$')
-			ft_dollar_asign(token, dollar);
 		else
 			token->type = 6;
 		token = token->next;
 	}
+	//if (dollar->value != NULL)
+	//	free(dollar->value);
 	return (0);
 }
 
-int	ft_dollar_asign(t_token *token, t_dollar *dollar)
-{
-	if (token->input[0] == '$' && dollar->seen == 0)
-	{
-		
-	}
-}
+//// finds the ARG to replace after $
+//int	ft_dollar_asign(t_token *token, t_dollar *dollar)
+//{
+//	int		i;
+//	int		len;
+
+//	len = ft_strlen(token->input) - 5;
+//	dollar->value = malloc(sizeof(char) * (len + 1));
+//	if (dollar->value == NULL)
+//		return (1);
+//	i = 0;
+//	while (i < len)
+//	{
+//		dollar->value[i] = token->input[i + 5];
+//		i++;
+//	}
+//	dollar->value[i] = '\0';
+//	return (0);
+//}
+
+//int	ft_fill_arg(t_token *token, t_dollar *dollar)
+//{
+//	free(token->input);
+//	token->input = strdup(dollar->value);
+//	if (token->input == NULL)
+//		return (1);
+//	return (0);
+//}

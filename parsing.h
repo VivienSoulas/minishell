@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/06 13:50:22 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/06 15:05:03 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,18 @@ typedef struct s_token
 typedef struct s_dollar
 {
 	int		seen;
-	char	*dollar;
+	char	*value;
 }	t_dollar;
 
 int		ft_parse_input(char *in, char **env, int *exit_stat, t_token **token);
-int		ft_handle_one(char *input, char **env);
 int		ft_tokenise(char **tokens, t_token **token);
-int		ft_check_token(t_token *token, char **env, t_dollar *dollar);
-int		ft_dollar_asign(t_token *token, t_dollar *dollar);
+int		ft_check_token(t_token *token, char **env);
+//int		ft_dollar_asign(t_token *token, t_dollar *dollar);
+//int		ft_fill_arg(t_token *token, t_dollar *dollar);
 
 // utils
 int		ft_count_args(char **tokens);
+int		ft_handle_one(char *input, char **env);
 
 // utils list
 t_token	*ft_new_node(char *content);
@@ -67,5 +68,9 @@ t_token	*ft_last(t_token **token);
 void	ft_free(char **tokens, t_token **token);
 void	ft_free_split(char **split);
 void	ft_free_list(t_token **token);
+
+/*======================================================================*/
+void	print_token_list(t_token **token);
+/*======================================================================*/
 
 #endif
