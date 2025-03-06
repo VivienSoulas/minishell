@@ -33,11 +33,3 @@ void	ft_free_split(char **split)
 		split = NULL;
 	}
 }
-
-void	ft_free(char **tokens, t_token **token)
-{
-	if (tokens != NULL)
-		ft_free_split(tokens);
-	if (token != NULL)
-		ft_free_list(token);
-}
