@@ -5,18 +5,21 @@ void	ft_free_list(t_token **token)
 	t_token	*current;
 	t_token	*next;
 
-	current = *token;
-	if (token != NULL)
+	if (token == NULL || *token == NULL)
 	{
-		while (current)
-		{
-			next = current->next;
-			free(current->input);
-			free(current);
-			current = next;
-		}
-		*token = NULL;
+		printf("alredy free\n");
+		return ;
 	}
+	current = *token;
+	while (current)
+	{
+		next = current->next;
+		free(current->input);
+		free(current);
+		current = next;
+	}
+	*token = NULL;
+	printf("Token list freed.\n");
 }
 
 void	ft_free_split(char **split)

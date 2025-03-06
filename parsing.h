@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/02/27 15:41:13 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/06 12:25:43 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@
 // HERDOC (4): heredoc ('<<') indicating input redirection from a here-document.
 // OUTP (5): output redirection ('>>') output redirection to a file append mode
 // STRING (6): regular string token.
-// HERDOCX (7) same as herdoc but to handle expend inside herdoc.
+// ECHO (7) take care of echo -n possibility.
 # define PIPE 1
 # define IN 2
 # define OUT 3
 # define HEREDOC 4
 # define OUTP 5
 # define STRING 6
-# define HERDOCX 7
+# define ECHO 7
 
 // get input and asign it a type from the defines
 typedef struct s_token
@@ -40,11 +40,13 @@ typedef struct s_token
 	char			*input;
 	int				type;
 	struct s_token	*next;
+	struct s_token	*prev;
 }	t_token;
 
 int		ft_parse_input(char *in, char **env, int *exit_stat, t_token **token);
 int		ft_handle_one(char *input, char **env);
 int		ft_tokenise(char **tokens, t_token **token);
+int		ft_check_token(t_token *token, char **env);
 
 // utils
 int		ft_count_args(char **tokens);

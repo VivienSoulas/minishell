@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/06 09:54:07 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/06 12:25:57 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,30 +51,29 @@ int	main(int ac, char **av, char **envp)
 		}
 		add_history(input);
 		ft_parse_input(input, envp, &exit_status, &token);
+		// exec call
 		free(input);
+		printf("before free\n");
+		ft_free_list(&token);
+		printf("freed\n");
 	}
-	ft_free_list(&token);
 	return (0);
 }
 
 int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 {
 	char	**tokens;
-	int		args;
 
 	tokens = ft_split(in, ' ');
 	if (tokens == NULL)
 		return (*exit_stat);
-	args = ft_count_args(tokens);
-	if (args == 1)
-		*exit_stat = ft_handle_one(in, env);
-	else
-		*exit_stat = ft_tokenise(tokens, token);
+	*exit_stat = ft_tokenise(tokens, token);
+	*exit_stat = ft_check_token(*token, env);
 	ft_free_split(tokens);
 	return (*exit_stat);
 }
 
-// handle pwd better by looking for pwd and return good output
+// could handle pwd better by looking for "pwd" in env & return its output
 int	ft_handle_one(char *input, char **env)
 {
 	int	i;
@@ -98,6 +97,7 @@ int	ft_handle_one(char *input, char **env)
 	return (0);
 }
 
+// create a linked list with each parts of the command (aka token)
 int	ft_tokenise(char **tokens, t_token **token)
 {
 	int		i;
@@ -106,11 +106,63 @@ int	ft_tokenise(char **tokens, t_token **token)
 	i = 0;
 	while (tokens[i])
 	{
+		printf("token[i] = %s\n", tokens[i]);
 		node = ft_new_node(tokens[i]);
 		if (node == NULL)
 			return (1);
 		ft_add_last(token, node);
 		i++;
+	}
+	return (0);
+}
+
+// check each token to asign it with the good code number
+// check for forbidden / and ;
+// _____________________________________________________
+// /!\ TO DO /!\
+// check for $
+// check for " and ' (also check for unclosed quotes)
+// check for $?
+int	ft_check_token(t_token *token, char **env)
+{
+	while (token)
+	{
+		printf("checing nodes\n");
+		if (ft_strncmp(token->input, "env", 3) == 0
+			|| ft_strncmp(token->input, "pwd", 3) == 0
+			|| ft_strncmp(token->input, "exit", 5) == 0)
+		{
+			ft_handle_one(token->input, env);
+		}
+		if (ft_strncmp(token->input, "|", 1) == 0)
+			token->type = 1;
+		else if (ft_strncmp(token->input, "<<", 2) == 0)
+			token->type = 4;
+		else if (ft_strncmp(token->input, ">>", 2) == 0)
+			token->type = 5;
+		else if (ft_strncmp(token->input, "<", 1) == 0)
+			token->type = 2;
+		else if (ft_strncmp(token->input, ">", 1) == 0)
+			token->type = 3;
+		else if (ft_strncmp(token->input, "-n", 2) == 0)
+		{
+			if (ft_strncmp(token->prev->input, "echo", 5) == 0)
+			{
+				token->prev->type = 7;
+				token->type = 7;
+			}
+		}
+		else if (ft_strncmp(token->input, "/", 1) == 0
+			|| ft_strncmp(token->input, ";", 1) == 0)
+			{
+				printf("\ninput cant be ; or /\n");
+				return (1);
+			}
+		//if (current->input[0] == '$')
+		//	ft_$_asign();
+		else
+			token->type = 6;
+		token = token->next;
 	}
 	return (0);
 }

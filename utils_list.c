@@ -10,6 +10,7 @@ t_token	*ft_new_node(char *content)
 	node->input = content;
 	node->type = -1;
 	node->next = NULL;
+	node->prev = NULL;
 	return (node);
 }
 
@@ -25,6 +26,7 @@ void	ft_add_last(t_token **token, t_token *node)
 	{
 		last = ft_last(token);
 		last->next = node;
+		node->prev = last;
 	}
 }
 
