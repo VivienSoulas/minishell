@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/06 12:25:43 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/06 13:50:22 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,17 @@ typedef struct s_token
 	struct s_token	*prev;
 }	t_token;
 
+typedef struct s_dollar
+{
+	int		seen;
+	char	*dollar;
+}	t_dollar;
+
 int		ft_parse_input(char *in, char **env, int *exit_stat, t_token **token);
 int		ft_handle_one(char *input, char **env);
 int		ft_tokenise(char **tokens, t_token **token);
-int		ft_check_token(t_token *token, char **env);
+int		ft_check_token(t_token *token, char **env, t_dollar *dollar);
+int		ft_dollar_asign(t_token *token, t_dollar *dollar);
 
 // utils
 int		ft_count_args(char **tokens);

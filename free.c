@@ -6,10 +6,7 @@ void	ft_free_list(t_token **token)
 	t_token	*next;
 
 	if (token == NULL || *token == NULL)
-	{
-		printf("alredy free\n");
 		return ;
-	}
 	current = *token;
 	while (current)
 	{
@@ -18,7 +15,6 @@ void	ft_free_list(t_token **token)
 		current = next;
 	}
 	*token = NULL;
-	printf("Token list freed.\n");
 }
 
 void	ft_free_split(char **split)
