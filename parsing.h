@@ -6,14 +6,14 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/07 12:35:22 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/07 15:02:11 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSING_H
 # define PARSING_H
 
-# include "libft/libft.h"
+//# include "libft/libft.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <readline/readline.h>
@@ -41,7 +41,8 @@ typedef struct s_split
 	int		k;
 	int		len;
 	char	**tokens;
-	char	*current_token[256];
+	char	current_token[256];
+	char	quote_type;
 }	t_split;
 
 // get input and asign it a type from the defines
@@ -76,9 +77,10 @@ t_token	*ft_last(t_token **token);
 
 // split
 char	**ft_split_input(char *input, t_split *split);
-int		ft_initialise_split(t_split *split, char *input);
+int		ft_handles_double(t_split *split, char *input);
 
 // utils split
+int		ft_initialise_split(t_split *split, char *input);
 int		ft_check_quotes(char *input);
 int		ft_is_operator(char c);
 int		ft_double_operator(char *input, int i);
@@ -89,6 +91,7 @@ void	ft_free_list(t_token **token);
 
 /*======================================================================*/
 void	print_token_list(t_token **token);
+size_t	ft_strlen(char *s);
 /*======================================================================*/
 
 #endif

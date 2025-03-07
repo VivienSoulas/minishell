@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/07 12:37:49 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/07 15:11:21 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // check tokens to find operators, input, output, args, redirections etc
 // assign each token to different type and redirect them to exec
 //
-// special cases: "", '', >, >>, <,  << $, $?, |
+// special cases: "", '', >, >>, <, << $, $?, |
 // ◦ echo with option -n
 // ◦ cd with only a relative or absolute path
 /* ◦ pwd with no options */
@@ -67,13 +67,21 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 	char		**tokens;
 	t_split		*split;
 
-	if (ft_initialise_split(split, in) == 1)
+	split = malloc(sizeof(t_split));
+	if (split == NULL)
 		return (*exit_stat = 1);
+	if (ft_initialise_split(split, in) == 1)
+		return (*exit_stat = 1); // and free split
 	tokens = ft_split_input(in, &split);
 	if (tokens == NULL)
-		return (*exit_stat);
+		return (*exit_stat); // and free split and split->tokens;
 	*exit_stat = ft_tokenise(tokens, token);
 	*exit_stat = ft_check_token(*token, env);
+/*  free? */
+ft_free_split(split->tokens);
+ft_free_list(tokens);
+free(split);
+/*  free? */
 	return (*exit_stat);
 }
 
