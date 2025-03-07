@@ -53,9 +53,12 @@ int	main(int ac, char **av, char **envp)
 		add_history(input);
 		ft_parse_input(input, envp, &exit_status, &token);
 // exec call
+// print_token_list(&token);
 		free(input);
 		ft_free_list(&token);
 	}
+	if (exit_status == 1)
+		free(input);
 	return (0);
 }
 
@@ -71,22 +74,31 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 	if (split == NULL)
 		return (*exit_stat = 1);
 	if (ft_initialise_split(split, in) == 1)
-		return (*exit_stat = 1); // and free split
-	tokens = ft_split_input(in, &split);
+	{
+		free(split);
+		*exit_stat = 1;
+		return (*exit_stat); // and free split
+	}
+	tokens = ft_split_input(in, split);
 	if (tokens == NULL)
+	{
+		ft_free_split(split->tokens);
+		free(split);
+		*exit_stat = 1;
 		return (*exit_stat); // and free split and split->tokens;
-	*exit_stat = ft_tokenise(tokens, token);
+	}
+	*exit_stat = ft_list_tokens(tokens, token);
 	*exit_stat = ft_check_token(*token, env);
 /*  free? */
-ft_free_split(split->tokens);
-ft_free_list(tokens);
-free(split);
+print_token_list(token);
+	ft_free_split(split->tokens);
+	free(split);
 /*  free? */
 	return (*exit_stat);
 }
 
 // create a linked list with each parts of the command (aka tokens)
-int	ft_tokenise(char **tokens, t_token **token)
+int	ft_list_tokens(char **tokens, t_token **token)
 {
 	int		i;
 	t_token	*node;
@@ -106,8 +118,7 @@ int	ft_tokenise(char **tokens, t_token **token)
 // check each token to asign it with the good code number
 // check for forbidden / and ;
 // _____________________________________________________
-// /!\ TO DO /!\
-// check for " and ' (also check for unclosed quotes)
+// /!\ TO DO
 // check for $?
 // echo -n
 int	ft_check_token(t_token *token, char **env)

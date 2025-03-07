@@ -13,7 +13,7 @@
 #ifndef PARSING_H
 # define PARSING_H
 
-//# include "libft/libft.h"
+# include "libft/libft.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <readline/readline.h>
@@ -43,6 +43,7 @@ typedef struct s_split
 	char	**tokens;
 	char	current_token[256];
 	char	quote_type;
+	int		error;
 }	t_split;
 
 // get input and asign it a type from the defines
@@ -61,7 +62,7 @@ typedef struct s_dollar
 }	t_dollar;
 
 int		ft_parse_input(char *in, char **env, int *exit_stat, t_token **token);
-int		ft_tokenise(char **tokens, t_token **token);
+int		ft_list_tokens(char **tokens, t_token **token);
 int		ft_check_token(t_token *token, char **env);
 //int		ft_dollar_asign(t_token *token, t_dollar *dollar);
 //int		ft_fill_arg(t_token *token, t_dollar *dollar);
@@ -77,7 +78,10 @@ t_token	*ft_last(t_token **token);
 
 // split
 char	**ft_split_input(char *input, t_split *split);
-int		ft_handles_double(t_split *split, char *input);
+void	ft_handles_double(t_split *split, char *input);
+void	ft_handles_operator(t_split *split, char *input);
+void	ft_handles_quotes(char *input, t_split *split);
+void	ft_handles_string(char *input, t_split *split);
 
 // utils split
 int		ft_initialise_split(t_split *split, char *input);
@@ -91,7 +95,8 @@ void	ft_free_list(t_token **token);
 
 /*======================================================================*/
 void	print_token_list(t_token **token);
-size_t	ft_strlen(char *s);
+// size_t	ft_strlen(char *s);
+// char	*ft_strdup(char *s);
 /*======================================================================*/
 
 #endif

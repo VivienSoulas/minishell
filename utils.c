@@ -10,7 +10,6 @@ int	ft_count_args(char **tokens)
 	return (i);
 }
 
-// could handle pwd better by looking for "pwd" in env & return its output
 int	ft_handle_one(char *input, char **env)
 {
 	int		i;

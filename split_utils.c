@@ -10,6 +10,7 @@ int	ft_initialise_split(t_split *split, char *input)
 	split->tokens = malloc(sizeof(char *) * (split->len + 1));
 	if (split->tokens == NULL)
 		return (1);
+	split->error = 0;
 	return (0);
 }
 
@@ -21,7 +22,7 @@ int	ft_check_quotes(char *input)
 
 	single = 0;
 	double_quote = 0;
-	while(*input)
+	while (*input)
 	{
 		if (*input == '\'')
 			single++;
