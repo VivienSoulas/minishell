@@ -45,11 +45,6 @@ print_token_list(&token);
 		free(input);
 		ft_free_list(&token);
 	}
-	if (exit_status == 1)
-	{
-		ft_free_list(&token);
-		free(input);
-	}
 	return (0);
 }
 
@@ -72,7 +67,6 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 	*exit_stat = ft_list_tokens(tokens, token);
 	*exit_stat = ft_assign_types(*token, env);
 // check token for $
-// ft_free_split(tokens);
 	return (free(split), *exit_stat);
 }
 

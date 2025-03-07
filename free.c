@@ -23,7 +23,7 @@ void	ft_free_split(char **split)
 	int	i;
 
 	i = 0;
-	if (split != NULL)
+	if (split != NULL && *split != NULL)
 	{
 		while (split[i])
 		{
