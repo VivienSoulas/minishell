@@ -2,6 +2,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// check that every open single or double quote is closed
+int	ft_check_quotes(char *in)
+{
+	int	single;
+	int	duble;
+
+	single = 0;
+	duble = 0;
+	while (*in)
+	{
+		if (*in == 39)
+			single++;
+		if (*in == 34)
+			duble++;
+	}
+	if (single % 2 != 0 || duble % 2 != 0)
+		return (1);
+	return (0);
+}
+
 void	ft_fill(char *input, char **tokens)
 {
 	int	len;
