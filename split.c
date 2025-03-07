@@ -151,9 +151,9 @@ void	ft_handles_string(char *input, t_split *split)
 // 	i = 0;
 // 	total = ft_strlen(s);
 // 	str = (char *)malloc(total + 1);
-// 	if (str == NULL)
-// 		return (NULL);
-// 	while (i < total)
+// 	if (str == NULL) 
+// 		return (NULL); 
+// 	while (i < total) 
 // 	{
 // 		str[i] = s[i];
 // 		i++;
@@ -170,7 +170,7 @@ void	ft_handles_string(char *input, t_split *split)
 // 	t_split		*split;
 
 // 	i = 0;
-// 	test_input = "<infile grep	'$US<ER' \"$USER\"|wc  -l>outfile <<append		>>append echo -n \"hello world	this|\"";
+// 	test_input = "$ARG="1234" <infile grep	'$US<ER' \"$USER\"|wc  -l>outfile <<append		>>append echo -n \"hello world	this\" expdand $ARG dont_expand '$ARG' expand \"$ARG\";
 // 	split = malloc(sizeof(t_split));
 // 	if (split == NULL)
 // 		return (1);

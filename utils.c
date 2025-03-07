@@ -41,12 +41,27 @@ int	ft_handle_one(char *input, char **env)
 void	print_token_list(t_token **token)
 {
 	t_token	*trial;
+	int		i;
 
 	trial = *token;
+	i = 0;
 	while (trial != NULL)
 	{
-		printf("Token: %s, Type: %d\n", trial->input, trial->type);
+		printf("Token[%i]: %s, Type: %d\n", i, trial->input, trial->type);
 		trial = trial->next;
+		i++;
+	}
+} 
+void	print_double_array(char **array)
+{ 
+	int	i;
+
+	i = 0;
+	while (array[i])
+	{ 
+		printf("array[%i] = %s\n", i, array[i]);
+		i++;
 	}
 }
+
 /*======================================================================*/
