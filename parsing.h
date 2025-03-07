@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/06 15:05:03 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/07 11:39:21 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,15 @@ t_token	*ft_new_node(char *content);
 void	ft_add_last(t_token **token, t_token *node);
 t_token	*ft_last(t_token **token);
 
+// split
+char	**ft_split_input(char *input);
+
+// utils split
+int		ft_check_quotes(char *input);
+int		ft_is_operator(char c);
+int		ft_double_operator(char *input, int i);
+
 // free
-void	ft_free(char **tokens, t_token **token);
 void	ft_free_split(char **split);
 void	ft_free_list(t_token **token);
 
