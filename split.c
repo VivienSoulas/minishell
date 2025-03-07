@@ -1,38 +1,26 @@
 #include "parsing.h"
 
-char	**ft_split_input(char *input)
+char	**ft_split_input(char *input, t_split *split)
 {
-	int		i;
-	int		j;
-	int		k;
-	int		len;
-	char	**tokens;
-
-
-	i = 0;
-	j = 0;
-	k = 0;
-	len = ft_strlen(input);
-	tokens = malloc(sizeof(char *) * (len + 1));
-	if (tokens == NULL)
-		return (NULL);
 	if (ft_check_quotes(input) == 1)
-		return(ft_free_split(tokens), NULL);
-	while (i < len)
+		return (ft_free_split(split->tokens), NULL);
+	while (split->i < split->len)
 	{
-		if (ft_double_operator(input, i) == 1)
-			ft_handles_double(k, tokens, i);
-		i++;
+		if (ft_double_operator(input, split->i) == 1)
+		{
+			
+		}
 	}
 }
 
-int	ft_handles_double(int k, char **token, int i)
+int	ft_initialise_split(t_split *split, char *input)
 {
-	char	*current_token[256];
-
-	if (k != 0)
-	{
-		current_token[k] == '\0';
-		
-	}
+	split->i = 0;
+	split->j = 0;
+	split->k = 0;
+	split->len = ft_strlen(input);
+	split->tokens = malloc(sizeof(char *) * (split->len + 1));
+	if (split->tokens == NULL)
+		return (1);
+	return (0);
 }

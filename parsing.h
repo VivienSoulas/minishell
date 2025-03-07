@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/07 11:39:21 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/07 12:35:22 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,16 @@
 # define OUTP 5
 # define STRING 6
 # define ECHO 7
+
+typedef struct s_split
+{
+	int		i;
+	int		j;
+	int		k;
+	int		len;
+	char	**tokens;
+	char	*current_token[256];
+}	t_split;
 
 // get input and asign it a type from the defines
 typedef struct s_token
@@ -65,7 +75,8 @@ void	ft_add_last(t_token **token, t_token *node);
 t_token	*ft_last(t_token **token);
 
 // split
-char	**ft_split_input(char *input);
+char	**ft_split_input(char *input, t_split *split);
+int		ft_initialise_split(t_split *split, char *input);
 
 // utils split
 int		ft_check_quotes(char *input);
