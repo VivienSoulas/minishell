@@ -72,6 +72,7 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 	*exit_stat = ft_list_tokens(tokens, token);
 	*exit_stat = ft_assign_types(*token, env);
 // check token for $
+// ft_free_split(tokens);
 	return (free(split), *exit_stat);
 }
 
@@ -142,7 +143,7 @@ int	ft_assign_types(t_token *token, char **env)
 			token->type = 3;
 		else if (ft_strncmp(token->input, "/", 1) == 0
 			|| ft_strncmp(token->input, ";", 1) == 0)
-			return (0);
+			return (1);
 		else
 			token->type = 6;
 		token = token->next;

@@ -11,6 +11,7 @@ void	ft_free_list(t_token **token)
 	while (current)
 	{
 		next = current->next;
+		free(current->input);
 		free(current);
 		current = next;
 	}
