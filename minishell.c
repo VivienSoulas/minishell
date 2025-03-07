@@ -74,27 +74,14 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 	if (split == NULL)
 		return (*exit_stat = 1);
 	if (ft_initialise_split(split, in) == 1)
-	{
-		free(split);
-		*exit_stat = 1;
-		return (*exit_stat); // and free split
-	}
+		return (free(split), *exit_stat = 1);
 	tokens = ft_split_input(in, split);
 	if (tokens == NULL)
-	{
-		ft_free_split(split->tokens);
-		free(split);
-		*exit_stat = 1;
-		return (*exit_stat); // and free split and split->tokens;
-	}
+		return (ft_free_split(split->tokens), free(split), *exit_stat = 1);
 	*exit_stat = ft_list_tokens(tokens, token);
 	*exit_stat = ft_check_token(*token, env);
-/*  free? */
 print_token_list(token);
-	ft_free_split(split->tokens);
-	free(split);
-/*  free? */
-	return (*exit_stat);
+	return (ft_free_split(split->tokens), free(split), *exit_stat);
 }
 
 // create a linked list with each parts of the command (aka tokens)
