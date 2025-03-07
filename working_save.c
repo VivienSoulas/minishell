@@ -253,7 +253,7 @@ char	**split_input(char *input)
 				tokens[j++] = strdup(current_token);
 				k = 0;
 			}
-			if (input[i] != ' ')
+			if (input[i] != ' ' && input[i] != '\t')
 			{
 				current_token[0] = input[i];
 				current_token[1] = '\0';
@@ -290,7 +290,7 @@ int	main(void)
 	int		i;
 
 	i = 0;
-	test_input = "<infile grep '$USER' \"$USER\"|wc -l>outfile <<append >>append";
+	test_input = "<infile grep	'$US<ER' \"$USER\"|wc  -l>outfile <<append		>>append echo -n \"hello world	this|\"";
 	tokens = split_input(test_input);
 	if (tokens == NULL)
 	{

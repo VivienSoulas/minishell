@@ -155,7 +155,7 @@ int	main(void)
 	t_split		*split;
 
 	i = 0;
-	test_input = "<infile grep '$US<ER' \"$USER\"|wc -l>outfile <<append >>append";
+	test_input = "<infile grep	'$US<ER' \"$USER\"|wc  -l>outfile <<append		>>append echo -n \"hello world	this|\"";
 	split = malloc(sizeof(t_split));
 	if (split == NULL)
 		return (1);
