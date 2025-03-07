@@ -39,15 +39,15 @@ int	ft_handle_one(char *input, char **env)
 }
 
 /*======================================================================*/
-void print_token_list(t_token **token)
+void	print_token_list(t_token **token)
 {
-	t_token *trial;
+	t_token	*trial;
 
 	trial = *token;
-    while (trial != NULL)
-    {
-        printf("Token: %s, Type: %d\n", trial->input, trial->type);
-        trial = trial->next;
-    }
+	while (trial != NULL)
+	{
+		printf("Token: %s, Type: %d\n", trial->input, trial->type);
+		trial = trial->next;
+	}
 }
 /*======================================================================*/

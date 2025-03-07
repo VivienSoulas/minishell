@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 08:19:14 by vsoulas           #+#    #+#             */
-/*   Updated: 2024/10/28 16:30:54 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/07 10:34:13 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,9 @@ static size_t	count_words(const char *s, char c)
 static int	filling(char **final_array, const char *s, char c)
 {
 	size_t	len;
-	int		index_word;
+	int		i;
 
-	index_word = 0;
+	i = 0;
 	while (*s)
 	{
 		len = 0;
@@ -100,10 +100,10 @@ static int	filling(char **final_array, const char *s, char c)
 		}
 		if (len > 0)
 		{
-			if (create_malloc(final_array, len + 1, index_word) == 1)
+			if (create_malloc(final_array, len + 1, i) == 1)
 				return (1);
-			ft_strlcpy(final_array[index_word], s - len, len + 1);
-			index_word++;
+			ft_strlcpy(final_array[i], s - len, len + 1);
+			i++;
 		}
 	}
 	return (0);
