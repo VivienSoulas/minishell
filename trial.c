@@ -100,11 +100,10 @@ char	**split_input(char *input)
 		else if (input[i] == '\'' || input[i] == '\"')
 		{
 			quote_type = input[i++];
-			current_token[k++] = quote_type;
 			while (i < len && input[i] != quote_type)
 				current_token[k++] = input[i++];
 			if (i < len)
-				current_token[k++] = input[i++];
+				i++;
 		}
 		else
 		{
