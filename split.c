@@ -145,6 +145,8 @@ int	ft_handles_operator(t_split *split, char *input)
 	return (0);
 }
 
+
+// do not remove quotes single dont expand '$ARG' (do for "$ARG" and $ARG)
 int	main(void)
 {
 	char		*test_input;
@@ -153,7 +155,7 @@ int	main(void)
 	t_split		*split;
 
 	i = 0;
-	test_input = "<infile grep '$USER' \"$USER\"|wc -l>outfile <<append >>append";
+	test_input = "<infile grep '$US<ER' \"$USER\"|wc -l>outfile <<append >>append";
 	split = malloc(sizeof(t_split));
 	if (split == NULL)
 		return (1);
