@@ -95,8 +95,6 @@ void	ft_free_list(t_token **token);
 
 /*======================================================================*/
 void	print_token_list(t_token **token);
-// size_t	ft_strlen(char *s);
-// char	*ft_strdup(char *s);
 void	print_double_array(char **array);
 /*======================================================================*/
 

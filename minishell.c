@@ -92,14 +92,6 @@ int	ft_list_tokens(char **tokens, t_token **token)
 // check each token to asign it with the good code number
 // check for forbidden / and ;
 // _____________________________________________________
-// /!\ TO DO
-// check for $
-// replace possible $ARG, $VAR, export $VAR"..."
-// check for consecutive operators
-// check for $?
-// echo -n
-//
-// special cases: "", '', >, >>, <, << $, $?, |
 // ◦ echo with option -n
 // ◦ cd with only a relative or absolute path
 /* ◦ pwd with no options */
@@ -107,11 +99,6 @@ int	ft_list_tokens(char **tokens, t_token **token)
 // ◦ unset with no options
 /* ◦ env with no options or arguments */
 /*  ◦ exit with no options */
-//
-// single dont expand '$ARG' ("$ARG" and $ARG expand !!)
-// single quote in order to keep special symboles as their original meanings
-// double quote to keep meaning of all char in the quote except "$ARG"
-// ARG="..." --> $ARG  replace it by a specifique string stated betweem quotes
 int	ft_assign_types(t_token *token, char **env)
 {
 	//t_dollar	*dollar;

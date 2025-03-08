@@ -51,17 +51,16 @@ void	print_token_list(t_token **token)
 		trial = trial->next;
 		i++;
 	}
-} 
+}
 void	print_double_array(char **array)
-{ 
+{
 	int	i;
 
 	i = 0;
 	while (array[i])
-	{ 
+	{
 		printf("array[%i] = %s\n", i, array[i]);
 		i++;
 	}
 }
-
 /*======================================================================*/

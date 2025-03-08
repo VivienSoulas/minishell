@@ -84,7 +84,6 @@ void	ft_handles_operator(t_split *split, char *input)
 
 // handles quotes
 // do not remove quotes
-// single dont expand '$ARG' ("$ARG" and $ARG expand !!)
 void	ft_handles_quotes(char *input, t_split *split)
 {
 	split->quote_type = input[split->i];
@@ -108,92 +107,3 @@ void	ft_handles_string(char *input, t_split *split)
 	}
 	split->k = 0;
 }
-
-/* ===========================================================*/
-// #include <unistd.h>
-// #include <stdio.h>
-// #include <stdlib.h>
-// // #include "parsing.h"
-
-// void	ft_free_split(char **split)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	if (split != NULL)
-// 	{
-// 		while (split[i])
-// 		{
-// 			free(split[i]);
-// 			i++;
-// 		}
-// 		free(split);
-// 		split = NULL;
-// 	}
-// }
-
-// size_t	ft_strlen(char *s)
-// {
-// 	size_t	i;
-
-// 	i = 0;
-// 	while (s[i] != '\0')
-// 		i++;
-// 	return (i);
-// }
-
-// char	*ft_strdup(char *s)
-// {
-// 	char	*str;
-// 	int		total;
-// 	int		i;
-
-// 	i = 0;
-// 	total = ft_strlen(s);
-// 	str = (char *)malloc(total + 1);
-// 	if (str == NULL) 
-// 		return (NULL); 
-// 	while (i < total) 
-// 	{
-// 		str[i] = s[i];
-// 		i++;
-// 	}
-// 	str[i] = '\0';
-// 	return (str);
-// }
-
-// int	main(void)
-// {
-// 	char		*test_input;
-// 	char		**tokens;
-// 	int			i;
-// 	t_split		*split;
-
-// 	i = 0;
-// 	test_input = "$ARG="1234" <infile grep	'$US<ER' \"$USER\"|wc  -l>outfile <<append		>>append echo -n \"hello world	this\" expdand $ARG dont_expand '$ARG' expand \"$ARG\";
-// 	split = malloc(sizeof(t_split));
-// 	if (split == NULL)
-// 		return (1);
-// 	if (ft_initialise_split(split, test_input) == 1)
-// 	{
-// 		free(split);
-// 		return (1);
-// 	}
-// 	tokens = ft_split_input(test_input, split);
-// 	if (tokens == NULL)
-// 	{
-// 		printf("Error: Unmatched quotes in input\n");
-// 		free(split);
-// 		return (1);
-// 	}
-// 	while (tokens[i])
-// 	{
-// 		printf("Token[%d]: %s\n", i, tokens[i]);
-// 		free(tokens[i]);
-// 		i++;
-// 	}
-// 	free(tokens);
-// 	free(split);
-// 	return (0);
-// }
-/* ===========================================================*/
