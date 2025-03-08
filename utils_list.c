@@ -7,7 +7,9 @@ t_token	*ft_new_node(char *content)
 	node = malloc(sizeof(t_token));
 	if (node == NULL)
 		return (NULL);
-	node->input = content;
+	node->input = ft_strdup(content);
+	if (node->input == NULL)
+		return (NULL);
 	node->type = -1;
 	node->next = NULL;
 	node->prev = NULL;

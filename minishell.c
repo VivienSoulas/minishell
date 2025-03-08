@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 // test_input
-// $ARG="1234" <infile grep     '$US<ER' "$USER"|wc  -l>outfile <<append                >>append echo -n "hello world   this" expdand $ARG dont_expand '$ARG' expand "$ARG"
+// $ARG="12 34" <infile grep    '$US<ER' "$USER"|wc  -l>outfile <<append                >>append echo -n "hello world   this" expdand $ARG dont_expand '$ARG' expand "$ARG"
 //
 /* STEPS */
 // go through the input and split in order to find the different tokens
@@ -67,6 +67,7 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 	*exit_stat = ft_list_tokens(tokens, token);
 	*exit_stat = ft_assign_types(*token, env);
 // check token for $
+	ft_free_split(tokens);
 	return (free(split), *exit_stat);
 }
 
@@ -93,8 +94,8 @@ int	ft_list_tokens(char **tokens, t_token **token)
 // _____________________________________________________
 // /!\ TO DO
 // check for $
-// replace possible $ARG
-// check for following operator
+// replace possible $ARG, $VAR, export $VAR"..."
+// check for consecutive operators
 // check for $?
 // echo -n
 //
@@ -105,7 +106,7 @@ int	ft_list_tokens(char **tokens, t_token **token)
 // ◦ export with no options
 // ◦ unset with no options
 /* ◦ env with no options or arguments */
-// ◦ exit with no options
+/*  ◦ exit with no options */
 //
 // single dont expand '$ARG' ("$ARG" and $ARG expand !!)
 // single quote in order to keep special symboles as their original meanings
