@@ -73,7 +73,7 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 		printf("Invalid input\n");
 		return (ft_free_split(tokens), free(split), 2);
 	}
-// check token for $
+// check token for $ and replace
 	ft_free_split(tokens);
 	return (free(split), *exit_stat);
 }

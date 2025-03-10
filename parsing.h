@@ -70,7 +70,6 @@ int		ft_check_tokens(t_token **token);
 
 // utils
 int		ft_count_args(char **tokens);
-int		ft_handle_one(char *input, char **env);
 
 // utils list
 int		ft_list_tokens(char **tokens, t_token **token);
@@ -98,7 +97,8 @@ void	ft_free_list(t_token **token);
 /*======================================================================*/
 void	print_token_list(t_token **token);
 void	print_double_array(char **array);
-int	ft_temp_exec(t_token **token, char **env);
+int		ft_handle_one(char *input, char **env);
+int		ft_temp_exec(t_token **token, char **env);
 /*======================================================================*/
 
 #endif
