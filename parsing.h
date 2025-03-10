@@ -33,6 +33,7 @@
 # define OUTP 5
 # define STRING 6
 # define ECHO 7
+# define FORBIDDEN 8
 
 typedef struct s_split
 {
@@ -62,8 +63,8 @@ typedef struct s_dollar
 }	t_dollar;
 
 int		ft_parse_input(char *in, char **env, int *exit_stat, t_token **token);
-int		ft_list_tokens(char **tokens, t_token **token);
-int		ft_assign_types(t_token *token, char **env);
+void	ft_assign_types(t_token *token);
+int		ft_check_tokens(t_token **token);
 //int		ft_dollar_asign(t_token *token, t_dollar *dollar);
 //int		ft_fill_arg(t_token *token, t_dollar *dollar);
 
@@ -72,6 +73,7 @@ int		ft_count_args(char **tokens);
 int		ft_handle_one(char *input, char **env);
 
 // utils list
+int		ft_list_tokens(char **tokens, t_token **token);
 t_token	*ft_new_node(char *content);
 void	ft_add_last(t_token **token, t_token *node);
 t_token	*ft_last(t_token **token);
@@ -96,6 +98,7 @@ void	ft_free_list(t_token **token);
 /*======================================================================*/
 void	print_token_list(t_token **token);
 void	print_double_array(char **array);
+int	ft_temp_exec(t_token **token, char **env);
 /*======================================================================*/
 
 #endif

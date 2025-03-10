@@ -63,4 +63,24 @@ void	print_double_array(char **array)
 		i++;
 	}
 }
+
+int	ft_temp_exec(t_token **token, char **env)
+{
+
+	t_token *current;
+
+	current = *token;
+	while (current)
+	{
+		if (ft_strncmp(current->input, "env", 3) == 0
+		|| ft_strncmp(current->input, "pwd", 3) == 0
+		|| ft_strncmp(current->input, "exit", 5) == 0)
+		{
+			if (ft_handle_one(current->input, env) == 1)
+			return (1);
+		}
+		current = current->next;
+	}
+	return (0);
+}
 /*======================================================================*/

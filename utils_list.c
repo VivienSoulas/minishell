@@ -1,5 +1,23 @@
 #include "parsing.h"
 
+// create a linked list with each parts of the command (aka tokens)
+int	ft_list_tokens(char **tokens, t_token **token)
+{
+	int		i;
+	t_token	*node;
+
+	i = 0;
+	while (tokens[i])
+	{
+		node = ft_new_node(tokens[i]);
+		if (node == NULL)
+			return (1);
+		ft_add_last(token, node);
+		i++;
+	}
+	return (0);
+}
+
 t_token	*ft_new_node(char *content)
 {
 	t_token	*node;

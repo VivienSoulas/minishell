@@ -39,7 +39,8 @@ int	main(int ac, char **av, char **envp)
 			return (EXIT_FAILURE);
 		}
 		add_history(input);
-		ft_parse_input(input, envp, &exit_status, &token);
+		if (ft_parse_input(input, envp, &exit_status, &token) != 2)
+			exit_status = ft_temp_exec(&token, envp);
 // exec call
 print_token_list(&token);
 		free(input);
@@ -56,6 +57,7 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 	char		**tokens;
 	t_split		*split;
 
+	(void)env;
 	split = malloc(sizeof(t_split));
 	if (split == NULL)
 		return (*exit_stat = 1);
@@ -65,55 +67,23 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 	if (tokens == NULL)
 		return (free(split), *exit_stat = 1);
 	*exit_stat = ft_list_tokens(tokens, token);
-	*exit_stat = ft_assign_types(*token, env);
+	ft_assign_types(*token);
+	if (ft_check_tokens(token) == 1)
+	{
+		printf("Invalid input\n");
+		return (ft_free_split(tokens), free(split), 2);
+	}
 // check token for $
 	ft_free_split(tokens);
 	return (free(split), *exit_stat);
 }
 
-// create a linked list with each parts of the command (aka tokens)
-int	ft_list_tokens(char **tokens, t_token **token)
-{
-	int		i;
-	t_token	*node;
-
-	i = 0;
-	while (tokens[i])
-	{
-		node = ft_new_node(tokens[i]);
-		if (node == NULL)
-			return (1);
-		ft_add_last(token, node);
-		i++;
-	}
-	return (0);
-}
-
 // check each token to asign it with the good code number
-// check for forbidden / and ;
-// _____________________________________________________
-// ◦ echo with option -n
-// ◦ cd with only a relative or absolute path
-/* ◦ pwd with no options */
-// ◦ export with no options
-// ◦ unset with no options
-/* ◦ env with no options or arguments */
-/*  ◦ exit with no options */
-int	ft_assign_types(t_token *token, char **env)
+void	ft_assign_types(t_token *token)
 {
-	//t_dollar	*dollar;
-
-	//dollar = NULL;
 	while (token)
 	{
-		if (ft_strncmp(token->input, "env", 3) == 0
-			|| ft_strncmp(token->input, "pwd", 3) == 0
-			|| ft_strncmp(token->input, "exit", 5) == 0)
-			{
-				if (ft_handle_one(token->input, env) == 1)
-				return (1);
-			}
-		else if (ft_strncmp(token->input, "|", 1) == 0)
+		if (ft_strncmp(token->input, "|", 1) == 0)
 			token->type = 1;
 		else if (ft_strncmp(token->input, "<<", 2) == 0)
 			token->type = 4;
@@ -123,13 +93,34 @@ int	ft_assign_types(t_token *token, char **env)
 			token->type = 2;
 		else if (ft_strncmp(token->input, ">", 1) == 0)
 			token->type = 3;
+		else if (ft_strncmp(token->input, "echo", 5) == 0)
+			token->type = 7;
 		else if (ft_strncmp(token->input, "/", 1) == 0
-			|| ft_strncmp(token->input, ";", 1) == 0)
-			return (1);
+			|| ft_strncmp(token->input, ";", 1) == 0
+			|| ft_strncmp(token->input, ":", 1) == 0)
+			token->type = 8;
 		else
 			token->type = 6;
 		token = token->next;
 	}
+}
+
+// check for consecutive operators
+// check for operators at the end of input
+// check for forbidden operators (type 8)
+int	ft_check_tokens(t_token **token)
+{
+	t_token	*node;
+
+	node = *token;
+	while (node && node->next)
+	{
+		if ((node->type != 6 && node->next->type != 6) || node->type == 8)
+			return (1);
+		node = node->next;
+	}
+	if (node && node->type != 6)
+		return (1);
 	return (0);
 }
 
