@@ -49,7 +49,7 @@ int	ft_temp_exec(t_token **token, char **env)
 		|| ft_strncmp(current->input, "pwd", 3) == 0
 		|| ft_strncmp(current->input, "exit", 5) == 0)
 		{
-			if (ft_handle_one(current->input, env) == 1)
+			if (ft_handle_var(current->input, env) == 1)
 			return (1);
 		}
 		current = current->next;
@@ -57,7 +57,7 @@ int	ft_temp_exec(t_token **token, char **env)
 	return (0);
 }
 
-int	ft_handle_one(char *input, char **env)
+int	ft_handle_var(char *input, char **env)
 {
 	int		i;
 	char	*pwd;

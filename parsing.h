@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/07 15:02:11 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/13 12:08:18 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	ft_free_list(t_token **token);
 /*======================================================================*/
 void	print_token_list(t_token **token);
 void	print_double_array(char **array);
-int		ft_handle_one(char *input, char **env);
+int		ft_handle_var(char *input, char **env);
 int		ft_temp_exec(t_token **token, char **env);
 /*======================================================================*/
 
