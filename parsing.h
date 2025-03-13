@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/13 14:47:08 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/13 15:05:03 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <signal.h>
 # include <errno.h>
 
-extern volatile sig_atomic_t g_signal_caught;
+extern volatile sig_atomic_t	g_signal_caught;
 
 // PIPE (1): pipe symbol ('|') indicating a command pipeline.
 // IN (2): input redirection ('<') indicating input redirection from a file.
@@ -60,17 +60,9 @@ typedef struct s_token
 	struct s_token	*prev;
 }	t_token;
 
-typedef struct s_dollar
-{
-	int		seen;
-	char	*value;
-}	t_dollar;
-
 int		ft_parse_input(char *in, char **env, int *exit_stat, t_token **token);
 void	ft_assign_types(t_token *token);
 int		ft_check_tokens(t_token **token);
-//int		ft_dollar_asign(t_token *token, t_dollar *dollar);
-//int		ft_fill_arg(t_token *token, t_dollar *dollar);
 
 // utils
 int		ft_count_args(char **tokens);
@@ -101,6 +93,7 @@ void	ft_free_split(char **split);
 void	ft_free_list(t_token **token);
 
 /*======================================================================*/
+// temp
 void	print_token_list(t_token **token);
 void	print_double_array(char **array);
 int		ft_handle_var(char *input, char **env);

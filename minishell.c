@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/13 14:55:57 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/13 15:05:44 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 // assign each token to different type and redirect them to exec
 #include "parsing.h"
 
-volatile sig_atomic_t g_signal_caught = 0;
+volatile sig_atomic_t	g_signal_caught = 0;
 
 int	main(int ac, char **av, char **envp)
 {
@@ -30,22 +30,18 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	token = NULL;
 	exit_status = 0;
-signals_handling();
+	signals_handling();
 	if (ac != 1)
 		return (EXIT_FAILURE);
 	while (exit_status == 0)
 	{
 		input = readline("minishell> ");
 		if (input == NULL)
-		{
-			printf("Error: couldn't read input\n");
 			return (EXIT_FAILURE);
-		}
 		add_history(input);
 		if (ft_parse_input(input, envp, &exit_status, &token) != 2)
 			exit_status = ft_temp_exec(&token, envp);
-// exec call
-print_token_list(&token);
+		print_token_list(&token);
 		free(input);
 		ft_free_list(&token);
 	}
@@ -78,7 +74,6 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 		printf("Invalid input\n");
 		return (ft_free_split(tokens), free(split), 2);
 	}
-// check token for $ and replace
 	ft_free_split(tokens);
 	return (free(split), *exit_stat);
 }
@@ -130,32 +125,3 @@ int	ft_check_tokens(t_token **token)
 		return (1);
 	return (0);
 }
-
-//// finds the ARG to replace after $
-//int	ft_dollar_asign(t_token *token, t_dollar *dollar)
-//{
-//	int		i;
-//	int		len;
-
-//	len = ft_strlen(token->input) - 5;
-//	dollar->value = malloc(sizeof(char) * (len + 1));
-//	if (dollar->value == NULL)
-//		return (1);
-//	i = 0;
-//	while (i < len)
-//	{
-//		dollar->value[i] = token->input[i + 5];
-//		i++;
-//	}
-//	dollar->value[i] = '\0';
-//	return (0);
-//}
-
-//int	ft_fill_arg(t_token *token, t_dollar *dollar)
-//{
-//	free(token->input);
-//	token->input = strdup(dollar->value);
-//	if (token->input == NULL)
-//		return (1);
-//	return (0);
-//}
