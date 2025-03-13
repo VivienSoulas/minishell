@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/13 15:05:44 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/13 15:38:29 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	main(int ac, char **av, char **envp)
 		return (EXIT_FAILURE);
 	while (exit_status == 0)
 	{
+		if (g_signal_caught == 1)
+			g_signal_caught = 0;
 		input = readline("minishell> ");
 		if (input == NULL)
 			return (EXIT_FAILURE);
