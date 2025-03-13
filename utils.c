@@ -14,14 +14,10 @@ void	handler(int sig)
 {
 	(void)sig;
 	printf("\n");
-	if (errno == EINTR)
-	{
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-		//g_glb.ex = 1;
-	}
-	return ;
+	g_signal_caught = 1;
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 void	signals_handling(void)
@@ -67,7 +63,8 @@ int	ft_temp_exec(t_token **token, char **env)
 	{
 		if (ft_strncmp(current->input, "env", 3) == 0
 		|| ft_strncmp(current->input, "pwd", 3) == 0
-		|| ft_strncmp(current->input, "exit", 5) == 0)
+		|| ft_strncmp(current->input, "exit", 5) == 0
+		|| ft_strncmp(current->input, "trial", 6) ==0)
 		{
 			if (ft_handle_var(current->input, env) == 1)
 			return (1);
@@ -96,6 +93,20 @@ int	ft_handle_var(char *input, char **env)
 		while (env[i])
 		{
 			printf("%s\n", env[i]);
+			i++;
+		}
+	}
+	else if (ft_strncmp(input, "trial", 6) == 0)
+	{
+		i = 0;
+		while (i >= 0)
+		{
+			if (g_signal_caught == 1)
+			{
+				printf("signal caught\n");
+				break ;
+			}
+			printf("%i\n", i);
 			i++;
 		}
 	}

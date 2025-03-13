@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/13 14:33:50 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/13 14:47:08 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <errno.h>
+
+extern volatile sig_atomic_t g_signal_caught;
 
 // PIPE (1): pipe symbol ('|') indicating a command pipeline.
 // IN (2): input redirection ('<') indicating input redirection from a file.

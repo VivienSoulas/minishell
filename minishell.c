@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/13 14:33:20 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/13 14:55:57 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 // check tokens to find operators, input, output, args, redirections etc
 // assign each token to different type and redirect them to exec
 #include "parsing.h"
+
+volatile sig_atomic_t g_signal_caught = 0;
 
 int	main(int ac, char **av, char **envp)
 {
