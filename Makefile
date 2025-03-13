@@ -5,7 +5,7 @@ SRC		=	minishell.c \
 			free.c \
 			split.c \
 			utils_split.c \
-			temp.c
+			temp.c \
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)

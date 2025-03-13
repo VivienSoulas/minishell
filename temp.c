@@ -1,6 +1,5 @@
 #include "parsing.h"
 
-
 /*======================================================================*/
 void	print_token_list(t_token **token)
 {
