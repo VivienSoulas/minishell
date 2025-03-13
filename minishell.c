@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/07 15:11:21 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/13 14:33:20 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	token = NULL;
 	exit_status = 0;
+signals_handling();
 	if (ac != 1)
 		return (EXIT_FAILURE);
 	while (exit_status == 0)
@@ -58,6 +59,8 @@ int	ft_parse_input(char *in, char **env, int *exit_stat, t_token **token)
 	t_split		*split;
 
 	(void)env;
+	if (in == NULL || in[0] == '\0')
+		return (1);
 	split = malloc(sizeof(t_split));
 	if (split == NULL)
 		return (*exit_stat = 1);
@@ -113,6 +116,8 @@ int	ft_check_tokens(t_token **token)
 	t_token	*node;
 
 	node = *token;
+	if (node->type == 1)
+		return (1);
 	while (node && node->next)
 	{
 		if ((node->type != 6 && node->next->type != 6) || node->type == 8)

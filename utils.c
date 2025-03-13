@@ -10,6 +10,26 @@ int	ft_count_args(char **tokens)
 	return (i);
 }
 
+void	handler(int sig)
+{
+	(void)sig;
+	printf("\n");
+	if (errno == EINTR)
+	{
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		//g_glb.ex = 1;
+	}
+	return ;
+}
+
+void	signals_handling(void)
+{
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, &handler);
+}
+
 /*======================================================================*/
 void	print_token_list(t_token **token)
 {

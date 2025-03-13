@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/13 12:08:18 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/13 14:33:50 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <signal.h>
+# include <errno.h>
 
 // PIPE (1): pipe symbol ('|') indicating a command pipeline.
 // IN (2): input redirection ('<') indicating input redirection from a file.
@@ -70,6 +72,8 @@ int		ft_check_tokens(t_token **token);
 
 // utils
 int		ft_count_args(char **tokens);
+void	handler(int sig);
+void	signals_handling(void);
 
 // utils list
 int		ft_list_tokens(char **tokens, t_token **token);
