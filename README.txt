@@ -8,11 +8,10 @@ check for cd
 check for $?
 
 check for $ and export
-handle variable expansion (expand $VAR"...")
-	single dont expand '$ARG' ("$ARG" and $ARG expand !!)
-	single quote in order to keep special symboles as their original meanings
-	double quote to keep meaning of all char in the quote except "$ARG"
-	ARG="..." --> $ARG  replace it by a specifique string stated betweem quotes
+handle variable expansion (echo)
+	single dont expand '$USER' ==> stays $USER (single quote in order to keep special symboles as their original meanings)
+	double quote to keep meaning of all char in the quote "$USER" ==> vsoulas
+	
 
 DONE:
 check for consecutive operators
