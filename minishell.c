@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/21 15:58:45 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/21 16:21:00 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,35 +122,6 @@ void	ft_assign_types(t_token *token)
 			token->type = 6;
 		token = token->next;
 	}
-}
-
-int	ft_variable_expansion(t_token **token, t_envp **env, int *exit)
-{
-	t_token	*current;
-
-	current = *token;
-	while (current)
-	{
-		if (ft_strncmp(current->input, "$", 1) == 0)
-		{
-			if (ft_strncmp(current->input + 1, "?", 1) == 0)
-				ft_print_exit_status(exit);
-			else if (ft_dollar_sign(current, env) != 0)
-				return (1);
-		}
-		if (ft_strncmp(current->input, "\"", 1) == 0)
-		{
-			if (ft_double_quote_expand(current, env) != 0)
-				return (1);
-		}
-		if (ft_strncmp(current->input, "\'", 1) == 0)
-		{
-			if (ft_single_quote_expand(current, env) != 0)
-				return (1);
-		}
-		current = current->next;
-	}
-	return (0);
 }
 
 // check for consecutive operators

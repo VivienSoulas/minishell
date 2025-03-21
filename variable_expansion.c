@@ -1,5 +1,34 @@
 #include "parsing.h"
 
+int	ft_variable_expansion(t_token **token, t_envp **env, int *exit)
+{
+	t_token	*current;
+
+	current = *token;
+	while (current)
+	{
+		if (ft_strncmp(current->input, "$", 1) == 0)
+		{
+			if (ft_strncmp(current->input + 1, "?", 1) == 0)
+				ft_print_exit_status(exit);
+			else if (ft_dollar_sign(current, env) != 0)
+				return (1);
+		}
+		if (ft_strncmp(current->input, "\"", 1) == 0)
+		{
+			if (ft_double_quote_expand(current, env) != 0)
+				return (1);
+		}
+		if (ft_strncmp(current->input, "\'", 1) == 0)
+		{
+			if (ft_single_quote_expand(current, env) != 0)
+				return (1);
+		}
+		current = current->next;
+	}
+	return (0);
+}
+
 int	ft_dollar_sign(t_token *to, t_envp **env)
 {
 	int		i;
@@ -8,7 +37,7 @@ int	ft_dollar_sign(t_token *to, t_envp **env)
 	e = *env;
 	while (e)
 	{
-		if (ft_strncmp(to->input + 1, e->name, ft_strlen(to->input) - 1) == 0)
+		if (ft_strncmp(to->input + 1, e->name, ft_strlen(to->input)) == 0)
 		{
 			free(to->input);
 			to->input = malloc(sizeof(char) * ft_strlen(e->value) + 1);

@@ -16,3 +16,6 @@ export VAR=Vivien
 $VAR --> Vivien
 "$VAR" --> Vivien
 '$VAR' --> $VAR
+	to check for last '
+
+check for ""$VAR"" and "'$VAR'"
