@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/21 15:30:27 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/21 15:58:58 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int			ft_single_quote_expand(t_token *to, t_envp **env);
 int			ft_count_args(char **tokens);
 void		handler(int sig);
 void		signals_handling(void);
-void		ft_memory_error(void);
+void		ft_mem_error(void);
 void		ft_print_exit_status(int *exit);
 
 // utils list

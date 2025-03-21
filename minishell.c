@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/21 15:41:47 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/21 15:58:45 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ int	main(int ac, char **av, char **envp)
 {
 	char		*input;
 	int			exit_call;
-	//int			exit_status;
+	int			exit_status;
 	t_token		*token;
-	//t_command	**commands;
+	t_command	**commands;
 	t_envp		*env_list;
 
 	(void)av;
@@ -47,12 +47,12 @@ int	main(int ac, char **av, char **envp)
 		add_history(input);
 		if (ft_parse_input(input, &env_list, &exit_call, &token) != 1)
 		{
-			exit_call = ft_temp_exec(&token, &env_list);
-		}
-		//commands = token_to_cmd(&token);
-		//exit_call = exec_list_command(commands);
+		//	exit_call = ft_temp_exec(&token, &env_list);
 		//}
-		//command_cleanup(commands);
+		commands = token_to_cmd(&token);
+		exit_status = exec_list_command(commands);
+		}
+		command_cleanup(commands);
 		free(input);
 		ft_free_list(&token);
 	}
@@ -71,16 +71,16 @@ int	ft_parse_input(char *in, t_envp **env, int *exit, t_token **token)
 		return (1);
 	split = malloc(sizeof(t_split));
 	if (split == NULL)
-		return (ft_memory_error(), *exit = 1);
+		return (ft_mem_error(), *exit = 1);
 	if (ft_initialise_split(split, in) == 1)
-		return (free(split), ft_memory_error(), *exit = 1);
+		return (free(split), ft_mem_error(), *exit = 1);
 	tokens = ft_split_input(in, split);
 	if (tokens == NULL)
-		return (free(split), ft_memory_error(), *exit = 1);
+		return (free(split), ft_mem_error(), *exit = 1);
 	*exit = ft_list_tokens(tokens, token);
 	ft_assign_types(*token);
 	if (ft_variable_expansion(token, env, exit) == 1)
-		return (ft_free_split(tokens), free(split), ft_memory_error(), *exit = 1);
+		return (ft_free_split(tokens), free(split), ft_mem_error(), *exit = 1);
 	if (ft_check_tokens(token) == 1)
 	{
 		printf("Invalid input\n");

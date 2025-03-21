@@ -37,7 +37,6 @@ void	ft_free_envp_list(t_envp **envp)
 	*envp = NULL;
 }
 
-
 void	ft_free_split(char **split)
 {
 	int	i;

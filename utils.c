@@ -26,12 +26,12 @@ void	signals_handling(void)
 	signal(SIGINT, &handler);
 }
 
-void	ft_memory_error(void)
+void	ft_mem_error(void)
 {
-	printf("Malloc fail");
+	printf("Malloc fail, Exiting Minishell");
 }
 
-void ft_print_exit_status(int *exit)
+void	ft_print_exit_status(int *exit)
 {
 	printf("%d\n", *exit);
 }
