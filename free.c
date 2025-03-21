@@ -18,6 +18,26 @@ void	ft_free_list(t_token **token)
 	*token = NULL;
 }
 
+void	ft_free_envp_list(t_envp **envp)
+{
+	t_envp	*current;
+	t_envp	*next;
+
+	if (envp == NULL || *envp == NULL)
+		return ;
+	current = *envp;
+	while (current)
+	{
+		next = current->next;
+		free(current->name);
+		free(current->value);
+		free(current);
+		current = next;
+	}
+	*envp = NULL;
+}
+
+
 void	ft_free_split(char **split)
 {
 	int	i;

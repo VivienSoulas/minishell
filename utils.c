@@ -25,3 +25,13 @@ void	signals_handling(void)
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &handler);
 }
+
+void	ft_memory_error(void)
+{
+	printf("Malloc fail");
+}
+
+void ft_print_exit_status(int *exit)
+{
+	printf("%d\n", *exit);
+}

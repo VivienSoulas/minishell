@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/13 15:26:05 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/21 15:30:27 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <errno.h>
+# include <sys/wait.h>
 
 extern volatile sig_atomic_t	g_signal_caught;
 
@@ -29,15 +30,36 @@ extern volatile sig_atomic_t	g_signal_caught;
 // HERDOC (4): heredoc ('<<') indicating input redirection from a here-document.
 // OUTP (5): output redirection ('>>') output redirection to a file append mode
 // STRING (6): regular string token.
-// ECHO (7) take care of echo -n possibility.
+// FORBIDDEN (7): forbidden operators.
 # define PIPE 1
 # define IN 2
 # define OUT 3
 # define HEREDOC 4
 # define OUTP 5
 # define STRING 6
-# define ECHO 7
-# define FORBIDDEN 8
+# define FORBIDDEN 7
+
+typedef struct s_envp
+{
+	char			*name;
+	char			*value;
+	struct s_envp	*next;
+}	t_envp;
+
+typedef struct s_command
+{
+	char	*executable_path;
+	char	**args;
+	char	*heredoc_delimiter;
+	char	*input_file;
+	char	*output_file;
+	int		output_fd;
+	int		input_fd;
+	int		is_append;
+	int		is_heredoc;
+	int		is_pipe;
+	int		is_buildin;
+}	t_command;
 
 typedef struct s_split
 {
@@ -60,44 +82,61 @@ typedef struct s_token
 	struct s_token	*prev;
 }	t_token;
 
-int		ft_parse_input(char *in, char **env, int *exit_stat, t_token **token);
-void	ft_assign_types(t_token *token);
-int		ft_check_tokens(t_token **token);
+int			ft_parse_input(char *in, t_envp **env, int *exit, t_token **token);
+void		ft_assign_types(t_token *token);
+int			ft_variable_expansion(t_token **token, t_envp **env, int *exit);
+int			ft_check_tokens(t_token **token);
+
+t_envp		*copy_envp(char **envp);
+
+// variable expansion
+int			ft_dollar_sign(t_token *to, t_envp **env);	
+int			ft_double_quote_expand(t_token *to, t_envp **env);
+int			ft_single_quote_expand(t_token *to, t_envp **env);
 
 // utils
-int		ft_count_args(char **tokens);
-void	handler(int sig);
-void	signals_handling(void);
+int			ft_count_args(char **tokens);
+void		handler(int sig);
+void		signals_handling(void);
+void		ft_memory_error(void);
+void		ft_print_exit_status(int *exit);
 
 // utils list
-int		ft_list_tokens(char **tokens, t_token **token);
-t_token	*ft_new_node(char *content);
-void	ft_add_last(t_token **token, t_token *node);
-t_token	*ft_last(t_token **token);
+int			ft_list_tokens(char **tokens, t_token **token);
+t_token		*ft_new_node(char *content);
+void		ft_add_last(t_token **token, t_token *node);
+t_token		*ft_last(t_token **token);
 
 // split
-char	**ft_split_input(char *input, t_split *split);
-void	ft_handles_double(t_split *split, char *input);
-void	ft_handles_operator(t_split *split, char *input);
-void	ft_handles_quotes(char *input, t_split *split);
-void	ft_handles_string(char *input, t_split *split);
+char		**ft_split_input(char *input, t_split *split);
+void		ft_handles_double(t_split *split, char *input);
+void		ft_handles_operator(t_split *split, char *input);
+void		ft_handles_quotes(char *input, t_split *split);
+void		ft_handles_string(char *input, t_split *split);
 
 // utils split
-int		ft_initialise_split(t_split *split, char *input);
-int		ft_check_quotes(char *input);
-int		ft_is_operator(char c);
-int		ft_double_operator(char *input, int i);
+int			ft_initialise_split(t_split *split, char *input);
+int			ft_check_quotes(char *input);
+int			ft_is_operator(char c);
+int			ft_double_operator(char *input, int i);
 
 // free
-void	ft_free_split(char **split);
-void	ft_free_list(t_token **token);
+void		ft_free_split(char **split);
+void		ft_free_list(t_token **token);
+void		ft_free_envp_list(t_envp **envp);
 
 /*======================================================================*/
 // temp
-void	print_token_list(t_token **token);
-void	print_double_array(char **array);
-int		ft_handle_var(char *input, char **env);
-int		ft_temp_exec(t_token **token, char **env);
+void		print_token_list(t_token **token);
+void		print_double_array(char **array);
+int			ft_handle_var(char *input, t_envp **env);
+int			ft_temp_exec(t_token **token, t_envp **env);
 /*======================================================================*/
+
+// command
+char		*find_executable(char *command);
+void		command_cleanup(t_command **commands);
+int			exec_list_command(t_command **commands);
+t_command	**token_to_cmd(t_token **tokens);
 
 #endif

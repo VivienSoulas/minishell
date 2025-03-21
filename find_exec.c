@@ -1,0 +1,75 @@
+#include "parsing.h"
+
+char	*find_executable_in_path(char *command)
+{
+	char	*res;
+
+	if (access(command, X_OK) == 0)
+	{
+		res = ft_strdup(command);
+		return (res);
+	}
+	return (NULL);
+}
+
+char	*find_executable_in_directory(char *command, char *directory)
+{
+	size_t	command_len;
+	size_t	directory_len;
+	char	*res;
+
+	command_len = ft_strlen(command);
+	directory_len = ft_strlen(directory);
+	res = malloc(command_len + directory_len + 2);
+	if (res == NULL)
+	{
+		printf("Malloc failed\n");
+		return (NULL);
+	}
+	ft_memcpy(res, directory, directory_len);
+	res[directory_len] = '/';
+	ft_strlcpy(res + directory_len + 1, command, command_len + 1);
+	if (access(res, X_OK) == 0)
+		return (res);
+	free(res);
+	return (NULL);
+}
+
+void	free_directories(char **directories)
+{
+	int	i;
+
+	i = -1;
+	while (directories[++i])
+		free(directories[i]);
+	free(directories);
+}
+
+
+char	*find_executable(char *command)
+{
+	int		i;
+	char	*path;
+	char	**directories;
+	char	*res;
+
+	if (ft_strchr(command, '/'))
+		return (find_executable_in_path(command));
+	path = getenv("PATH");
+	if (!path || !command || command[0] == '\0')
+		return (NULL);
+	directories = ft_split(path, ':');
+	if (!directories)
+		return (NULL);
+	i = -1;
+	while (directories[++i])
+	{
+		res = find_executable_in_directory(command, directories[i]);
+		if (!res)
+			continue ;
+		free_directories(directories);
+		return (res);
+	}
+	free_directories(directories);
+	return (NULL);
+}

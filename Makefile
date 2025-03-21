@@ -5,7 +5,13 @@ SRC		=	minishell.c \
 			free.c \
 			split.c \
 			utils_split.c \
-			temp.c \
+			exec.c \
+			find_exec.c \
+			token_to_command.c \
+			cmds_free.c \
+			variable_expansion.c \
+			cpy_env.c \
+			temp.c
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)

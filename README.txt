@@ -3,17 +3,16 @@ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressi
 
 
 TO DO:
-check for unset
-check for cd
-check for $?
+echo and echo -n
+unset
+export
+cd
+$? (printf actual program exit values)
+	in the main loop, only exit should change exit_status in order to auit minishell
 
-check for $ and export
-handle variable expansion (echo)
-	single dont expand '$USER' ==> stays $USER (single quote in order to keep special symboles as their original meanings)
-	double quote to keep meaning of all char in the quote "$USER" ==> vsoulas
-	
 
 DONE:
-check for consecutive operators
-type assigment
-check for echo
+export VAR=Vivien
+$VAR --> Vivien
+"$VAR" --> Vivien
+'$VAR' --> $VAR

@@ -27,7 +27,7 @@ void	print_double_array(char **array)
 	}
 }
 
-int	ft_temp_exec(t_token **token, char **env)
+int	ft_temp_exec(t_token **token, t_envp **env)
 {
 
 	t_token *current;
@@ -48,12 +48,14 @@ int	ft_temp_exec(t_token **token, char **env)
 	return (0);
 }
 
-int	ft_handle_var(char *input, char **env)
+int	ft_handle_var(char *input, t_envp **env)
 {
 	int		i;
 	char	*pwd;
 	char	*buf;
+	t_envp	*envp;
 
+	envp = *env;
 	buf = NULL;
 	if (ft_strncmp(input, "pwd", 3) == 0)
 	{
@@ -63,11 +65,10 @@ int	ft_handle_var(char *input, char **env)
 	}
 	else if (ft_strncmp(input, "env", 3) == 0)
 	{
-		i = 0;
-		while (env[i])
+		while (envp)
 		{
-			printf("%s\n", env[i]);
-			i++;
+			printf("%s=%s\n", envp->name, envp->value);
+			envp = envp->next;
 		}
 	}
 	else if (ft_strncmp(input, "trial", 6) == 0)
