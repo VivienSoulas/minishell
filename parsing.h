@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/21 15:58:58 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/28 14:49:08 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_envp
 	char			*name;
 	char			*value;
 	struct s_envp	*next;
+	struct s_envp	*prev;
 }	t_envp;
 
 typedef struct s_command
@@ -84,13 +85,13 @@ typedef struct s_token
 
 int			ft_parse_input(char *in, t_envp **env, int *exit, t_token **token);
 void		ft_assign_types(t_token *token);
-int			ft_variable_expansion(t_token **token, t_envp **env, int *exit);
+int			ft_variable_expansion(t_token **token, t_envp **env);
 int			ft_check_tokens(t_token **token);
 
 t_envp		*copy_envp(char **envp);
 
 // variable expansion
-int			ft_dollar_sign(t_token *to, t_envp **env);	
+int			ft_dollar_sign(t_token *to, t_envp **env);
 int			ft_double_quote_expand(t_token *to, t_envp **env);
 int			ft_single_quote_expand(t_token *to, t_envp **env);
 
@@ -99,7 +100,6 @@ int			ft_count_args(char **tokens);
 void		handler(int sig);
 void		signals_handling(void);
 void		ft_mem_error(void);
-void		ft_print_exit_status(int *exit);
 
 // utils list
 int			ft_list_tokens(char **tokens, t_token **token);
@@ -125,6 +125,9 @@ void		ft_free_split(char **split);
 void		ft_free_list(t_token **token);
 void		ft_free_envp_list(t_envp **envp);
 
+// export
+int			ft_export_check(t_envp **env, t_token **token);
+
 /*======================================================================*/
 // temp
 void		print_token_list(t_token **token);
@@ -134,9 +137,27 @@ int			ft_temp_exec(t_token **token, t_envp **env);
 /*======================================================================*/
 
 // command
-char		*find_executable(char *command);
+t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list);
+int			exe_cmds(t_command **commands, t_envp **list);
 void		command_cleanup(t_command **commands);
-int			exec_list_command(t_command **commands);
-t_command	**token_to_cmd(t_token **tokens);
+char		*find_executable(char *command, t_envp **envp_list);
+int			input_fd(t_command *command, int i, int last_pipe_read);
+int			output_fd(t_command *command, int *fd, int is_not_last);
+int			exe_command(t_command *command, t_envp **list);
+int			init_pipe(int *fd, int last_pipe_read);
 
+// envp
+int			add_to_envp(t_envp **envp_list, char *envp);
+t_envp		*new_envp(char *envp);
+char		*copy_str_delimiter(char *str, int check);
+int			add_export_to_envp(t_envp **env, char *export);
+char		*env_get_value(t_envp **list, char *name);
+
+int	ft_strcmp(const char *s1, const char *s2);
+int	is_buildin(char *command);
+int	exec_buildin(t_command *cmd, t_envp **env);
+char	**list_to_array(t_envp **list);
+void	free_array(char **array);
+void	env(t_envp **env);
+void	pwd(t_envp **env);
 #endif

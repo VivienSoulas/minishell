@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 13:17:37 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/03/21 14:12:40 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/28 12:02:20 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,24 @@ t_envp	*new_envp(char *envp)
 		return (NULL);
 	}
 	new->name = copy_str_delimiter(envp, 1);
+	if (new->name == NULL)
+	{
+		printf("malloc failed\n");
+		return (NULL);
+	}
 	new->value = copy_str_delimiter(envp, 0);
+	if (new->value == NULL)
+	{
+		free(new->name);
+		printf("malloc failed \n");
+		return (NULL);
+	}
 	new->next = NULL;
 	return (new);
 }
 
-void	add_to_envp(t_envp **envp_list, char *envp)
+// check for failled new_envp
+int	add_to_envp(t_envp **envp_list, char *envp)
 {
 	t_envp	*temp;
 	t_envp	*new;
@@ -61,13 +73,18 @@ void	add_to_envp(t_envp **envp_list, char *envp)
 	if (*envp_list == NULL)
 	{
 		*envp_list = new_envp(envp);
-		return ;
+		if (*envp_list == NULL)
+			return (1);
+		return (0);
 	}
 	temp = *envp_list;
 	while(temp->next)
 		temp = temp->next;
 	new = new_envp(envp);
+	if (new == NULL)
+		return (1);
 	temp->next = new;
+	return (0);
 }
 
 t_envp	*copy_envp(char **envp)
@@ -79,7 +96,8 @@ t_envp	*copy_envp(char **envp)
 	envp_list = NULL;
 	while (envp[i])
 	{
-		add_to_envp(&envp_list, envp[i]);
+		if (add_to_envp(&envp_list, envp[i]) == 1)
+			return (ft_free_envp_list(&envp_list), NULL);
 		i++;
 	}
 	return (envp_list);
@@ -96,3 +114,4 @@ t_envp	*copy_envp(char **envp)
 // 	}
 // 	return (0);
 // }
+

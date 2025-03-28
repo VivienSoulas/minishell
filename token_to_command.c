@@ -32,14 +32,19 @@ int	count_args(t_token *token)
 	return (n);
 }
 
-int	init_args(t_command *command, t_token **token)
+int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 {
 	int	i;
 
 	i = 0;
-	command->executable_path = find_executable((*token)->input);
-	if (command->executable_path == NULL)
-		return (-1);
+	if (is_buildin((*token)->input))
+		command->is_buildin = 1;
+	else
+	{
+		command->executable_path = find_executable((*token)->input, envp_list);
+		if (command->executable_path == NULL)
+			return (-1);
+	}
 	while (*token && (*token)->type == STRING)
 	{
 		command->args[i] = ft_strdup((*token)->input);
@@ -92,7 +97,7 @@ int	init_redirection(t_token **token, t_command *command)
 	return (0);
 }
 
-int	init_command(t_token **token, t_command *command)
+int	init_command(t_token **token, t_command *command, t_envp **envp_list)
 {
 	int	n_args;
 
@@ -105,7 +110,7 @@ int	init_command(t_token **token, t_command *command)
 		command->args = ft_calloc(n_args + 1, sizeof(char *));
 		if (command->args == NULL)
 			return (-1);
-		if (init_args(command, token) == -1)
+		if (init_args(command, token, envp_list) == -1)
 			return (-1);
 	}
 	if (init_redirection(token, command) != 0)
@@ -113,7 +118,7 @@ int	init_command(t_token **token, t_command *command)
 	return (0);
 }
 
-t_command	**token_to_cmd(t_token **tokens)
+t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list)
 {
 	t_command	**commands;
 	t_token		*current;
@@ -129,7 +134,7 @@ t_command	**token_to_cmd(t_token **tokens)
 	while (current != NULL)
 	{
 		commands[i] = malloc(sizeof(t_command));
-		if (commands[i] == NULL || init_command(&current, commands[i]) == -1)
+		if (commands[i] == NULL || init_command(&current, commands[i], envp_list) == -1)
 		{
 			command_cleanup(commands);
 			return (NULL);

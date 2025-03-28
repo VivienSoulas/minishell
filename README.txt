@@ -3,7 +3,16 @@ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressi
 
 
 TO DO:
-echo and echo -n
+check echo with multiple token ("echo hello there" should print "hello there")
+export with same VAR to override
+check expansion variable
+check for exit status
+norm
+
+
+
+
+
 unset
 export
 cd

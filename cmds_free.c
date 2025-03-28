@@ -18,7 +18,7 @@ void	command_cleanup(t_command **commands)
 	int			j;
 
 	i = 0;
-	if (!commands)
+	if (!commands || !*commands)
 		return ;
 	while (commands[i])
 	{

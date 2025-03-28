@@ -1,6 +1,6 @@
 #include "parsing.h"
 
-int	ft_variable_expansion(t_token **token, t_envp **env, int *exit)
+int	ft_variable_expansion(t_token **token, t_envp **env)
 {
 	t_token	*current;
 
@@ -9,11 +9,17 @@ int	ft_variable_expansion(t_token **token, t_envp **env, int *exit)
 	{
 		if (ft_strncmp(current->input, "$", 1) == 0)
 		{
-			if (ft_strncmp(current->input + 1, "?", 1) == 0)
-				ft_print_exit_status(exit);
-			else if (ft_dollar_sign(current, env) != 0)
+			//if (ft_strncmp(current->input + 1, "?", 1) == 0)
+			//	ft_print_exit_status(exit);
+			//else
+			if (ft_dollar_sign(current, env) != 0)
 				return (1);
 		}
+// "$VAR" prints value for VAR
+// 	$VAR  prints value for VAR
+
+// '$VAR' prints $VAR
+// '"$VAR"' prints "$VAR"
 		if (ft_strncmp(current->input, "\"", 1) == 0)
 		{
 			if (ft_double_quote_expand(current, env) != 0)

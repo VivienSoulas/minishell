@@ -7,6 +7,11 @@ char	*find_executable_in_path(char *command)
 	if (access(command, X_OK) == 0)
 	{
 		res = ft_strdup(command);
+		if (res == NULL)
+		{
+			printf("malloc failed\n");
+			return (NULL);
+		}
 		return (res);
 	}
 	return (NULL);
@@ -45,8 +50,7 @@ void	free_directories(char **directories)
 	free(directories);
 }
 
-
-char	*find_executable(char *command)
+char	*find_executable(char *command, t_envp **envp_list)
 {
 	int		i;
 	char	*path;
@@ -55,7 +59,7 @@ char	*find_executable(char *command)
 
 	if (ft_strchr(command, '/'))
 		return (find_executable_in_path(command));
-	path = getenv("PATH");
+	path = env_get_value(envp_list, "PATH");
 	if (!path || !command || command[0] == '\0')
 		return (NULL);
 	directories = ft_split(path, ':');

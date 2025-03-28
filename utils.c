@@ -31,7 +31,3 @@ void	ft_mem_error(void)
 	printf("Malloc fail, Exiting Minishell");
 }
 
-void	ft_print_exit_status(int *exit)
-{
-	printf("%d\n", *exit);
-}

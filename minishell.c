@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/21 16:21:00 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/28 14:45:27 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,22 @@ volatile sig_atomic_t	g_signal_caught = 0;
 int	main(int ac, char **av, char **envp)
 {
 	char		*input;
-	int			exit_call;
-	int			exit_status;
 	t_token		*token;
 	t_command	**commands;
+
+	int			exit_call;
+	int			exit_status;
 	t_envp		*env_list;
 
 	(void)av;
 	if (ac != 1)
 		return (EXIT_FAILURE);
 	env_list = copy_envp(envp);
+	if (env_list == NULL)
+		return (EXIT_FAILURE);
 	token = NULL;
 	exit_call = 0;
+	exit_status = 0;
 	signals_handling();
 	while (exit_call == 0)
 	{
@@ -45,18 +49,25 @@ int	main(int ac, char **av, char **envp)
 		if (input == NULL)
 			return (ft_free_envp_list(&env_list), EXIT_FAILURE);
 		add_history(input);
-		if (ft_parse_input(input, &env_list, &exit_call, &token) != 1)
+// check here for $? and assigned it to exit_status else => parsing
+		if (ft_strncmp(input, "$", 1) == 0)
 		{
-		//	exit_call = ft_temp_exec(&token, &env_list);
-		//}
-		commands = token_to_cmd(&token);
-		exit_status = exec_list_command(commands);
+			if (ft_strncmp(input + 1, "?", 1) == 0)
+				printf("%d\n", exit_status);
 		}
-		command_cleanup(commands);
-		free(input);
-		ft_free_list(&token);
+		else
+		{
+			if (ft_parse_input(input, &env_list, &exit_call, &token) != 1)
+			{
+				commands = token_to_cmd(&token, &env_list);
+				exit_status = exe_cmds(commands, &env_list);
+			}
+			command_cleanup(commands);
+		}
+			free(input);
+			ft_free_list(&token);
 	}
-	return (ft_free_envp_list(&env_list), 0);
+	return (ft_free_envp_list(&env_list), exit_status);
 }
 
 /* split doesnt work for finding all args
@@ -77,9 +88,17 @@ int	ft_parse_input(char *in, t_envp **env, int *exit, t_token **token)
 	tokens = ft_split_input(in, split);
 	if (tokens == NULL)
 		return (free(split), ft_mem_error(), *exit = 1);
+// if (ft_list_tokens(tokens, token) == 1) --> return (free(split), ft_mem_error(), *exit = 1)
 	*exit = ft_list_tokens(tokens, token);
+// instead of *exit etc
 	ft_assign_types(*token);
-	if (ft_variable_expansion(token, env, exit) == 1)
+
+/* ============================================================================ */
+	if (ft_export_check(env, token) == 1)
+		return (ft_free_split(tokens), free(split), ft_mem_error(), *exit = 1);
+/* ============================================================================ */
+
+	if (ft_variable_expansion(token, env) == 1)
 		return (ft_free_split(tokens), free(split), ft_mem_error(), *exit = 1);
 	if (ft_check_tokens(token) == 1)
 	{
@@ -99,7 +118,6 @@ int	ft_parse_input(char *in, t_envp **env, int *exit, t_token **token)
 // ◦ export with no options
 // ◦ unset with no options
 /* ◦ env with no options or arguments */
-/* ◦ exit with no options */
 void	ft_assign_types(t_token *token)
 {
 	while (token)
