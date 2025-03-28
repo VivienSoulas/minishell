@@ -64,16 +64,18 @@ char	*find_executable(char *command, t_envp **envp_list)
 		return (NULL);
 	directories = ft_split(path, ':');
 	if (!directories)
-		return (NULL);
+		return (free(path), NULL);
 	i = -1;
 	while (directories[++i])
 	{
 		res = find_executable_in_directory(command, directories[i]);
 		if (!res)
 			continue ;
+		free(path);
 		free_directories(directories);
 		return (res);
 	}
+	free(path);
 	free_directories(directories);
 	return (NULL);
 }

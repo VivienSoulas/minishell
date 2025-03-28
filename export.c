@@ -11,12 +11,9 @@ int	ft_export_check(t_envp **env, t_token **token)
 // should print envp sorted by alphabetic order cap first lower last
 		if (current->next == NULL)
 			return (printf("Invalid input, printing envp\n"), 0);
-// if no equal sign value = value
+// if no equal sign, add VAR to export list only
 		if (ft_strchr(current->next->input, '=') == 0)
-		{
-			printf("no equal sign\n");
 			return (0);
-		}
 // WORKING if no arg value = ""
 		if (add_export_to_envp(env, current->next->input) == 1)
 			return (1);
@@ -27,51 +24,45 @@ int	ft_export_check(t_envp **env, t_token **token)
 int	add_export_to_envp(t_envp **env, char *export)
 {
 	t_envp	*current;
+	t_envp	*prev;
 	t_envp	*new;
+	char	*name;
 	int		len;
 
-	len = ft_strlen(export);
+	name = copy_str_delimiter(export, 1);
+	if (name == NULL)
+		return (1);
+	len = ft_strlen(name);
 	current = *env;
-	while (current->next)
+	while (current)
 	{
-// check for already existing var name and replace its value
-		if (ft_strncmp(current->name, export, len) == 0)
-		{
-			ft_delete_node(env, export);
-			break ;
-		}
+		if (ft_strncmp(current->name, name, len) == 0)
+			return (ft_replace_value(export, current), 0);
+		prev = current;
 		current = current->next;
 	}
 	new = new_envp(export);
 	if (new == NULL)
 		return (1);
-// insert new_node where it needs to be
 	new->next = NULL;
-	current->next = new;
+	if (prev != NULL)
+		prev->next = new;
+	else
+		*env = new;
 	return (0);
 }
 
-//void	ft_delete_node(t_envp **env, char *export)
-//{
-//	t_envp	*current;
-//	t_envp	*prev;
-//	t_envp	*next;
-//	int		len;
+int	ft_replace_value(char *export, t_envp *current)
+{
+	char	*value;
+	char	*equal;
 
-//	len = ft_strlen(export);
-//	current = *env;
-//	while (current->next)
-//	{
-//		prev = current->prev;
-//		next = current->next;
-//		if (ft_strncmp(current->name, export, len) == 0)
-//		{
-//			free(current->name);
-//			free(current->value);
-//			free(current);
-//			break ;
-//		}
-//		current = current->next;
-//	}
-//	prev->next = next;
-//}
+	equal = ft_strchr(export, '=');
+	value = copy_str_delimiter(export, 0);
+	free(current->value);
+	value = malloc(ft_strlen(equal + 1) + 1);
+	if (!value)
+		return (1);
+	ft_strlcpy(value, equal + 1, ft_strlen(equal + 1) + 1);
+	return (0);
+}

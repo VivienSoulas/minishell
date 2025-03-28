@@ -33,6 +33,10 @@ int	exec_buildin(t_command *cmd, t_envp **envp)
 		env(envp);
 	if (!ft_strcmp(cmd->args[0], "pwd"))
 		pwd(envp);
+	else if (!ft_strcmp(cmd->args[0], "unset"))
+	{
+		unset(cmd, envp);
+	}
 	return (0);
 }
 
@@ -74,7 +78,7 @@ void echo(t_command *command)
 	if (!command->args[i])
 	{
 		printf("\n");
-		exit(EXIT_SUCCESS);
+		return ;
 	}
 	if (!ft_strcmp(command->args[i], "-n"))
 	{
@@ -89,5 +93,5 @@ void echo(t_command *command)
 	}
 	if (!no_new_line)
 		write(1, "\n", 1);
-	exit(EXIT_SUCCESS);
+	return ;
 }

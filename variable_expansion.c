@@ -7,24 +7,20 @@ int	ft_variable_expansion(t_token **token, t_envp **env)
 	current = *token;
 	while (current)
 	{
+// 	WORKS $VAR  prints value for VAR
 		if (ft_strncmp(current->input, "$", 1) == 0)
 		{
-			//if (ft_strncmp(current->input + 1, "?", 1) == 0)
-			//	ft_print_exit_status(exit);
-			//else
 			if (ft_dollar_sign(current, env) != 0)
 				return (1);
 		}
 // "$VAR" prints value for VAR
-// 	$VAR  prints value for VAR
-
-// '$VAR' prints $VAR
-// '"$VAR"' prints "$VAR"
 		if (ft_strncmp(current->input, "\"", 1) == 0)
 		{
 			if (ft_double_quote_expand(current, env) != 0)
 				return (1);
 		}
+// '$VAR' prints $VAR
+// '"$VAR"' prints "$VAR"
 		if (ft_strncmp(current->input, "\'", 1) == 0)
 		{
 			if (ft_single_quote_expand(current, env) != 0)

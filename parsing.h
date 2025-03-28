@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/28 14:49:08 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/03/28 18:16:57 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,4 +160,7 @@ char	**list_to_array(t_envp **list);
 void	free_array(char **array);
 void	env(t_envp **env);
 void	pwd(t_envp **env);
+int	ft_replace_value(char *export, t_envp *current);
+void	unset(t_command *command, t_envp **list);
+
 #endif

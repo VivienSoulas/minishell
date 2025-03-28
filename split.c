@@ -3,7 +3,7 @@
 char	**ft_split_input(char *input, t_split *split)
 {
 	if (ft_check_quotes(input) == 1)
-		return (ft_free_split(split->tokens), split->tokens = NULL, NULL);
+		return (NULL);
 	while (split->i < split->len && split->error == 0)
 	{
 		if (ft_double_operator(input, split->i) == 1)

@@ -15,7 +15,8 @@ SRC		=	minishell.c \
 			process.c \
 			export.c \
 			env_utils.c \
-			buildin.c
+			buildin.c \
+			unset.c 
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)
