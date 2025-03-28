@@ -1,20 +1,19 @@
 #include "parsing.h"
 
-void echo(t_command *command);
-
 int	is_buildin(char *command)
 {
-	static char *buildins[] = {
+	static char	*buildins[] = {
 		"pwd",
 		"cd",
 		"unset",
 		"env",
-		"echo"
+		"echo",
+		"exit"
 	};
-	int i;
+	int			i;
 
 	i = 0;
-	while (i < 5)
+	while (i < 6)
 	{
 		if (ft_strcmp(command, buildins[i]) == 0)
 			return (1);
@@ -23,7 +22,7 @@ int	is_buildin(char *command)
 	return (0);
 }
 
-int	exec_buildin(t_command *cmd, t_envp **envp)
+int	exec_buildin(t_command *cmd, t_envp **envp, int *exit)
 {
 	if (!ft_strcmp(cmd->args[0], "echo"))
 	{
@@ -33,6 +32,8 @@ int	exec_buildin(t_command *cmd, t_envp **envp)
 		env(envp);
 	if (!ft_strcmp(cmd->args[0], "pwd"))
 		pwd(envp);
+	if (!ft_strcmp(cmd->args[0], "exit"))
+		return (*exit = 1);
 	else if (!ft_strcmp(cmd->args[0], "unset"))
 	{
 		unset(cmd, envp);
@@ -42,7 +43,7 @@ int	exec_buildin(t_command *cmd, t_envp **envp)
 
 void	env(t_envp **env)
 {
-	t_envp *current;
+	t_envp	*current;
 
 	current = *env;
 	while (current)
@@ -51,9 +52,10 @@ void	env(t_envp **env)
 		current = current->next;
 	}
 }
+
 void	pwd(t_envp **env)
 {
-	t_envp *current;
+	t_envp	*current;
 
 	current = *env;
 	while (current)
@@ -67,7 +69,7 @@ void	pwd(t_envp **env)
 	}
 }
 
-void echo(t_command *command)
+void	echo(t_command *command)
 {
 	int	i;
 	int	j;

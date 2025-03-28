@@ -59,7 +59,7 @@ static void	cleanup_fd(int *fd, int last_read_pipe)
 		close(last_read_pipe);
 }
 
-int	exe_cmds(t_command **commands, t_envp **list)
+int	exe_cmds(t_command **commands, t_envp **list, int *exit)
 {
 	int	i;
 	int	fd[2];
@@ -77,7 +77,7 @@ int	exe_cmds(t_command **commands, t_envp **list)
 			return (cleanup_fd(fd, last_pipe_read), -1);
 		if (output_fd(commands[i], fd, i < n_cmds - 1) != 0)
 			return (cleanup_fd(fd, last_pipe_read), -1);
-		if (exe_command(commands[i], list) == -1)
+		if (exe_command(commands[i], list, exit) == -1)
 			return (cleanup_fd(fd, last_pipe_read), -1);
 		pipe_manage(i < n_cmds - 1, &last_pipe_read, fd);
 		i++;

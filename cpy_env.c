@@ -39,7 +39,7 @@ char	*copy_str_delimiter(char *str, int check)
 
 t_envp	*new_envp(char *envp)
 {
-	t_envp *new;
+	t_envp	*new;
 
 	new = malloc(sizeof(t_envp));
 	if (new == NULL)
@@ -78,7 +78,7 @@ int	add_to_envp(t_envp **envp_list, char *envp)
 		return (0);
 	}
 	temp = *envp_list;
-	while(temp->next)
+	while (temp->next)
 		temp = temp->next;
 	new = new_envp(envp);
 	if (new == NULL)
@@ -89,7 +89,7 @@ int	add_to_envp(t_envp **envp_list, char *envp)
 
 t_envp	*copy_envp(char **envp)
 {
-	t_envp *envp_list;
+	t_envp	*envp_list;
 	int		i;
 
 	i = 0;

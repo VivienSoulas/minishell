@@ -60,9 +60,9 @@ int	main(int ac, char **av, char **envp)
 			if (ft_parse_input(input, &env_list, &exit_call, &token) != 1)
 			{
 				commands = token_to_cmd(&token, &env_list);
-				exit_status = exe_cmds(commands, &env_list);
+				exit_status = exe_cmds(commands, &env_list, &exit_call);
+				command_cleanup(commands);
 			}
-			command_cleanup(commands);
 		}
 			free(input);
 			ft_free_list(&token);
@@ -88,9 +88,9 @@ int	ft_parse_input(char *in, t_envp **env, int *exit, t_token **token)
 	tokens = ft_split_input(in, split);
 	if (tokens == NULL)
 		return (free(split), ft_mem_error(), *exit = 1);
-// if (ft_list_tokens(tokens, token) == 1) --> return (free(split), ft_mem_error(), *exit = 1)
-	*exit = ft_list_tokens(tokens, token);
-// instead of *exit etc
+	if (ft_list_tokens(tokens, token) == 1)
+		return (free(split), ft_free_split(tokens), ft_mem_error(), *exit = 1);
+// *exit = ft_list_tokens(tokens, token);
 	ft_assign_types(*token);
 
 /* ============================================================================ */

@@ -109,7 +109,7 @@ static void	reset_fds(int i_stdin, int i_stdout)
 	}
 }
 
-int		exe_buildin(t_command *command, t_envp **envp)
+int		exe_buildin(t_command *command, t_envp **envp, int *exit)
 {
 	int	return_value;
 	int	initial_stdin;
@@ -123,20 +123,20 @@ int		exe_buildin(t_command *command, t_envp **envp)
 		initial_stdout = dup(STDOUT_FILENO);
 	if (handle_redirection(command) != 0)
 		return (1);
-	return_value = exec_buildin(command, envp);
+	return_value = exec_buildin(command, envp, exit);
 	reset_fds(initial_stdin, initial_stdout);
 	close_fds(command);
 	return (return_value);
 }
 
-int	exe_command(t_command *command, t_envp **list)
+int	exe_command(t_command *command, t_envp **list, int *exit)
 {
 	pid_t	pid;
 	int		status;
 	char	**envp;
 
 	if (command->is_buildin)
-		return (exe_buildin(command, list));
+		return (exe_buildin(command, list, exit));
 	envp = list_to_array(list);
 	if (!envp)
 		return (-1);

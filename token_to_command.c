@@ -97,23 +97,23 @@ int	init_redirection(t_token **token, t_command *command)
 	return (0);
 }
 
-int	init_command(t_token **token, t_command *command, t_envp **envp_list)
+int	init_command(t_token **token, t_command *cmd, t_envp **envp_list)
 {
 	int	n_args;
 
-	ft_memset(command, 0, sizeof(t_command));
-	if (init_redirection(token, command) != 0)
+	ft_memset(cmd, 0, sizeof(t_command));
+	if (init_redirection(token, cmd) != 0)
 		return (-1);
 	if (*token != NULL && (*token)->type == 6)
 	{
 		n_args = count_args(*token);
-		command->args = ft_calloc(n_args + 1, sizeof(char *));
-		if (command->args == NULL)
+		cmd->args = ft_calloc(n_args + 1, sizeof(char *));
+		if (cmd->args == NULL)
 			return (-1);
-		if (init_args(command, token, envp_list) == -1)
+		if (init_args(cmd, token, envp_list) == -1)
 			return (-1);
 	}
-	if (init_redirection(token, command) != 0)
+	if (init_redirection(token, cmd) != 0)
 		return (-1);
 	return (0);
 }

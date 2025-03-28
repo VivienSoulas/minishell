@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
 /*   Updated: 2025/03/28 18:16:57 by vsoulas          ###   ########.fr       */
@@ -39,6 +39,7 @@ extern volatile sig_atomic_t	g_signal_caught;
 # define STRING 6
 # define FORBIDDEN 7
 
+// struct to copy envp and used for export and unset
 typedef struct s_envp
 {
 	char			*name;
@@ -62,6 +63,7 @@ typedef struct s_command
 	int		is_buildin;
 }	t_command;
 
+// struct to manage split of tokens
 typedef struct s_split
 {
 	int		i;
@@ -83,12 +85,10 @@ typedef struct s_token
 	struct s_token	*prev;
 }	t_token;
 
+// main
 int			ft_parse_input(char *in, t_envp **env, int *exit, t_token **token);
 void		ft_assign_types(t_token *token);
-int			ft_variable_expansion(t_token **token, t_envp **env);
 int			ft_check_tokens(t_token **token);
-
-t_envp		*copy_envp(char **envp);
 
 // variable expansion
 int			ft_dollar_sign(t_token *to, t_envp **env);
@@ -127,6 +127,80 @@ void		ft_free_envp_list(t_envp **envp);
 
 // export
 int			ft_export_check(t_envp **env, t_token **token);
+int			add_export_to_envp(t_envp **env, char *export);
+int			ft_replace_value(char *export, t_envp *current);
+
+// variable expansion
+int			ft_variable_expansion(t_token **token, t_envp **env);
+int			ft_dollar_sign(t_token *to, t_envp **env);
+int			ft_double_quote_expand(t_token *to, t_envp **env);
+int			ft_single_quote_expand(t_token *to, t_envp **env);
+
+// build-in
+int			is_buildin(char *command);
+int			exec_buildin(t_command *cmd, t_envp **envp, int *exit);
+void		env(t_envp **env);
+void		pwd(t_envp **env);
+void		echo(t_command *command);
+
+// commandes free
+void		free_strings(t_command *command);
+void		command_cleanup(t_command **commands);
+
+// copy envp
+char		*copy_str_delimiter(char *str, int check);
+t_envp		*new_envp(char *envp);
+int			add_to_envp(t_envp **envp_list, char *envp);
+t_envp		*copy_envp(char **envp);
+
+// env utils
+int			ft_strcmp(const char *s1, const char *s2);
+char		*env_get_value(t_envp **list, char *name);
+// static int	count_list(t_envp **list);
+int			init_array(char **res, t_envp **list);
+void		free_array(char **array);
+char		**list_to_array(t_envp **list);
+
+// exec
+void		pipe_manage(int is_not_last, int *last_pipe_read, int *fd);
+int			init_pipe(int *fd, int last_pipe_read);
+// static int	command_count(t_command **commands);
+// static void	cleanup_fd(int *fd, int last_read_pipe);
+int			exe_cmds(t_command **commands, t_envp **list, int *exit);
+
+// find exec
+char		*find_executable_in_path(char *command);
+char		*find_executable_in_directory(char *command, char *directory);
+void		free_directories(char **directories);
+char		*find_executable(char *command, t_envp **envp_list);
+
+// in out
+// static int	open_input_file(t_command *command);
+// static int	open_output_file(t_command *command);
+int			input_fd(t_command *command, int i, int last_pipe_read);
+int			output_fd(t_command *command, int *fd, int is_not_last);
+
+// process
+// static void	close_fds(t_command *command);
+int			line_read(char *delimiter, int *here_pipe);
+void		readline_here(char *delimiter);
+// static int	handle_redirection(t_command *command);
+void		exe_child(t_command *command, char **envp);
+// static void	reset_fds(int i_stdin, int i_stdout);
+int			exe_buildin(t_command *command, t_envp **envp, int *exit);
+int			exe_command(t_command *command, t_envp **list, int *exit);
+
+// token to command
+int			count_commands(t_token **tokens);
+int			count_args(t_token *token);
+int			init_args(t_command *command, t_token **token, t_envp **envp_list);
+int			init_redirection(t_token **token, t_command *command);
+int			init_command(t_token **token, t_command *cmd, t_envp **envp_list);
+t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list);
+
+// unset
+void		unset(t_command *command, t_envp **list);
+
 
 /*======================================================================*/
 // temp
@@ -135,32 +209,5 @@ void		print_double_array(char **array);
 int			ft_handle_var(char *input, t_envp **env);
 int			ft_temp_exec(t_token **token, t_envp **env);
 /*======================================================================*/
-
-// command
-t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list);
-int			exe_cmds(t_command **commands, t_envp **list);
-void		command_cleanup(t_command **commands);
-char		*find_executable(char *command, t_envp **envp_list);
-int			input_fd(t_command *command, int i, int last_pipe_read);
-int			output_fd(t_command *command, int *fd, int is_not_last);
-int			exe_command(t_command *command, t_envp **list);
-int			init_pipe(int *fd, int last_pipe_read);
-
-// envp
-int			add_to_envp(t_envp **envp_list, char *envp);
-t_envp		*new_envp(char *envp);
-char		*copy_str_delimiter(char *str, int check);
-int			add_export_to_envp(t_envp **env, char *export);
-char		*env_get_value(t_envp **list, char *name);
-
-int	ft_strcmp(const char *s1, const char *s2);
-int	is_buildin(char *command);
-int	exec_buildin(t_command *cmd, t_envp **env);
-char	**list_to_array(t_envp **list);
-void	free_array(char **array);
-void	env(t_envp **env);
-void	pwd(t_envp **env);
-int	ft_replace_value(char *export, t_envp *current);
-void	unset(t_command *command, t_envp **list);
 
 #endif

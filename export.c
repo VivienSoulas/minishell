@@ -27,16 +27,14 @@ int	add_export_to_envp(t_envp **env, char *export)
 	t_envp	*prev;
 	t_envp	*new;
 	char	*name;
-	int		len;
 
 	name = copy_str_delimiter(export, 1);
 	if (name == NULL)
 		return (1);
-	len = ft_strlen(name);
 	current = *env;
 	while (current)
 	{
-		if (ft_strncmp(current->name, name, len) == 0)
+		if (ft_strncmp(current->name, name, ft_strlen(name)) == 0)
 			return (ft_replace_value(export, current), 0);
 		prev = current;
 		current = current->next;
