@@ -3,12 +3,12 @@ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressi
 
 
 TO DO:
+norm
+
 export : can only be CAP letters for names of VAR
 
 check expansion variable with double quotes
 check for exit status
-norm
-
 
 cd
 
