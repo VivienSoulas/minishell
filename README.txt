@@ -11,7 +11,7 @@ check expansion variable with double quotes
 check for exit status
 
 cd
-
+look for undefined variable (echo $undefined)
 
 DONE:
 export VAR=Vivien
