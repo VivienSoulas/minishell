@@ -85,9 +85,11 @@ int	ft_parse_input(char *in, t_envp **env, int *exit, t_token **token)
 		return (ft_mem_error(), *exit = 1);
 	if (ft_initialise_split(split, in) == 1)
 		return (free(split), ft_mem_error(), *exit = 1);
-	tokens = ft_split_input(in, split);
-	if (tokens == NULL)
+	tokens = ft_split_input(in, split, exit);
+	if (tokens == NULL && *exit == 1)
 		return (free(split), ft_mem_error(), *exit = 1);
+	else if (tokens == NULL)
+	return (free(split), 0);
 	if (ft_list_tokens(tokens, token) == 1)
 		return (free(split), ft_free_split(tokens), ft_mem_error(), *exit = 1);
 // *exit = ft_list_tokens(tokens, token);

@@ -108,7 +108,7 @@ void		ft_add_last(t_token **token, t_token *node);
 t_token		*ft_last(t_token **token);
 
 // split
-char		**ft_split_input(char *input, t_split *split);
+char		**ft_split_input(char *input, t_split *split, int *exit);
 void		ft_handles_double(t_split *split, char *input);
 void		ft_handles_operator(t_split *split, char *input);
 void		ft_handles_quotes(char *input, t_split *split);

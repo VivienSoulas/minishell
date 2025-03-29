@@ -1,6 +1,6 @@
 #include "parsing.h"
 
-char	**ft_split_input(char *input, t_split *split)
+char	**ft_split_input(char *input, t_split *split, int *exit)
 {
 	if (ft_check_quotes(input) == 1)
 		return (NULL);
@@ -19,7 +19,7 @@ char	**ft_split_input(char *input, t_split *split)
 			ft_handles_string(input, split);
 	}
 	if (split->error != 0)
-		return (ft_free_split(split->tokens), split->tokens = NULL, NULL);
+		return (ft_free_split(split->tokens), split->tokens = NULL, *exit = 1, NULL);
 	split->tokens[split->j] = NULL;
 	return (split->tokens);
 }

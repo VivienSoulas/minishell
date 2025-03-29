@@ -35,32 +35,26 @@ int	add_export_to_envp(t_envp **env, char *export)
 	while (current)
 	{
 		if (ft_strncmp(current->name, name, ft_strlen(name)) == 0)
-			return (ft_replace_value(export, current), 0);
+			return (free(name), ft_replace_value(export, current), 0);
 		prev = current;
 		current = current->next;
 	}
 	new = new_envp(export);
 	if (new == NULL)
-		return (1);
+		return (free(name), 1);
 	new->next = NULL;
 	if (prev != NULL)
 		prev->next = new;
 	else
 		*env = new;
-	return (0);
+	return (free(name), 0);
 }
 
 int	ft_replace_value(char *export, t_envp *current)
 {
-	char	*value;
-	char	*equal;
-
-	equal = ft_strchr(export, '=');
-	value = copy_str_delimiter(export, 0);
 	free(current->value);
-	value = malloc(ft_strlen(equal + 1) + 1);
-	if (!value)
+	current->value = copy_str_delimiter(export, 0);
+	if (!current->value)
 		return (1);
-	ft_strlcpy(value, equal + 1, ft_strlen(equal + 1) + 1);
 	return (0);
 }

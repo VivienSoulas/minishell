@@ -87,11 +87,16 @@ void	echo(t_command *command)
 		no_new_line = 1;
 		i++;
 	}
-	j = 0;
-	while (command->args[i][j])
+	while (command->args[i])
 	{
-		write(1, &command->args[i][j], 1);
-		j++;
+		j = 0;
+		while (command->args[i][j])
+		{
+			write(1, &command->args[i][j], 1);
+			j++;
+		}
+		write(1, " ", 1);
+		i++;
 	}
 	if (!no_new_line)
 		write(1, "\n", 1);
