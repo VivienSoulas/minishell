@@ -4,14 +4,15 @@ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressi
 
 TO DO:
 norm
+cd
 
 export : can only be CAP letters for names of VAR
-
 check expansion variable with double quotes
-check for exit status
+echo $UNDEFINED to sort out
 
-cd
-look for undefined variable (echo $undefined)
+
+
+check for exit status
 
 DONE:
 export VAR=Vivien

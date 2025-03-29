@@ -89,10 +89,9 @@ int	ft_parse_input(char *in, t_envp **env, int *exit, t_token **token)
 	if (tokens == NULL && *exit == 1)
 		return (free(split), ft_mem_error(), *exit = 1);
 	else if (tokens == NULL)
-	return (free(split), 0);
+		return (free(split), 0);
 	if (ft_list_tokens(tokens, token) == 1)
 		return (free(split), ft_free_split(tokens), ft_mem_error(), *exit = 1);
-// *exit = ft_list_tokens(tokens, token);
 	ft_assign_types(*token);
 
 /* ============================================================================ */

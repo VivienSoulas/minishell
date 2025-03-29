@@ -26,7 +26,7 @@ int	exec_buildin(t_command *cmd, t_envp **envp, int *exit)
 {
 	if (!ft_strcmp(cmd->args[0], "echo"))
 	{
-		echo(cmd);
+		echo(cmd/* , envp */);
 	}
 	if (!ft_strcmp(cmd->args[0], "env"))
 		env(envp);
@@ -69,7 +69,7 @@ void	pwd(t_envp **env)
 	}
 }
 
-void	echo(t_command *command)
+void	echo(t_command *command/* , t_envp **envp */)
 {
 	int	i;
 	int	j;
@@ -77,7 +77,7 @@ void	echo(t_command *command)
 
 	no_new_line = 0;
 	i = 1;
-	if (!command->args[i])
+	if (!command->args[i]/*  || ft_is_variable(command->args[1], envp) == 0 */)
 	{
 		printf("\n");
 		return ;
@@ -102,3 +102,17 @@ void	echo(t_command *command)
 		write(1, "\n", 1);
 	return ;
 }
+
+/* int	ft_is_variable(char *command, t_envp **envp)
+{
+	t_envp	*current;
+
+	current = *envp;
+	while (current)
+	{
+		if (ft_strncmp(current->name, command, ft_strlen(command)) == 0 )
+			return (1);
+		current = current->next;
+	}
+	return (0);
+} */

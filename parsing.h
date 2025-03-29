@@ -141,7 +141,8 @@ int			is_buildin(char *command);
 int			exec_buildin(t_command *cmd, t_envp **envp, int *exit);
 void		env(t_envp **env);
 void		pwd(t_envp **env);
-void		echo(t_command *command);
+void		echo(t_command *command/* , t_envp **envp */);
+int			ft_is_variable(char *command, t_envp **envp);
 
 // commandes free
 void		free_strings(t_command *command);
