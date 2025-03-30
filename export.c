@@ -44,7 +44,7 @@ int	add_export_to_envp(t_envp **env, char *export)
 	while (current)
 	{
 		if (ft_strncmp(current->name, new->name, ft_strlen(new->name) + 1) == 0)
-		{
+		{		
 			if (ft_replace_value(export, current) == 1)
 				return (free(new->name), free(new), 1);
 			return (free(new->name), free(new), 0);

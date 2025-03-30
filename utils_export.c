@@ -3,9 +3,18 @@
 int	ft_replace_value(char *export, t_envp *current)
 {
 	free(current->value);
-	current->value = copy_str_delimiter(export, 0);
-	if (!current->value)
-		return (1);
+	if (ft_strchr(export, '=') != 0)
+	{
+		current->value = copy_str_delimiter(export, 0);
+		if (!current->value)
+			return (1);
+	}
+	else
+	{
+		current->value = ft_strdup("");
+		if (current->value == NULL)
+			return (error(3, NULL), 1);
+	}
 	return (0);
 }
 
