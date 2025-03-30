@@ -18,17 +18,3 @@ modify expansion variable:
 
 
 check for exit status return
-
-
-
-
-
-today i have looked into norminette and normed most of our files.
-i have also looked into the env printing (if we export variable withou value they shouldnt print when we call env)
-i have looked into the export rules to make sure it copies the original shell behaviour (export variable needs to start with a letter or underscore, caontains only letter, num and underscores)
-i have modified the echo function for it to mimic the original one (not printing spaces at the end of the string, skipping any unasigned variables passed down like $ABC or $123 etc)
-i have tried and look into potential memory leaks and fixed if i have found any
-i have also looked into the different malloc fail check to make sure they give the same error message as well as closing the minishell program gracefully
-i have created the export printing function (that prints env in alphabetic order and also prints the variable without set value) in order to copy the behaviour of the original shell
-
-still to do : cd, some norminette, check for the return status from exec, expansion variable (my next task)

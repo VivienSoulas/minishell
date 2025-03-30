@@ -127,15 +127,16 @@ void		ft_free_envp_list(t_envp **envp);
 
 // export
 int			ft_export_check(t_envp **env, t_token **token);
-int			add_export_to_envp(t_envp **env, char *export);
+int			add_export_to_envp(t_envp **env, char *export, char *name);
+t_envp		*ft_new_export(char *export);
 int			ft_print_export(t_envp **env);
 void		ft_sort_list(t_envp **array, int total);
-int			ft_compare_names(char *name1, char *name2);
 
 // utils export
 int			ft_replace_value(char *export, t_envp *current);
 int			is_valid(char *str);
 void		ft_print(t_envp **list, int total);
+int			ft_compare_names(char *name1, char *name2);
 
 // variable expansion
 int			ft_variable_expansion(t_token **token, t_envp **env);

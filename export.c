@@ -6,58 +6,51 @@
 // if no arg value VAR= only print when export is called
 int	ft_export_check(t_envp **env, t_token **token)
 {
-	t_token	*current;
+	char	*name;
 
-	current = *token;
-	if (ft_strncmp(current->input, "export", 7) == 0 && current->prev == NULL)
+	if (ft_strncmp((*token)->input, "export", 7) == 0 && (*token)->prev == NULL)
 	{
-		if (current->next == NULL)
+		if ((*token)->next == NULL)
 		{
 			if (ft_print_export(env) == 1)
 				return (1);
 			return (0);
 		}
-		if (is_valid(current->next->input) == 1)
-			return (error(2, current->next->input), 0); 
-		if (add_export_to_envp(env, current->next->input) == 1)
+		if (is_valid((*token)->next->input) == 1)
+			return (error(2, (*token)->next->input), 0);
+		if (ft_strchr((*token)->next->input, '=') != 0)
+		{
+			name = copy_str_delimiter((*token)->next->input, 1);
+			if (name == NULL)
+				return (1);
+			if (add_export_to_envp(env, (*token)->next->input, name) == 1)
+				return (1);
+		}
+		else if (add_export_to_envp(env, (*token)->next->input, (*token)->next->input) == 1)
 			return (1);
 	}
 	return (0);
 }
 
-int	add_export_to_envp(t_envp **env, char *export)
+int	add_export_to_envp(t_envp **env, char *export, char *name)
 {
 	t_envp	*current;
 	t_envp	*prev;
 	t_envp	*new;
 
-	new = malloc(sizeof(t_envp));
-	if (new == NULL)
-		return (error(3, NULL), 1);
-	if (ft_strchr(export, '=') == 0)
-		new->name = ft_strdup(export);
-	else
-		new->name = copy_str_delimiter(export, 1);
-	if (new->name == NULL)
-		return (error(3, NULL), free(new), 1);
 	current = *env;
 	while (current)
 	{
-		if (ft_strncmp(current->name, new->name, ft_strlen(new->name) + 1) == 0)
-		{		
+		if (ft_strncmp(current->name, name, ft_strlen(name) + 1) == 0)
+		{
 			if (ft_replace_value(export, current) == 1)
-				return (free(new->name), free(new), 1);
-			return (free(new->name), free(new), 0);
+				return (1);
+			return (0);
 		}
 		prev = current;
 		current = current->next;
 	}
-	if (ft_strchr(export, '=') == 0)
-		new->value = ft_strdup("");
-	else
-		new->value = copy_str_delimiter(export, 0);
-	if (new->value == NULL)
-		return (error(3, NULL), free(new->name), free(new), 1);
+	new = ft_new_export(export);
 	new->next = NULL;
 	if (prev != NULL)
 		prev->next = new;
@@ -65,6 +58,69 @@ int	add_export_to_envp(t_envp **env, char *export)
 		*env = new;
 	return (0);
 }
+
+t_envp	*ft_new_export(char *export)
+{
+	t_envp	*new;
+	
+	new = malloc(sizeof(t_envp));
+	if (new == NULL)
+		return (error(3, NULL), NULL);
+	if (ft_strchr(export, '=') == 0)
+		new->name = ft_strdup(export);
+	else
+		new->name = copy_str_delimiter(export, 1);
+	if (new->name == NULL)
+		return (error(3, NULL), free(new), NULL);
+	if (ft_strchr(export, '=') == 0)
+		new->value = ft_strdup("");
+	else
+		new->value = copy_str_delimiter(export, 0);
+	if (new->value == NULL)
+		return (error(3, NULL), free(new->name), free(new), NULL);
+	return (new);
+}
+
+// int	add_export_to_envp(t_envp **env, char *export)
+// {
+// 	t_envp	*current;
+// 	t_envp	*prev;
+// 	t_envp	*new;
+
+// 	new = malloc(sizeof(t_envp));
+// 	if (new == NULL)
+// 		return (error(3, NULL), 1);
+// 	if (ft_strchr(export, '=') == 0)
+// 		new->name = ft_strdup(export);
+// 	else
+// 		new->name = copy_str_delimiter(export, 1);
+// 	if (new->name == NULL)
+// 		return (error(3, NULL), free(new), 1);
+// 	current = *env;
+// 	while (current)
+// 	{
+// 		if (ft_strncmp(current->name, new->name, ft_strlen(new->name) + 1) == 0)
+// 		{
+// 			if (ft_replace_value(export, current) == 1)
+// 				return (free(new->name), free(new), 1);
+// 			return (free(new->name), free(new), 0);
+// 		}
+// 		prev = current;
+// 		current = current->next;
+// 	}
+// 	if (ft_strchr(export, '=') == 0)
+// 		new->value = ft_strdup("");
+// 	else
+// 		new->value = copy_str_delimiter(export, 0);
+// 	if (new->value == NULL)
+// 		return (error(3, NULL), free(new->name), free(new), 1);
+// 	new->next = NULL;
+// 	if (prev != NULL)
+// 		prev->next = new;
+// 	else
+// 		*env = new;
+// 	return (0);
+// }
 
 // prints env in alphabetic order
 int	ft_print_export(t_envp **env)
@@ -119,22 +175,4 @@ void	ft_sort_list(t_envp **list, int total)
 		}
 		i++;
 	}
-}
-
-int	ft_compare_names(char *name1, char *name2)
-{
-	int	i;
-
-	i = 0;
-	while (name1[i] && name2[i])
-	{
-		if (ft_isupper(name1[i]) && ft_islower(name2[i]))
-			return (-1);
-		if (ft_islower(name1[i]) && ft_isupper(name2[i]))
-			return (1);
-		if (name1[i] != name2[i])
-			return (name1[i] - name2[i]);
-		i++;
-	}
-	return (name1[i] - name2[i]);
 }
