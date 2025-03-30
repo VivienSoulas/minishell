@@ -211,30 +211,4 @@ void		unset(t_command *command, t_envp **list);
 // error
 void		error(int i, char *str);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*======================================================================*/
-// temp
-void		print_token_list(t_token **token);
-void		print_double_array(char **array);
-int			ft_handle_var(char *input, t_envp **env);
-int			ft_temp_exec(t_token **token, t_envp **env);
-/*======================================================================*/
-
 #endif

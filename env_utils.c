@@ -60,9 +60,9 @@ int	init_array(char **res, t_envp **list)
 	{
 		n_len = ft_strlen(current->name);
 		v_len = ft_strlen(current->value);
-		res[i] = malloc(n_len + v_len + 2); // 1 for = and the other one for null terminator
+		res[i] = malloc(n_len + v_len + 2);
 		if (res[i] == NULL)
-			return(error(3, NULL), -1);
+			return (error(3, NULL), -1);
 		ft_memcpy(res[i], current->name, n_len);
 		ft_memcpy(res[i] + n_len, "=", 1);
 		ft_strlcpy(res[i] + n_len + 1, current->value, v_len + 1);
@@ -98,7 +98,7 @@ char	**list_to_array(t_envp **list)
 		return (NULL);
 	res = (char **)malloc((count + 1) * sizeof(char *));
 	if (!res)
-		return(error(3, NULL), NULL);
+		return (error(3, NULL), NULL);
 	if (init_array(res, list) != 0)
 		free_array(res);
 	return (res);

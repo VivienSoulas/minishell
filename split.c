@@ -1,27 +1,27 @@
 #include "parsing.h"
 
-char	**ft_split_input(char *input, t_split *split, int *exit)
+char	**ft_split_input(char *input, t_split *s, int *exit)
 {
 	if (ft_check_quotes(input) == 1)
 		return (NULL);
-	while (split->i < split->len && split->error == 0)
+	while (s->i < s->len && s->error == 0)
 	{
-		if (ft_double_operator(input, split->i) == 1)
-			ft_handles_double(split, input);
-		else if (ft_is_operator(input[split->i]) == 1)
-			ft_handles_operator(split, input);
-		else if (input[split->i] == '\'' || input[split->i] == '\"')
-			ft_handles_quotes(input, split);
+		if (ft_double_operator(input, s->i) == 1)
+			ft_handles_double(s, input);
+		else if (ft_is_operator(input[s->i]) == 1)
+			ft_handles_operator(s, input);
+		else if (input[s->i] == '\'' || input[s->i] == '\"')
+			ft_handles_quotes(input, s);
 		else
-			split->current_token[split->k++] = input[split->i++];
-		if (split->k != 0 && (ft_is_operator(input[split->i])
-				|| input[split->i] == '\0'))
-			ft_handles_string(input, split);
+			s->current_token[s->k++] = input[s->i++];
+		if (s->k != 0 && (ft_is_operator(input[s->i])
+				|| input[s->i] == '\0'))
+			ft_handles_string(input, s);
 	}
-	if (split->error != 0)
-		return (ft_free_split(split->tokens), split->tokens = NULL, *exit = 1, NULL);
-	split->tokens[split->j] = NULL;
-	return (split->tokens);
+	if (s->error != 0)
+		return (ft_free_split(s->tokens), s->tokens = NULL, *exit = 1, NULL);
+	s->tokens[s->j] = NULL;
+	return (s->tokens);
 }
 
 // handles double operators like << or >>
