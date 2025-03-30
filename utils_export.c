@@ -27,3 +27,18 @@ int	is_valid(char *str)
 	}
 	return (0);
 }
+
+void	ft_print(t_envp **list, int total)
+{
+	int	i;
+
+	i = 0;
+	while (i < total)
+	{
+		printf("%s", list[i]->name);
+		if (list[i]->value)
+			printf("=%s", list[i]->value);
+		printf("\n");
+		i++;
+	}
+}
