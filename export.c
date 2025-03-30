@@ -19,8 +19,8 @@ int	ft_export_check(t_envp **env, t_token **token)
 		}
 		if (is_valid(current->next->input) == 1)
 			return (error(2, current->next->input), 0);
-		if (ft_strchr(current->next->input, '=') == 0)
-			return (0);
+		// if (ft_strchr(current->next->input, '=') == 0)
+		// 	return (0);
 		if (add_export_to_envp(env, current->next->input) == 1)
 			return (1);
 	}
@@ -32,28 +32,40 @@ int	add_export_to_envp(t_envp **env, char *export)
 	t_envp	*current;
 	t_envp	*prev;
 	t_envp	*new;
-	char	*name;
 
-	name = copy_str_delimiter(export, 1);
-	if (name == NULL)
-		return (1);
+	new = malloc(sizeof(t_envp));
+	if (new == NULL)
+		return (error(3, NULL), 1);
+	if (ft_strchr(export, '=') == 0)
+		new->name = ft_strdup(export);
+	else
+		new->name = copy_str_delimiter(export, 1);
+	if (new->name == NULL)
+		return (error(3, NULL), free(new), 1);
 	current = *env;
 	while (current)
 	{
-		if (ft_strncmp(current->name, name, ft_strlen(name)) == 0)
-			return (free(name), ft_replace_value(export, current), 0);
+		if (ft_strncmp(current->name, new->name, ft_strlen(new->name)) == 0)
+		{
+			if (ft_replace_value(export, current) == 1)
+				return (free(new->name), free(new), 1);
+			return (free(new->name), free(new), 0);
+		}
 		prev = current;
 		current = current->next;
 	}
-	new = new_envp(export);
-	if (new == NULL)
-		return (free(name), 1);
+	if (ft_strchr(export, '=') == 0)
+		new->value = ft_strdup("");
+	else
+		new->value = copy_str_delimiter(export, 0);
+	if (new->value == NULL)
+		return (error(3, NULL), free(new->name), free(new), 1);
 	new->next = NULL;
 	if (prev != NULL)
 		prev->next = new;
 	else
 		*env = new;
-	return (free(name), 0);
+	return (0);
 }
 
 // prints env in alphabetic order

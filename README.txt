@@ -9,7 +9,6 @@ TO DO:
 norm
 cd
 
-export VAR without = sign to add in env withou value
 
 modify expansion variable:
 	export VAR=Vivien
