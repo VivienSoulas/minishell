@@ -8,10 +8,7 @@ char	*find_executable_in_path(char *command)
 	{
 		res = ft_strdup(command);
 		if (res == NULL)
-		{
-			printf("malloc failed\n");
-			return (NULL);
-		}
+			return (error(3, NULL), NULL);
 		return (res);
 	}
 	return (NULL);
@@ -27,10 +24,7 @@ char	*find_executable_in_directory(char *command, char *directory)
 	directory_len = ft_strlen(directory);
 	res = malloc(command_len + directory_len + 2);
 	if (res == NULL)
-	{
-		printf("Malloc failed\n");
-		return (NULL);
-	}
+		return (error(3, NULL), NULL);
 	ft_memcpy(res, directory, directory_len);
 	res[directory_len] = '/';
 	ft_strlcpy(res + directory_len + 1, command, command_len + 1);

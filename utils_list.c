@@ -24,7 +24,7 @@ t_token	*ft_new_node(char *content)
 
 	node = malloc(sizeof(t_token));
 	if (node == NULL)
-		return (NULL);
+		return (error(3, NULL), NULL);
 	node->input = ft_strdup(content);
 	if (node->input == NULL)
 		return (NULL);

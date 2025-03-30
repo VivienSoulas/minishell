@@ -9,7 +9,7 @@ int	ft_initialise_split(t_split *split, char *input)
 	split->len = ft_strlen(input);
 	split->tokens = malloc(sizeof(char *) * (split->len + 1));
 	if (split->tokens == NULL)
-		return (1);
+		return (error(3, NULL), 1);
 	split->error = 0;
 	return (0);
 }

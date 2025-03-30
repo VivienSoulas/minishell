@@ -22,7 +22,7 @@ char	*copy_str_delimiter(char *str, int check)
 	{
 		res = malloc(equal - str + 1);
 		if (!res)
-			return (NULL);
+			return (error(3, NULL), NULL);
 		ft_strlcpy(res, str, equal - str + 1);
 		return (res);
 	}
@@ -30,7 +30,7 @@ char	*copy_str_delimiter(char *str, int check)
 	{
 		res = malloc(ft_strlen(equal + 1) + 1);
 		if (!res)
-			return (NULL);
+			return (error(3, NULL), NULL);
 		ft_strlcpy(res, equal + 1, ft_strlen(equal + 1) + 1);
 		return (res);
 	}
@@ -43,22 +43,16 @@ t_envp	*new_envp(char *envp)
 
 	new = malloc(sizeof(t_envp));
 	if (new == NULL)
-	{
-		printf("Malloc failed\n");
-		return (NULL);
-	}
+		return (error(3, NULL), NULL);
 	new->name = copy_str_delimiter(envp, 1);
 	if (new->name == NULL)
-	{
-		printf("malloc failed\n");
-		return (NULL);
-	}
+		return (error(3, NULL), free(new), NULL);
 	new->value = copy_str_delimiter(envp, 0);
 	if (new->value == NULL)
 	{
 		free(new->name);
-		printf("malloc failed \n");
-		return (NULL);
+		free(new);
+		return (error(3, NULL), NULL);
 	}
 	new->next = NULL;
 	return (new);

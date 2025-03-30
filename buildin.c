@@ -24,20 +24,16 @@ int	is_buildin(char *command)
 
 int	exec_buildin(t_command *cmd, t_envp **envp, int *exit)
 {
-	if (!ft_strcmp(cmd->args[0], "echo"))
-	{
-		echo(cmd/* , envp */);
-	}
-	if (!ft_strcmp(cmd->args[0], "env"))
-		env(envp);
 	if (!ft_strcmp(cmd->args[0], "pwd"))
 		pwd(envp);
-	if (!ft_strcmp(cmd->args[0], "exit"))
-		return (*exit = 1);
 	else if (!ft_strcmp(cmd->args[0], "unset"))
-	{
 		unset(cmd, envp);
-	}
+	else if (!ft_strcmp(cmd->args[0], "env"))
+		env(envp);
+	else if (!ft_strcmp(cmd->args[0], "echo"))
+		echo(cmd, envp);
+	else if (!ft_strcmp(cmd->args[0], "exit"))
+		return (*exit = 1);
 	return (0);
 }
 
@@ -48,7 +44,8 @@ void	env(t_envp **env)
 	current = *env;
 	while (current)
 	{
-		printf("%s=%s\n", current->name, current->value);
+		if (current->value != NULL && ft_strncmp(current->value, "", 1) != 0)
+			printf("%s=%s\n", current->name, current->value);
 		current = current->next;
 	}
 }
@@ -69,50 +66,29 @@ void	pwd(t_envp **env)
 	}
 }
 
-void	echo(t_command *command/* , t_envp **envp */)
+void	echo(t_command *command, t_envp **env)
 {
 	int	i;
-	int	j;
 	int	no_new_line;
 
 	no_new_line = 0;
 	i = 1;
-	if (!command->args[i]/*  || ft_is_variable(command->args[1], envp) == 0 */)
-	{
-		printf("\n");
-		return ;
-	}
-	if (!ft_strcmp(command->args[i], "-n"))
+	if (command->args[i] && !ft_strcmp(command->args[i], "-n"))
 	{
 		no_new_line = 1;
 		i++;
 	}
 	while (command->args[i])
 	{
-		j = 0;
-		while (command->args[i][j])
+		if (ft_check_invalid(command->args[i], env) == 1)
 		{
-			write(1, &command->args[i][j], 1);
-			j++;
+			write(1, command->args[i], ft_strlen(command->args[i]));
+			if (command->args[i + 1])
+				write(1, " ", 1);
 		}
-		write(1, " ", 1);
 		i++;
 	}
 	if (!no_new_line)
 		write(1, "\n", 1);
 	return ;
 }
-
-/* int	ft_is_variable(char *command, t_envp **envp)
-{
-	t_envp	*current;
-
-	current = *envp;
-	while (current)
-	{
-		if (ft_strncmp(current->name, command, ft_strlen(command)) == 0 )
-			return (1);
-		current = current->next;
-	}
-	return (0);
-} */

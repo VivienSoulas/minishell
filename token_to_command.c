@@ -53,7 +53,7 @@ int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 			free(command->executable_path);
 			while (i)
 				free(command->args[--i]);
-			return (-1);
+			return (error(3, NULL), -1);
 		}
 		i++;
 		*token = (*token)->next;
@@ -73,7 +73,7 @@ int	init_redirection(t_token **token, t_command *command)
 			*token = (*token)->next;
 			command->input_file = ft_strdup((*token)->input);
 			if (command->input_file == NULL)
-				return (-1);
+				return (error(3, NULL), -1);
 		}
 		else if ((*token)->type == HEREDOC)
 		{
@@ -81,7 +81,7 @@ int	init_redirection(t_token **token, t_command *command)
 			*token = (*token)->next;
 			command->heredoc_delimiter = ft_strdup((*token)->input);
 			if (command->heredoc_delimiter == NULL)
-				return (-1);
+				return (error(3, NULL), -1);
 		}
 		else if ((*token)->type == OUT || (*token)->type == OUTP)
 		{
@@ -90,7 +90,7 @@ int	init_redirection(t_token **token, t_command *command)
 			*token = (*token)->next;
 			command->output_file = ft_strdup((*token)->input);
 			if (command->output_file == NULL)
-				return (-1);
+				return (error(3, NULL), -1);
 		}
 		*token = (*token)->next;
 	}
@@ -109,7 +109,7 @@ int	init_command(t_token **token, t_command *cmd, t_envp **envp_list)
 		n_args = count_args(*token);
 		cmd->args = ft_calloc(n_args + 1, sizeof(char *));
 		if (cmd->args == NULL)
-			return (-1);
+			return (error(3, NULL), -1);
 		if (init_args(cmd, token, envp_list) == -1)
 			return (-1);
 	}
@@ -128,7 +128,7 @@ t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list)
 	n_cmd = count_commands(tokens);
 	commands = ft_calloc(n_cmd + 1, sizeof(t_command *));
 	if (commands == NULL)
-		return (NULL);
+		return (error(3, NULL), NULL);
 	i = 0;
 	current = *tokens;
 	while (current != NULL)

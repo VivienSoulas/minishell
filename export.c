@@ -1,6 +1,9 @@
 #include "parsing.h"
 
 // check if value was already set and if so replace with new input
+// if export is called, prints list of env + variable in order
+// if no equal sign, prints only when export is called as VAR
+// if no arg value VAR= only print when export is called
 int	ft_export_check(t_envp **env, t_token **token)
 {
 	t_token	*current;
@@ -8,13 +11,12 @@ int	ft_export_check(t_envp **env, t_token **token)
 	current = *token;
 	if (ft_strncmp(current->input, "export", 7) == 0 && current->prev == NULL)
 	{
-// should print envp sorted by alphabetic order cap first lower last
 		if (current->next == NULL)
-			return (printf("Invalid input, printing envp\n"), 0);
-// if no equal sign, add VAR to export list only
+			return (ft_print_export(env), 0);
+		if (is_valid(current->next->input) == 1)
+			return (error(2, current->next->input), 0);
 		if (ft_strchr(current->next->input, '=') == 0)
 			return (0);
-// WORKING if no arg value = ""
 		if (add_export_to_envp(env, current->next->input) == 1)
 			return (1);
 	}
@@ -50,11 +52,15 @@ int	add_export_to_envp(t_envp **env, char *export)
 	return (free(name), 0);
 }
 
-int	ft_replace_value(char *export, t_envp *current)
+// prints env in alphabetic order
+void	ft_print_export(t_envp **env)
 {
-	free(current->value);
-	current->value = copy_str_delimiter(export, 0);
-	if (!current->value)
-		return (1);
-	return (0);
+	t_envp	*current;
+
+	current = *env;
+	while (current)
+	{
+		printf("%s=%s\n", current->name, current->value);
+		current = current->next;
+	}
 }

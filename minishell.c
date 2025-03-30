@@ -10,9 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// test_input
-// $ARG="12 34" <infile grep    '$US<ER' "$USER"|wc  -l>outfile <<append                >>append echo -n "hello world   this" expdand $ARG dont_expand '$ARG' expand "$ARG"
-//
 /* STEPS */
 // go through the input and split in order to find the different tokens
 // check tokens to find operators, input, output, args, redirections etc
@@ -23,51 +20,56 @@ volatile sig_atomic_t	g_signal_caught = 0;
 
 int	main(int ac, char **av, char **envp)
 {
-	char		*input;
-	t_token		*token;
-	t_command	**commands;
-
 	int			exit_call;
 	int			exit_status;
 	t_envp		*env_list;
+	t_token		*token;
 
 	(void)av;
 	if (ac != 1)
 		return (EXIT_FAILURE);
 	env_list = copy_envp(envp);
 	if (env_list == NULL)
-		return (EXIT_FAILURE);
+		return (ft_free_envp_list(&env_list), EXIT_FAILURE);
 	token = NULL;
 	exit_call = 0;
 	exit_status = 0;
 	signals_handling();
 	while (exit_call == 0)
 	{
-		if (g_signal_caught == 1)
-			g_signal_caught = 0;
-		input = readline("minishell> ");
-		if (input == NULL)
-			return (ft_free_envp_list(&env_list), EXIT_FAILURE);
-		add_history(input);
-// check here for $? and assigned it to exit_status else => parsing
-		if (ft_strncmp(input, "$", 1) == 0)
-		{
-			if (ft_strncmp(input + 1, "?", 1) == 0)
-				printf("%d\n", exit_status);
-		}
-		else
-		{
-			if (ft_parse_input(input, &env_list, &exit_call, &token) != 1)
-			{
-				commands = token_to_cmd(&token, &env_list);
-				exit_status = exe_cmds(commands, &env_list, &exit_call);
-				command_cleanup(commands);
-			}
-		}
-			free(input);
-			ft_free_list(&token);
+		ft_loop(&exit_status, &token, &env_list, &exit_call);
 	}
 	return (ft_free_envp_list(&env_list), exit_status);
+}
+
+// loop that repeats itself until exit call = 1
+// (aka malloc fail or exit prompted)
+int	ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c)
+{
+	char		*input;
+	t_command	**commands;
+
+	if (g_signal_caught == 1)
+		g_signal_caught = 0;
+	input = readline("minishell> ");
+	if (input == NULL)
+		return (*exit_c = 1);
+	add_history(input);
+	if (ft_strncmp(input, "$", 1) == 0)
+	{
+		if (input[1] && ft_strncmp(input + 1, "?", 1) == 0)
+			printf("%d\n", *exit_stat);
+	}
+	else
+	{
+		if (ft_parse_input(input, env, exit_c, token) != 1)
+		{
+			commands = token_to_cmd(token, env);
+			*exit_stat = exe_cmds(commands, env, exit_c);
+			command_cleanup(commands);
+		}
+	}
+	return (free(input), ft_free_list(token), 0);
 }
 
 /* split doesnt work for finding all args
@@ -82,32 +84,24 @@ int	ft_parse_input(char *in, t_envp **env, int *exit, t_token **token)
 		return (1);
 	split = malloc(sizeof(t_split));
 	if (split == NULL)
-		return (ft_mem_error(), *exit = 1);
+		return (error(3, NULL), *exit = 1);
 	if (ft_initialise_split(split, in) == 1)
-		return (free(split), ft_mem_error(), *exit = 1);
+		return (free(split), *exit = 1);
 	tokens = ft_split_input(in, split, exit);
 	if (tokens == NULL && *exit == 1)
-		return (free(split), ft_mem_error(), *exit = 1);
+		return (free(split),*exit = 1);
 	else if (tokens == NULL)
 		return (free(split), 0);
 	if (ft_list_tokens(tokens, token) == 1)
-		return (free(split), ft_free_split(tokens), ft_mem_error(), *exit = 1);
+		return (ft_free_split(tokens), free(split), *exit = 1);
 	ft_assign_types(*token);
-
-/* ============================================================================ */
 	if (ft_export_check(env, token) == 1)
-		return (ft_free_split(tokens), free(split), ft_mem_error(), *exit = 1);
-/* ============================================================================ */
-
+		return (ft_free_split(tokens), free(split), *exit = 1);
 	if (ft_variable_expansion(token, env) == 1)
-		return (ft_free_split(tokens), free(split), ft_mem_error(), *exit = 1);
+		return (ft_free_split(tokens), free(split), *exit = 1);
 	if (ft_check_tokens(token) == 1)
-	{
-		printf("Invalid input\n");
-		return (ft_free_split(tokens), free(split), 1);
-	}
-	ft_free_split(tokens);
-	return (free(split), 0);
+		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
+	return (ft_free_split(tokens), free(split), 0);
 }
 
 // check each token to asign it with the good code number

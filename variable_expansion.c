@@ -44,7 +44,7 @@ int	ft_dollar_sign(t_token *to, t_envp **env)
 			free(to->input);
 			to->input = malloc(sizeof(char) * ft_strlen(e->value) + 1);
 			if (to->input == NULL)
-				return (1);
+				return (error(3, NULL), 1);
 			i = 0;
 			while (e->value[i])
 			{
@@ -61,6 +61,7 @@ int	ft_dollar_sign(t_token *to, t_envp **env)
 int	ft_double_quote_expand(t_token *to, t_envp **env)
 {
 	int		i;
+	int		j;
 	t_envp	*e;
 
 	e = *env;
@@ -71,12 +72,14 @@ int	ft_double_quote_expand(t_token *to, t_envp **env)
 			free(to->input);
 			to->input = malloc(sizeof(char) * ft_strlen(e->value) + 1);
 			if (to->input == NULL)
-				return (1);
+				return (error(3, NULL), 1);
 			i = 0;
+			j = 1;
 			while (e->value[i])
 			{
-				to->input[i] = e->value[i];
+				to->input[i] = e->value[j];
 				i++;
+				j++;
 			}
 			to->input[i] = '\0';
 		}
@@ -98,7 +101,7 @@ int	ft_single_quote_expand(t_token *to, t_envp **env)
 		{
 			temp = malloc(sizeof(char) * ft_strlen(to->input) - 1);
 			if (to->input == NULL)
-				return (1);
+				return (error(3, NULL), 1);
 			i = 0;
 			while (to->input[i + 1])
 			{

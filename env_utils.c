@@ -24,10 +24,7 @@ char	*env_get_value(t_envp **list, char *name)
 		{
 			res = ft_strdup(current->value);
 			if (!res)
-			{
-				printf("malloc failed\n");
-				return (NULL);
-			}
+				return (error(3, NULL), NULL);
 			return (res);
 		}
 		current = current->next;
@@ -65,7 +62,7 @@ int	init_array(char **res, t_envp **list)
 		v_len = ft_strlen(current->value);
 		res[i] = malloc(n_len + v_len + 2); // 1 for = and the other one for null terminator
 		if (res[i] == NULL)
-			return(printf("malloc failed\n"), -1);
+			return(error(3, NULL), -1);
 		ft_memcpy(res[i], current->name, n_len);
 		ft_memcpy(res[i] + n_len, "=", 1);
 		ft_strlcpy(res[i] + n_len + 1, current->value, v_len + 1);
@@ -101,7 +98,7 @@ char	**list_to_array(t_envp **list)
 		return (NULL);
 	res = (char **)malloc((count + 1) * sizeof(char *));
 	if (!res)
-		return(printf("malloc failed\n"), NULL);
+		return(error(3, NULL), NULL);
 	if (init_array(res, list) != 0)
 		free_array(res);
 	return (res);
