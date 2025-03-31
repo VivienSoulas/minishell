@@ -15,6 +15,19 @@ modify expansion variable:
 	$VAR --> Vivien
 	"$VAR" --> Vivien
 	'$VAR' --> $VAR
+- echo $ should print $
+- echo $$ should print PID
+- export VAR=$USER
+  echo $VAR = user variable value
+- export VAR1=$USER
+  export VAR2=$VAR1
+  echo $VAR2 ---> USER_NAME
+
+Local variables ???
+(echo "HELLO"; echo "WORLD") ???
 
 
 check for exit status return
+
+cat<a2.txt >a3.txt >a4.txt
+return exec failed: Bad address
