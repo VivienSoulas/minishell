@@ -87,19 +87,15 @@ typedef struct s_token
 
 // main
 int			ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c);
-int			ft_parse_input(char *in, t_envp **env, int *exit, t_token **token);
+int			ft_parse_input(char *in, int *exit, t_token **token);
 void		ft_assign_types(t_token *token);
 int			ft_check_tokens(t_token **token);
-
-// variable expansion
-int			ft_dollar_sign(t_token *to, t_envp **env);
-int			ft_double_quote_expand(t_token *to, t_envp **env);
-int			ft_single_quote_expand(t_token *to, t_envp **env);
 
 // utils
 int			ft_count_args(char **tokens);
 void		handler(int sig);
 void		signals_handling(void);
+char		*ft_strjoin_free(char *s1, char *s2);
 
 // utils list
 int			ft_list_tokens(char **tokens, t_token **token);
@@ -126,9 +122,9 @@ void		ft_free_list(t_token **token);
 void		ft_free_envp_list(t_envp **envp);
 
 // export
-int			ft_export_check(t_envp **env, t_token **token);
+int			ft_export_check(t_envp **env, t_token **token, int *exit_stat);
 int			add_export_to_envp(t_envp **env, char *export, char *name);
-t_envp		*ft_new_export(char *export);
+t_envp		*ft_new_export(char *value, char *name);
 int			ft_print_export(t_envp **env);
 void		ft_sort_list(t_envp **array, int total);
 
@@ -139,8 +135,8 @@ void		ft_print(t_envp **list, int total);
 int			ft_compare_names(char *name1, char *name2);
 
 // variable expansion
-int			ft_variable_expansion(t_token **token, t_envp **env);
-int			ft_dollar_sign(t_token *to, t_envp **env);
+int			ft_variable_expansion(t_token *token, t_envp **env, int *exit_stat);
+int			ft_dollar_sign(t_token *to, t_envp **env, int *exit_stat);
 int			ft_double_quote_expand(t_token *to, t_envp **env);
 int			ft_single_quote_expand(t_token *to, t_envp **env);
 
@@ -149,7 +145,7 @@ int			is_buildin(char *command);
 int			exec_buildin(t_command *cmd, t_envp **envp, int *exit);
 void		env(t_envp **env);
 void		pwd(t_envp **env);
-void		echo(t_command *command, t_envp **env);
+int			echo(t_token **token, t_envp **env, int *exit_stat);
 
 // utils build-in
 int			ft_check_invalid(char *arg, t_envp **env);

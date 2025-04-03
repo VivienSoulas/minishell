@@ -55,38 +55,32 @@ int	ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c)
 	if (input == NULL)
 		return (*exit_c = 1);
 	add_history(input);
-	if (ft_strncmp(input, "$", 1) == 0)
+	if (ft_parse_input(input, exit_c, token) != 1)
 	{
-		if (input[1] && ft_strncmp(input + 1, "?", 1) == 0)
-			printf("%d\n", *exit_stat);
-	}
-	else
-	{
-		if (ft_parse_input(input, env, exit_c, token) != 1)
+		if (ft_strncmp((*token)->input, "export", 7) == 0)
 		{
-			commands = token_to_cmd(token, env);
-			*exit_stat = exe_cmds(commands, env, exit_c);
-			command_cleanup(commands);
+			if (ft_export_check(env, token, exit_stat) == 1)
+				return (free(input),  ft_free_list(token), *exit_c = 1);
 		}
+		else if (ft_strncmp((*token)->input, "echo", 5) == 0)
+		{
+			if (echo(token, env, exit_stat) == 1)
+				return (free(input),  ft_free_list(token), *exit_c = 1);
+		}
+
+	// if (ft_variable_expansion(token, env) == 1)
+	// 	return (ft_free_split(tokens), free(split), *exit = 1);
+		commands = token_to_cmd(token, env);
+		*exit_stat = exe_cmds(commands, env, exit_c);
+		command_cleanup(commands);
 	}
 	return (free(input), ft_free_list(token), 0);
 }
-// void	ft_print_tokens(t_token **token)
-// {
-// 	t_token	*current;
-
-// 	current = *token;
-// 	while (current)
-// 	{
-// 		printf("token : %s, type: %d\n", current->input, current->type);
-// 		current = current->next;
-// 	}
-// }
 
 /* split doesnt work for finding all args
 because not all args are separated by white space
 example : <infile grep '$USER' "$USER"|wc -l>outfile */
-int	ft_parse_input(char *in, t_envp **env, int *exit, t_token **token)
+int	ft_parse_input(char *in, int *exit, t_token **token)
 {
 	char		**tokens;
 	t_split		*split;
@@ -106,14 +100,6 @@ int	ft_parse_input(char *in, t_envp **env, int *exit, t_token **token)
 	if (ft_list_tokens(tokens, token) == 1)
 		return (ft_free_split(tokens), free(split), *exit = 1);
 	ft_assign_types(*token);
-// printf("before expansion\n");
-// ft_print_tokens(token);
-	if (ft_export_check(env, token) == 1)
-		return (ft_free_split(tokens), free(split), *exit = 1);
-	if (ft_variable_expansion(token, env) == 1)
-		return (ft_free_split(tokens), free(split), *exit = 1);
-// printf("after expansion\n");
-// ft_print_tokens(token);
 	if (ft_check_tokens(token) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
 	return (ft_free_split(tokens), free(split), 0);

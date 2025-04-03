@@ -7,8 +7,8 @@ int	is_buildin(char *command)
 		"cd",
 		"unset",
 		"env",
-		"echo",
-		"exit"
+		"exit",
+		"echo"
 	};
 	int			i;
 
@@ -31,7 +31,7 @@ int	exec_buildin(t_command *cmd, t_envp **envp, int *exit)
 	else if (!ft_strcmp(cmd->args[0], "env"))
 		env(envp);
 	else if (!ft_strcmp(cmd->args[0], "echo"))
-		echo(cmd, envp);
+		return (2);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (*exit = 1);
 	return (0);
@@ -66,29 +66,31 @@ void	pwd(t_envp **env)
 	}
 }
 
-void	echo(t_command *command, t_envp **env)
+int	echo(t_token **token, t_envp **env, int *exit_stat)
 {
-	int	i;
-	int	no_new_line;
+	int		no_new_line;
+	t_token	*current;
 
 	no_new_line = 0;
-	i = 1;
-	if (command->args[i] && !ft_strcmp(command->args[i], "-n"))
+	current = (*token)->next;
+	if (current && !ft_strcmp(current->input, "-n"))
+	no_new_line = 1;
+	while (current)
 	{
-		no_new_line = 1;
-		i++;
-	}
-	while (command->args[i])
-	{
-		if (ft_check_invalid(command->args[i], env) == 1)
+		if (ft_strchr(current->input, '$') != 0)
 		{
-			write(1, command->args[i], ft_strlen(command->args[i]));
-			if (command->args[i + 1])
-				write(1, " ", 1);
+		if (ft_variable_expansion(current, env, exit_stat) == 1)
+			return (1);
 		}
-		i++;
+		// if (ft_check_invalid(current->input, env) == 1)
+		// {
+			write(1, current->input, ft_strlen(current->input));
+			if (current->next != NULL)
+				write(1, " ", 1);
+		// }
+		current = current->next;
 	}
 	if (!no_new_line)
 		write(1, "\n", 1);
-	return ;
+	return (0);
 }
