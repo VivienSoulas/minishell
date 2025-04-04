@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/28 18:16:57 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/04 13:04:05 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,13 @@ int			ft_parse_input(char *in, int *exit, t_token **token);
 void		ft_assign_types(t_token *token);
 int			ft_check_tokens(t_token **token);
 
+// build-in
+int			is_buildin(char *command);
+int			exec_buildin(t_command *cmd, t_envp **envp, int *exit);
+void		env(t_envp **env);
+void		pwd(t_envp **env);
+int			echo(t_token **token, t_envp **env, int *exit_stat);
+
 // utils
 int			ft_count_args(char **tokens);
 void		handler(int sig);
@@ -122,33 +129,27 @@ void		ft_free_list(t_token **token);
 void		ft_free_envp_list(t_envp **envp);
 
 // export
+int			ft_crop(t_token *token);
 int			ft_export_check(t_envp **env, t_token **token, int *exit_stat);
-int			add_export_to_envp(t_envp **env, char *export, char *name);
+int			add_export_to_envp(t_envp **env, char *value, char *name);
 t_envp		*ft_new_export(char *value, char *name);
 int			ft_print_export(t_envp **env);
-void		ft_sort_list(t_envp **array, int total);
 
 // utils export
 int			ft_replace_value(char *export, t_envp *current);
 int			is_valid(char *str);
 void		ft_print(t_envp **list, int total);
 int			ft_compare_names(char *name1, char *name2);
+void		ft_sort_list(t_envp **array, int total);
+
+// export equal
+int			ft_export_equal(t_token *current, int *exit_stat, t_envp **env);
 
 // variable expansion
 int			ft_variable_expansion(t_token *token, t_envp **env, int *exit_stat);
-int			ft_dollar_sign(t_token *to, t_envp **env, int *exit_stat);
-int			ft_double_quote_expand(t_token *to, t_envp **env);
-int			ft_single_quote_expand(t_token *to, t_envp **env);
-
-// build-in
-int			is_buildin(char *command);
-int			exec_buildin(t_command *cmd, t_envp **envp, int *exit);
-void		env(t_envp **env);
-void		pwd(t_envp **env);
-int			echo(t_token **token, t_envp **env, int *exit_stat);
-
-// utils build-in
-int			ft_check_invalid(char *arg, t_envp **env);
+// int			ft_dollar_sign(t_token *to, t_envp **env, int *exit_stat);
+// int			ft_double_quote_expand(t_token *to, t_envp **env);
+// int			ft_single_quote_expand(t_token *to, t_envp **env);
 
 // commandes free
 void		free_strings(t_command *command);

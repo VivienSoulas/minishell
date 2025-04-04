@@ -2,12 +2,16 @@
 
 int	ft_replace_value(char *export, t_envp *current)
 {
+	int	len;
+
 	free(current->value);
-	if (ft_strchr(export, '=') != 0)
+	if (export)
 	{
-		current->value = copy_str_delimiter(export, 0);
+		len = ft_strlen(export);
+		current->value = malloc(sizeof(char) * (len + 1));
 		if (!current->value)
 			return (1);
+		ft_memcpy(current->value, export, len);
 	}
 	else
 	{
@@ -69,4 +73,29 @@ int	ft_compare_names(char *name1, char *name2)
 		i++;
 	}
 	return (name1[i] - name2[i]);
+}
+
+// sort the lsit of envp pointers
+void	ft_sort_list(t_envp **list, int total)
+{
+	int		i;
+	int		j;
+	t_envp	*temp;
+
+	i = 0;
+	while (i < total)
+	{
+		j = 0;
+		while (j < total - i - 1)
+		{
+			if (ft_compare_names(list[j]->name, list[j + 1]->name) > 0)
+			{
+				temp = list[j];
+				list[j] = list[j + 1];
+				list[j + 1] = temp;
+			}
+			j++;
+		}
+		i++;
+	}
 }

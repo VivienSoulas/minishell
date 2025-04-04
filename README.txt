@@ -5,7 +5,8 @@ test_input
 $ARG="12 34" <infile grep    '$US<ER' "$USER"|wc  -l>outfile <<append                >>append echo -n "hello world   this" expdand $ARG dont_expand '$ARG' expand "$ARG"
 
 
-
+export Z
+export Z=$fesghr
 
 TO DO:
 norm

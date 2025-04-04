@@ -74,7 +74,10 @@ int	echo(t_token **token, t_envp **env, int *exit_stat)
 	no_new_line = 0;
 	current = (*token)->next;
 	if (current && !ft_strcmp(current->input, "-n"))
-	no_new_line = 1;
+	{
+		no_new_line = 1;
+		current = current->next;
+	}
 	while (current)
 	{
 		if (ft_strchr(current->input, '$') != 0)
@@ -82,12 +85,9 @@ int	echo(t_token **token, t_envp **env, int *exit_stat)
 		if (ft_variable_expansion(current, env, exit_stat) == 1)
 			return (1);
 		}
-		// if (ft_check_invalid(current->input, env) == 1)
-		// {
 			write(1, current->input, ft_strlen(current->input));
 			if (current->next != NULL)
 				write(1, " ", 1);
-		// }
 		current = current->next;
 	}
 	if (!no_new_line)

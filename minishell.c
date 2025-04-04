@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/03/28 17:37:34 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/04 12:54:32 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,6 @@ int	ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c)
 			if (echo(token, env, exit_stat) == 1)
 				return (free(input),  ft_free_list(token), *exit_c = 1);
 		}
-
-	// if (ft_variable_expansion(token, env) == 1)
-	// 	return (ft_free_split(tokens), free(split), *exit = 1);
 		commands = token_to_cmd(token, env);
 		*exit_stat = exe_cmds(commands, env, exit_c);
 		command_cleanup(commands);

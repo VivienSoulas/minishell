@@ -14,11 +14,11 @@ SRC		=	minishell.c \
 			in_out.c \
 			process.c \
 			export.c \
+			export_equal.c \
 			env_utils.c \
 			buildin.c \
 			unset.c \
 			error.c \
-			utils_buildin.c \
 			utils_export.c
 
 OBJ_DIR	=	objects

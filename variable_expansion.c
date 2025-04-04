@@ -8,7 +8,7 @@ char	*extract_name(char *input, int *i)
 
 	start = *i;
 	len = 0;
-	while (input[start + len] && (ft_isalnum(input[start + len]) || input[start + len] == '_'))
+	while (input[start + len] && ((ft_isalnum(input[start + len]) || input[start + len] == '_')))
 		len++;
 	*i = start + len;
 	name = malloc(sizeof(char) * (len + 1));
@@ -42,8 +42,10 @@ int	ft_variable_expansion(t_token *token, t_envp **env, int *exit_stat)
 	char	*var_value;
 	char	*var_name;
 	char	*exit_status;
+	int		len;
 
 	state = 0;
+	len = 0;
 	res = strdup("");
 	if (res == NULL)
 		return (error(3, NULL), 1);
@@ -70,9 +72,20 @@ int	ft_variable_expansion(t_token *token, t_envp **env, int *exit_stat)
 					res = ft_strjoin_free(res, "$");
 					if (res == NULL)
 						return (1);
-					i++;
+					i ++;
 				}
-				else if (token->input[i + 1] == '?')
+				else if (token->input[i] == '$')
+				{
+					while (token->input[i] == '$')
+					{
+						res = ft_strjoin_free(res, "$");
+						if (res == NULL)
+							return (1);
+						i++;
+					}
+					i--;
+				}
+				else if (token->input[i] == '?')
 				{
 					exit_status = ft_itoa(*exit_stat);
 					res = ft_strjoin_free(res, exit_status);
@@ -93,18 +106,20 @@ int	ft_variable_expansion(t_token *token, t_envp **env, int *exit_stat)
 						res = ft_strjoin_free(res, var_value);
 						if (res == NULL)
 							return (free(var_name), 1);
-						i += ft_strlen(var_value);
 					}
-					// printf("var_value: %s, res: %s, var_name: %s\n", var_value, res, var_name);
 					free(var_name);
 				}
 			}
 		}
 	}
 	free(token->input);
-	token->input = malloc(sizeof(char) * (i + 1));
-	ft_memcpy(token->input, res, i);
-	return (0);
+	len = ft_strlen(res);
+	token->input = malloc(sizeof(char) * (len + 1));
+	if (token->input == NULL)
+		return (free(res), error(3, NULL), 1);
+	ft_memcpy(token->input, res, len);
+	token->input[len] = '\0';
+	return (free(res), 0);
 }
 
 
