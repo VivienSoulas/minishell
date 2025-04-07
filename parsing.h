@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/04 13:04:05 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/04 17:17:10 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,13 @@ extern volatile sig_atomic_t	g_signal_caught;
 # define OUTP 5
 # define STRING 6
 # define FORBIDDEN 7
+
+typedef struct s_variable
+{
+	char	*name;
+	char	*value;
+	char	*res;
+}	t_variable;
 
 // struct to copy envp and used for export and unset
 typedef struct s_envp
@@ -144,12 +151,19 @@ void		ft_sort_list(t_envp **array, int total);
 
 // export equal
 int			ft_export_equal(t_token *current, int *exit_stat, t_envp **env);
+int			ft_dollar(t_token *cur, t_variable *vari, t_envp **env, int *exit);
 
 // variable expansion
-int			ft_variable_expansion(t_token *token, t_envp **env, int *exit_stat);
-// int			ft_dollar_sign(t_token *to, t_envp **env, int *exit_stat);
-// int			ft_double_quote_expand(t_token *to, t_envp **env);
-// int			ft_single_quote_expand(t_token *to, t_envp **env);
+int			ft_variable_expansion(t_token *token, t_envp **env, int *exit);
+char		*ft_dollar_exp(t_token *token, int *exit, t_envp **env, int *i);
+char		*ft_no_expansion(char *input, int *i, t_envp **env, char *res);
+
+// utils variable expansion
+char		*extract_name(char *input, int *i);
+char		*get_env_value(t_envp **env, char *var_name);
+char		*ft_copy_literal(t_token *token, int *i);
+char		*ft_exit_status(int	*exit, char *res, int *i);
+char		*ft_copy_literal_double(t_token *token, int *i, t_envp **env, int *exit);
 
 // commandes free
 void		free_strings(t_command *command);

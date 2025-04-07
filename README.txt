@@ -5,40 +5,39 @@ test_input
 $ARG="12 34" <infile grep    '$US<ER' "$USER"|wc  -l>outfile <<append                >>append echo -n "hello world   this" expdand $ARG dont_expand '$ARG' expand "$ARG"
 
 
-export Z
-export Z=$fesghr
-
 TO DO:
-norm
+- norm
+    expansion_variable
 cd
+check for exit status return
 
-check if is_valid function needed
-check for memory leaks
+- export VAR=Vivien
+    $VAR --> Vivien
+    "$VAR" --> Vivien
+    '$VAR' --> $VAR
+- export VAR="hello      world"
+  echo $VAR --> hello world
+  echo "$VAR" --> hello      world
+- echo ""
+- export VAR='$USER'
+  look at ft_no_expansion for export (removing the ' and ")
 
-modify expansion variable:
-        export VAR=Vivien
-        $VAR --> Vivien
-        "$VAR" --> Vivien
-        '$VAR' --> $VAR
-
+done/working:
 - echo $$$$
-
+- echo $?
+- export Z=$invalid
+- export Z
+- export Z=
+- export Z=$valid Z=$invalid etc
 - export VAR=$USER
   echo $VAR = user variable value
-  
 - export VAR1=$USER
   export VAR2=$VAR1
   echo $VAR2 ---> USER_NAME
 
-- export VAR="hello      world"
-  echo $VAR --> hello world
-  echo "$VAR" --> hello      world
 
-- echo ""
 
-(echo "HELLO"; echo "WORLD") ???
 
-check for exit status return
 
 cat<a2.txt >a3.txt >a4.txt
 

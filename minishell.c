@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/04 12:54:32 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/04 16:49:59 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,12 @@ int	ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c)
 	add_history(input);
 	if (ft_parse_input(input, exit_c, token) != 1)
 	{
-		if (ft_strncmp((*token)->input, "export", 7) == 0)
-		{
-			if (ft_export_check(env, token, exit_stat) == 1)
-				return (free(input),  ft_free_list(token), *exit_c = 1);
-		}
-		else if (ft_strncmp((*token)->input, "echo", 5) == 0)
-		{
-			if (echo(token, env, exit_stat) == 1)
-				return (free(input),  ft_free_list(token), *exit_c = 1);
-		}
+		if (ft_strncmp((*token)->input, "export", 7) == 0
+			&& ft_export_check(env, token, exit_stat) == 1)
+			return (free(input), ft_free_list(token), *exit_c = 1);
+		else if (ft_strncmp((*token)->input, "echo", 5) == 0
+			&& echo(token, env, exit_stat) == 1)
+			return (free(input), ft_free_list(token), *exit_c = 1);
 		commands = token_to_cmd(token, env);
 		*exit_stat = exe_cmds(commands, env, exit_c);
 		command_cleanup(commands);
@@ -84,6 +80,8 @@ int	ft_parse_input(char *in, int *exit, t_token **token)
 
 	if (in == NULL || in[0] == '\0')
 		return (1);
+	if (ft_check_quotes(in) == 1)
+		return (1);
 	split = malloc(sizeof(t_split));
 	if (split == NULL)
 		return (error(3, NULL), *exit = 1);
@@ -91,7 +89,7 @@ int	ft_parse_input(char *in, int *exit, t_token **token)
 		return (free(split), *exit = 1);
 	tokens = ft_split_input(in, split, exit);
 	if (tokens == NULL && *exit == 1)
-		return (free(split),*exit = 1);
+		return (free(split), *exit = 1);
 	else if (tokens == NULL)
 		return (free(split), 0);
 	if (ft_list_tokens(tokens, token) == 1)
@@ -143,6 +141,8 @@ int	ft_check_tokens(t_token **token)
 	t_token	*node;
 
 	node = *token;
+	if (node == NULL)
+		return (1);
 	if (node->type == 1)
 		return (1);
 	while (node && node->next)

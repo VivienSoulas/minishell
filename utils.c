@@ -38,7 +38,7 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	len2 = ft_strlen(s2);
 	new_str = malloc(sizeof(char) * (len1 + len2 + 1));
 	if (new_str == NULL)
-		return (error(3, NULL), NULL);
+		return (free(s1), error(3, NULL), NULL);
 	ft_memcpy(new_str, s1, len1);
 	ft_memcpy(new_str + len1, s2, len2);
 	new_str[len1 + len2] = '\0';

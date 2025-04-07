@@ -17,18 +17,20 @@ int	ft_initialise_split(t_split *split, char *input)
 // check that open quotes are closed
 int	ft_check_quotes(char *input)
 {
+	int	i;
 	int	single;
 	int	double_quote;
 
 	single = 0;
 	double_quote = 0;
-	while (*input)
+	i = 0;
+	while (input[i])
 	{
-		if (*input == '\'')
+		if (input[i] == '\'')
 			single++;
-		else if (*input == '\"')
+		else if (input[i] == '\"')
 			double_quote++;
-		input++;
+		i++;
 	}
 	if (single % 2 != 0 || double_quote % 2 != 0)
 		return (1);

@@ -2,23 +2,24 @@
 
 int	ft_replace_value(char *export, t_envp *current)
 {
-	int	len;
+	char	*new_value;
 
-	free(current->value);
+	new_value = "";
 	if (export)
 	{
-		len = ft_strlen(export);
-		current->value = malloc(sizeof(char) * (len + 1));
-		if (!current->value)
-			return (1);
-		ft_memcpy(current->value, export, len);
+		new_value = ft_strdup(export);
+		if (new_value == NULL)
+			return (error(3, NULL), 1);
 	}
 	else
 	{
-		current->value = ft_strdup("");
-		if (current->value == NULL)
+		new_value = ft_strdup("");
+		if (new_value == NULL)
 			return (error(3, NULL), 1);
 	}
+	if (current->value)
+		free(current->value);
+	current->value = new_value;
 	return (0);
 }
 
@@ -55,7 +56,6 @@ void	ft_print(t_envp **list, int total)
 		i++;
 	}
 }
-
 
 int	ft_compare_names(char *name1, char *name2)
 {

@@ -2,8 +2,6 @@
 
 char	**ft_split_input(char *input, t_split *s, int *exit)
 {
-	if (ft_check_quotes(input) == 1)
-		return (NULL);
 	while (s->i < s->len && s->error == 0)
 	{
 		if (ft_double_operator(input, s->i) == 1)

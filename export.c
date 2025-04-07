@@ -9,7 +9,7 @@ int	ft_crop(t_token *token)
 		return (1);
 	free(token->input);
 	token->input = malloc(sizeof(char) * (ft_strlen(value) + 1));
-	ft_memcpy(token->input, value, ft_strlen(value) + 1);
+	ft_memcpy(token->input, value, (ft_strlen(value) + 1));
 	return (free(value), 0);
 }
 
@@ -23,11 +23,7 @@ int	ft_export_check(t_envp **env, t_token **token, int *exit_stat)
 
 	current = (*token)->next;
 	if (current == NULL)
-	{
-		if (ft_print_export(env) == 1)
-			return (1);
-		return (0);
-	}
+		return (ft_print_export(env));
 	while (current)
 	{
 		if (is_valid(current->input) == 0)
@@ -40,7 +36,7 @@ int	ft_export_check(t_envp **env, t_token **token, int *exit_stat)
 			else if (add_export_to_envp(env, NULL, current->input) == 1)
 				return (1);
 		}
-		else if (is_valid(current->input) == 1)
+		else
 			error(2, current->input);
 		current = current->next;
 	}
@@ -56,8 +52,7 @@ int	add_export_to_envp(t_envp **env, char *value, char *name)
 	current = *env;
 	while (current)
 	{
-		if (ft_strncmp(current->name, name, ft_strlen(name) + 1) == 0
-			&& ft_strlen(current->name) == ft_strlen(name))
+		if (ft_strcmp(current->name, name) == 0)
 		{
 			if (ft_replace_value(value, current) == 1)
 				return (1);
@@ -78,17 +73,20 @@ int	add_export_to_envp(t_envp **env, char *value, char *name)
 t_envp	*ft_new_export(char *value, char *name)
 {
 	t_envp	*new;
-	
+
 	new = malloc(sizeof(t_envp));
 	if (new == NULL)
 		return (error(3, NULL), NULL);
 	new->name = ft_strdup(name);
+	if (new->name == NULL)
+		return (free(new), error(3, NULL), NULL);
 	if (value == NULL)
 		new->value = ft_strdup("");
 	else
 		new->value = ft_strdup(value);
-	if (new->name == NULL || new->value == NULL)
-		return (error(3, NULL), free(new), NULL);
+	if (new->value == NULL)
+		return (error(3, NULL), free(new->name), free(new), NULL);
+	new->next = NULL;
 	return (new);
 }
 
