@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/04 17:17:10 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/10 11:59:23 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ extern volatile sig_atomic_t	g_signal_caught;
 # define STRING 6
 # define FORBIDDEN 7
 
+// struct for 
 typedef struct s_variable
 {
 	char	*name;
@@ -95,11 +96,14 @@ typedef struct s_token
 typedef struct s_expansion
 {
 	int		state;
-	t_token *token;
+	t_token	*token;
 	int		i;
 	int		*exit;
 	t_envp	**env;
 }	t_expansion;
+
+// array of function declaration
+typedef char	*(*state_func)(t_expansion *, t_token *);
 
 // main
 int			ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c);
@@ -119,6 +123,7 @@ int			ft_count_args(char **tokens);
 void		handler(int sig);
 void		signals_handling(void);
 char		*ft_strjoin_free(char *s1, char *s2);
+void		ft_initialise_expansion(t_expansion *exp, t_envp **env, int *exit);
 
 // utils list
 int			ft_list_tokens(char **tokens, t_token **token);
@@ -163,6 +168,7 @@ int			ft_export_equal(t_token *current, int *exit_stat, t_envp **env);
 int			ft_dollar(t_token *cur, t_variable *vari, t_envp **env, int *exit);
 
 // variable expansion
+char		*ft_while_loop(t_expansion *exp, t_token *token);
 int			ft_variable_expansion(t_token *token, t_envp **env, int *exit);
 char		*ft_dollar_exp(t_token *token, t_expansion *exp);
 char		*ft_no_expansion(char *input, char *res, t_expansion *exp);
@@ -170,9 +176,16 @@ char		*ft_no_expansion(char *input, char *res, t_expansion *exp);
 // utils variable expansion
 char		*extract_name(char *input, t_expansion *exp);
 char		*get_env_value(t_envp **env, char *var_name);
-char		*ft_copy_literal(t_token *token, t_expansion *exp);
 char		*ft_exit_status(char *res, t_expansion *exp);
+
+// copy literals
+char		*ft_copy_literal(t_token *token, t_expansion *exp);
 char		*ft_copy_literal_double(t_token *token, t_expansion *exp);
+
+// state
+char		*ft_state_0(t_expansion *exp, t_token *token);
+char		*ft_state_1(t_expansion *exp, t_token *token);
+char		*ft_state_2(t_expansion *exp, t_token *token);
 
 // commandes free
 void		free_strings(t_command *command);

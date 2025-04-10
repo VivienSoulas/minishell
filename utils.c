@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/10 12:01:39 by vsoulas           #+#    #+#             */
+/*   Updated: 2025/04/10 12:01:40 by vsoulas          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parsing.h"
 
 int	ft_count_args(char **tokens)
@@ -44,4 +56,12 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	new_str[len1 + len2] = '\0';
 	free(s1);
 	return (new_str);
+}
+
+void	ft_initialise_expansion(t_expansion *exp, t_envp **env, int *exit)
+{
+	exp->state = 0;
+	exp->i = 0;
+	exp->exit = exit;
+	exp->env = env;
 }
