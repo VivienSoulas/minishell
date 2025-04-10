@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:57 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:00:59 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/10 13:22:02 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int	ft_export_equal(t_token *current, int *exit_stat, t_envp **env)
 	vari->value = copy_str_delimiter(current->input, 0);
 	if (vari->value == NULL)
 		return (free(vari->name), free(vari), 1);
-	if (vari->value[0] == '$')
+	if (vari->value[0] == '$'
+		|| vari->value[0] == '\'' || vari->value[0] == '\"')
 	{
 		if (ft_dollar(current, vari, env, exit_stat) == 1)
 			return (free(vari->name), free(vari->value), free(vari), 1);

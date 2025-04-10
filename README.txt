@@ -9,12 +9,6 @@ TO DO:
 cd
 check for exit status return
 
-- export VAR="hello      world"
-  echo $VAR --> hello world
-  echo "$VAR" --> hello      world
-- export VAR='$USER'
-  look at ft_no_expansion for export (removing the ' and ")
-
 done/working:
 - echo $$$$
 - echo $?
@@ -33,6 +27,12 @@ done/working:
   '$VAR' --> $VAR
 - echo ""
 - export VAR or VAR= gives VAR=''
+- echo "'$USER'"
+  $USER"   -----> 'vsoulas'
+- echo "''$USER''"
+  $USER"   -----> ''vsoulas''
+- export VAR='$USER'
+  look at ft_no_expansion for export (removing the ' and ")
 
 
 
