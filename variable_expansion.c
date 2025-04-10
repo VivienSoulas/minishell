@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:41 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:01:43 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/10 12:18:02 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 char	*ft_while_loop(t_expansion *exp, t_token *token)
 {
-	char		*res;
-	char		*temp;
-	state_func	state_funcs [3];
+	char	*res;
+	char	*temp;
+	char	*(*state_funcs [3])(t_expansion *, t_token *);
 
 	state_funcs[0] = ft_state_0;
 	state_funcs[1] = ft_state_1;

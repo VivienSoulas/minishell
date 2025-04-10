@@ -6,8 +6,6 @@ $ARG="12 34" <infile grep    '$US<ER' "$USER"|wc  -l>outfile <<append           
 
 
 TO DO:
-- norm
-    expansion_variable
 cd
 check for exit status return
 
@@ -34,6 +32,7 @@ done/working:
   "$VAR" --> Vivien
   '$VAR' --> $VAR
 - echo ""
+- export VAR or VAR= gives VAR=''
 
 
 

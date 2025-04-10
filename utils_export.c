@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:27 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:01:28 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/10 12:12:59 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	ft_replace_value(char *export, t_envp *current)
 	}
 	else
 	{
-		new_value = ft_strdup("");
+		new_value = ft_strdup("''");
 		if (new_value == NULL)
 			return (error(3, NULL), 1);
 	}

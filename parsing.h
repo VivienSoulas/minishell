@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 11:59:23 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/10 12:27:57 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ extern volatile sig_atomic_t	g_signal_caught;
 # define STRING 6
 # define FORBIDDEN 7
 
-// struct for 
+// struct to keep variables for export expansion
 typedef struct s_variable
 {
 	char	*name;
@@ -93,6 +93,7 @@ typedef struct s_token
 	struct s_token	*prev;
 }	t_token;
 
+// struct to keep expansion variable norminette friendly
 typedef struct s_expansion
 {
 	int		state;
@@ -101,9 +102,6 @@ typedef struct s_expansion
 	int		*exit;
 	t_envp	**env;
 }	t_expansion;
-
-// array of function declaration
-typedef char	*(*state_func)(t_expansion *, t_token *);
 
 // main
 int			ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c);
@@ -187,6 +185,9 @@ char		*ft_state_0(t_expansion *exp, t_token *token);
 char		*ft_state_1(t_expansion *exp, t_token *token);
 char		*ft_state_2(t_expansion *exp, t_token *token);
 
+// error
+void		error(int i, char *str);
+
 // commandes free
 void		free_strings(t_command *command);
 void		command_cleanup(t_command **commands);
@@ -244,8 +245,5 @@ t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list);
 
 // unset
 void		unset(t_command *command, t_envp **list);
-
-// error
-void		error(int i, char *str);
 
 #endif
