@@ -92,15 +92,6 @@ typedef struct s_token
 	struct s_token	*prev;
 }	t_token;
 
-typedef struct s_expansion
-{
-	int		state;
-	t_token *token;
-	int		i;
-	int		*exit;
-	t_envp	**env;
-}	t_expansion;
-
 // main
 int			ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c);
 int			ft_parse_input(char *in, int *exit, t_token **token);
@@ -164,15 +155,15 @@ int			ft_dollar(t_token *cur, t_variable *vari, t_envp **env, int *exit);
 
 // variable expansion
 int			ft_variable_expansion(t_token *token, t_envp **env, int *exit);
-char		*ft_dollar_exp(t_token *token, t_expansion *exp);
-char		*ft_no_expansion(char *input, char *res, t_expansion *exp);
+char		*ft_dollar_exp(t_token *token, int *exit, t_envp **env, int *i);
+char		*ft_no_expansion(char *input, int *i, t_envp **env, char *res);
 
 // utils variable expansion
-char		*extract_name(char *input, t_expansion *exp);
+char		*extract_name(char *input, int *i);
 char		*get_env_value(t_envp **env, char *var_name);
-char		*ft_copy_literal(t_token *token, t_expansion *exp);
-char		*ft_exit_status(char *res, t_expansion *exp);
-char		*ft_copy_literal_double(t_token *token, t_expansion *exp);
+char		*ft_copy_literal(t_token *token, int *i);
+char		*ft_exit_status(int	*exit, char *res, int *i);
+char		*ft_copy_literal_double(t_token *token, int *i, t_envp **env, int *exit);
 
 // commandes free
 void		free_strings(t_command *command);
