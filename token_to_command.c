@@ -143,7 +143,7 @@ void	ft_free_command(t_command **cmd, int n)
 	*cmd = NULL;
 }
 
-t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list)
+t_command	**token_to_cmd(t_token **tokens)
 {
 	int			cmds;
 	int			args;
