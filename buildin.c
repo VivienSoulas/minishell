@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:40 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:00:42 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/17 15:14:17 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,19 @@ int	is_buildin(char *command)
 	return (0);
 }
 
-int	exec_buildin(t_command *cmd, t_envp **envp, int *exit)
+int	exec_buildin(t_command *cmd, t_envp **envp, int *exit, t_token **t)
 {
+	int	fd;
+
+	fd = STDOUT_FILENO;
 	if (!ft_strcmp(cmd->args[0], "pwd"))
 		pwd(envp);
 	else if (!ft_strcmp(cmd->args[0], "unset"))
 		unset(cmd, envp);
 	else if (!ft_strcmp(cmd->args[0], "env"))
 		env(envp);
-	else if (!ft_strcmp(cmd->args[0], "echo"))
-		return (2);
+else if (!ft_strcmp(cmd->args[0], "echo"))
+	echo(t, envp, exit, fd);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (*exit = 1);
 	return (0);
@@ -78,7 +81,7 @@ void	pwd(t_envp **env)
 	}
 }
 
-int	echo(t_token **token, t_envp **env, int *exit_stat)
+int	echo(t_token **token, t_envp **env, int *exit_stat, int fd)
 {
 	int		no_new_line;
 	t_token	*current;
@@ -90,16 +93,16 @@ int	echo(t_token **token, t_envp **env, int *exit_stat)
 		no_new_line = 1;
 		current = current->next;
 	}
-	while (current)
+	while (current && current->type == ARG)
 	{
 		if (ft_variable_expansion(current, env, exit_stat) == 1)
 			return (1);
-		write(1, current->input, ft_strlen(current->input));
-		if (current->next != NULL)
-			write(1, " ", 1);
+		write(fd, current->input, ft_strlen(current->input));
+		if (current->next != NULL && current->next->type == ARG)
+			write(fd, " ", 1);
 		current = current->next;
 	}
 	if (!no_new_line)
-		write(1, "\n", 1);
+		write(fd, "\n", 1);
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:34:39 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/03/28 13:05:32 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/04/17 13:29:48 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static void	cleanup_fd(int *fd, int last_read_pipe)
 		close(last_read_pipe);
 }
 
-int	exe_cmds(t_command **commands, t_envp **list, int *exit)
+int	exe_cmds(t_command **c, t_envp **list, int *exit, t_token **token)
 {
 	int	i;
 	int	fd[2];
@@ -68,16 +68,16 @@ int	exe_cmds(t_command **commands, t_envp **list, int *exit)
 
 	i = 0;
 	last_pipe_read = -1;
-	n_cmds = command_count(commands);
+	n_cmds = command_count(c);
 	while (i < n_cmds)
 	{
 		if ((i < n_cmds - 1) && init_pipe(fd, last_pipe_read) != 0)
 			return (-1);
-		if (input_fd(commands[i], i, last_pipe_read) != 0)
+		if (input_fd(c[i], i, last_pipe_read) != 0)
 			return (cleanup_fd(fd, last_pipe_read), -1);
-		if (output_fd(commands[i], fd, i < n_cmds - 1) != 0)
+		if (output_fd(c[i], fd, i < n_cmds - 1) != 0)
 			return (cleanup_fd(fd, last_pipe_read), -1);
-		if (exe_command(commands[i], list, exit) == -1)
+		if (exe_command(c[i], list, exit, token) == -1)
 			return (cleanup_fd(fd, last_pipe_read), -1);
 		pipe_manage(i < n_cmds - 1, &last_pipe_read, fd);
 		i++;

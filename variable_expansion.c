@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:41 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:18:02 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/17 15:13:04 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	ft_variable_expansion(t_token *token, t_envp **env, int *exit)
 	char		*res;
 	int			len;
 	t_expansion	*exp;
+	char		*stripped;
 
 	exp = malloc(sizeof(t_expansion));
 	if (exp == NULL)
@@ -51,14 +52,18 @@ int	ft_variable_expansion(t_token *token, t_envp **env, int *exit)
 	res = ft_while_loop(exp, token);
 	if (res == NULL)
 		return (1);
+	stripped = ft_strip(res);
+	free(res);
 	free(token->input);
-	len = ft_strlen(res);
+	if (stripped == NULL)
+		return (1);
+	len = ft_strlen(stripped);
 	token->input = malloc(sizeof(char) * (len + 1));
 	if (token->input == NULL)
-		return (free(res), error(3, NULL), 1);
-	ft_memcpy(token->input, res, len);
+		return (free(stripped), error(3, NULL), 1);
+	ft_memcpy(token->input, stripped, len);
 	token->input[len] = '\0';
-	return (free(res), free(exp), 0);
+	return (free(stripped), free(exp), 0);
 }
 
 char	*ft_dollar_exp(t_token *token, t_expansion *exp)

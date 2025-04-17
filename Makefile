@@ -22,7 +22,8 @@ SRC		=	minishell.c \
 			utils_export.c \
 			utils_variable_expansion.c \
 			state.c \
-			copy_literals.c
+			copy_literals.c \
+			assign_type.c
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)

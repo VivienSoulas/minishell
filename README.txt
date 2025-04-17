@@ -8,6 +8,14 @@ $ARG="12 34" <infile grep    '$US<ER' "$USER"|wc  -l>outfile <<append           
 TO DO:
 cd
 check for exit status return
+expand on command to token
+
+
+exec should send to echo the args it needs to print (including -n if present)
+as well as the fd correstion to the pipe/redirection/stdout
+
+
+
 
 done/working:
 - echo $$$$

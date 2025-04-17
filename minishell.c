@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 13:00:51 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/17 15:13:54 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,20 @@
 // check tokens to find operators, input, output, args, redirections etc
 // assign each token to different type and redirect them to exec
 #include "parsing.h"
+
+/* ============================================================== */
+void	ft_print_tokens(t_token **token)
+{
+	t_token	*current;
+
+	current = *token;
+	while (current)
+	{
+		printf("token:%s, type:%i\n", current->input, current->type);
+		current = current->next;
+	}
+}
+/* ============================================================== */
 
 volatile sig_atomic_t	g_signal_caught = 0;
 
@@ -59,12 +73,12 @@ int	ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c)
 	{
 		if (ft_strncmp((*token)->input, "export", 7) == 0
 			&& ft_export_check(env, token, exit_stat) == 1)
-			return (free(input), ft_free_list(token), *exit_c = 1);
-		else if (ft_strncmp((*token)->input, "echo", 5) == 0
-			&& echo(token, env, exit_stat) == 1)
-			return (free(input), ft_free_list(token), *exit_c = 1);
+		return (free(input), ft_free_list(token), *exit_c = 1);
+//else if (ft_strncmp((*token)->input, "echo", 5) == 0
+//	&& echo(token, env, exit_stat, 1) == 1)
+			//return (free(input), ft_free_list(token), *exit_c = 1);
 		commands = token_to_cmd(token, env);
-		*exit_stat = exe_cmds(commands, env, exit_c);
+		*exit_stat = exe_cmds(commands, env, exit_c, token);
 		command_cleanup(commands);
 	}
 	return (free(input), ft_free_list(token), 0);
@@ -95,47 +109,37 @@ int	ft_parse_input(char *in, int *exit, t_token **token)
 	if (ft_list_tokens(tokens, token) == 1)
 		return (ft_free_split(tokens), free(split), *exit = 1);
 	ft_assign_types(*token);
+//ft_print_tokens(token);
 	if (ft_check_tokens(token) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
 	return (ft_free_split(tokens), free(split), 0);
 }
 
-// check each token to asign it with the good code number
-// check for forbidden / and ;
-// _____________________________________________________
-// ◦ echo with option -n
-// ◦ cd with only a relative or absolute path
-/* ◦ pwd with no options */
-// ◦ export with no options
-// ◦ unset with no options
-/* ◦ env with no options or arguments */
 void	ft_assign_types(t_token *token)
 {
-	while (token)
+	t_token	*current;
+	int		is_cmd_context;
+	int		is_redirection;
+
+	is_cmd_context = 0;
+	is_redirection = 0;
+	current = token;
+	if (token == NULL)
+		return ;
+	while (current)
 	{
-		if (ft_strncmp(token->input, "|", 1) == 0)
-			token->type = 1;
-		else if (ft_strncmp(token->input, "<<", 2) == 0)
-			token->type = 4;
-		else if (ft_strncmp(token->input, ">>", 2) == 0)
-			token->type = 5;
-		else if (ft_strncmp(token->input, "<", 1) == 0)
-			token->type = 2;
-		else if (ft_strncmp(token->input, ">", 1) == 0)
-			token->type = 3;
-		else if (ft_strncmp(token->input, "/", 1) == 0
-			|| ft_strncmp(token->input, ";", 1) == 0
-			|| ft_strncmp(token->input, ":", 1) == 0)
-			token->type = 7;
-		else
-			token->type = 6;
-		token = token->next;
+		if (assign_pipe(current, &is_cmd_context, &is_redirection))
+			;
+		else if (assign_redirection(current, &is_redirection))
+			;
+		else if (assign_file(current, &is_redirection))
+			;
+		else if (assign_cmd_or_arg(current, &is_cmd_context, &is_redirection))
+			;
+		current = current->next;
 	}
 }
 
-// check for consecutive operators
-// check for operators at the end of input
-// check for forbidden operators (type 8)
 int	ft_check_tokens(t_token **token)
 {
 	t_token	*node;
@@ -143,15 +147,22 @@ int	ft_check_tokens(t_token **token)
 	node = *token;
 	if (node == NULL)
 		return (1);
-	if (node->type == 1)
+	if (node->type == PIPE)
 		return (1);
 	while (node && node->next)
 	{
-		if ((node->type != 6 && node->next->type != 6) || node->type == 8)
+		if (node->type == FORBIDDEN)
+			return (1);
+		if (((node->type >= 1 && node->type <= 5)
+				&& (node->next->type >= 1 && node->next->type <= 5))
+			|| (node->type == 1 && node->next->type == 1))
+			return (1);
+		if (node->type == 1 && (node->next->type != 0
+				|| node->prev->type != 0))
 			return (1);
 		node = node->next;
 	}
-	if (node->type != 6)
+	if (node->next == NULL && (node->type >= 1 && node->type <= 5))
 		return (1);
 	return (0);
 }

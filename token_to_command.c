@@ -24,7 +24,7 @@ int	count_args(t_token *token)
 	int	n;
 
 	n = 0;
-	while (token && token->type == STRING)
+	while (token && token->type == ARG)
 	{
 		n++;
 		token = token->next;
@@ -45,7 +45,7 @@ int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 		if (command->executable_path == NULL)
 			return (-1);
 	}
-	while (*token && (*token)->type == STRING)
+	while (*token && (*token)->type == ARG)
 	{
 		command->args[i] = ft_strdup((*token)->input);
 		if (command->args[i] == NULL)
@@ -83,9 +83,9 @@ int	init_redirection(t_token **token, t_command *command)
 			if (command->heredoc_delimiter == NULL)
 				return (error(3, NULL), -1);
 		}
-		else if ((*token)->type == OUT || (*token)->type == OUTP)
+		else if ((*token)->type == OUT || (*token)->type == APPEND)
 		{
-			if ((*token)->type == OUTP)
+			if ((*token)->type == APPEND)
 				command->is_append = 1;
 			*token = (*token)->next;
 			command->output_file = ft_strdup((*token)->input);

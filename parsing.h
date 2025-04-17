@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:27:57 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/17 14:45:45 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,16 @@ extern volatile sig_atomic_t	g_signal_caught;
 // OUTP (5): output redirection ('>>') output redirection to a file append mode
 // STRING (6): regular string token.
 // FORBIDDEN (7): forbidden operators.
+# define CMD 0
 # define PIPE 1
 # define IN 2
 # define OUT 3
 # define HEREDOC 4
-# define OUTP 5
-# define STRING 6
+# define APPEND 5
+# define ARG 6
 # define FORBIDDEN 7
+# define INFILE 8
+# define OUTFILE 9
 
 // struct to keep variables for export expansion
 typedef struct s_variable
@@ -97,7 +100,6 @@ typedef struct s_token
 typedef struct s_expansion
 {
 	int		state;
-	t_token	*token;
 	int		i;
 	int		*exit;
 	t_envp	**env;
@@ -109,12 +111,18 @@ int			ft_parse_input(char *in, int *exit, t_token **token);
 void		ft_assign_types(t_token *token);
 int			ft_check_tokens(t_token **token);
 
+// assign type
+int			assign_pipe(t_token *current, int *is_cmd, int *is_red);
+int			assign_redirection(t_token *current, int *is_red);
+int			assign_file(t_token *current, int *is_red);
+int			assign_cmd_or_arg(t_token *current, int *is_cmd, int *is_red);
+
 // build-in
 int			is_buildin(char *command);
-int			exec_buildin(t_command *cmd, t_envp **envp, int *exit);
+int			exec_buildin(t_command *cmd, t_envp **envp, int *exit, t_token **t);
 void		env(t_envp **env);
 void		pwd(t_envp **env);
-int			echo(t_token **token, t_envp **env, int *exit_stat);
+int			echo(t_token **token, t_envp **env, int *exit_stat, int fd);
 
 // utils
 int			ft_count_args(char **tokens);
@@ -148,22 +156,22 @@ void		ft_free_list(t_token **token);
 void		ft_free_envp_list(t_envp **envp);
 
 // export
-int			ft_crop(t_token *token);
 int			ft_export_check(t_envp **env, t_token **token, int *exit_stat);
+int			ft_print_export(t_envp **env);
 int			add_export_to_envp(t_envp **env, char *value, char *name);
 t_envp		*ft_new_export(char *value, char *name);
-int			ft_print_export(t_envp **env);
-
-// utils export
-int			ft_replace_value(char *export, t_envp *current);
-int			is_valid(char *str);
-void		ft_print(t_envp **list, int total);
-int			ft_compare_names(char *name1, char *name2);
-void		ft_sort_list(t_envp **array, int total);
+int			ft_crop(t_token *token);
 
 // export equal
 int			ft_export_equal(t_token *current, int *exit_stat, t_envp **env);
 int			ft_dollar(t_token *cur, t_variable *vari, t_envp **env, int *exit);
+
+// utils export
+int			is_valid(char *str);
+int			ft_replace_value(char *export, t_envp *current);
+void		ft_sort_list(t_envp **array, int total);
+int			ft_compare_names(char *name1, char *name2);
+void		ft_print(t_envp **list, int total);
 
 // variable expansion
 char		*ft_while_loop(t_expansion *exp, t_token *token);
@@ -175,6 +183,7 @@ char		*ft_no_expansion(char *input, char *res, t_expansion *exp);
 char		*extract_name(char *input, t_expansion *exp);
 char		*get_env_value(t_envp **env, char *var_name);
 char		*ft_exit_status(char *res, t_expansion *exp);
+char		*ft_strip(char *res);
 
 // copy literals
 char		*ft_copy_literal(t_token *token, t_expansion *exp);
@@ -211,7 +220,7 @@ void		pipe_manage(int is_not_last, int *last_pipe_read, int *fd);
 int			init_pipe(int *fd, int last_pipe_read);
 // static int	command_count(t_command **commands);
 // static void	cleanup_fd(int *fd, int last_read_pipe);
-int			exe_cmds(t_command **commands, t_envp **list, int *exit);
+int			exe_cmds(t_command **c, t_envp **list, int *exit, t_token **token);
 
 // find exec
 char		*find_executable_in_path(char *command);
@@ -227,13 +236,13 @@ int			output_fd(t_command *command, int *fd, int is_not_last);
 
 // process
 // static void	close_fds(t_command *command);
-int			line_read(char *delimiter, int *here_pipe);
-void		readline_here(char *delimiter);
+int			line_read(char *delimiter, int *here_pipe, t_envp **env, int expand, int *exit);
+void		readline_here(char *delimiter, t_envp **env, int *exit_s);
 // static int	handle_redirection(t_command *command);
-void		exe_child(t_command *command, char **envp);
+void		exe_child(t_command *c, char **envp, t_envp **env, int *exit_s);
 // static void	reset_fds(int i_stdin, int i_stdout);
-int			exe_buildin(t_command *command, t_envp **envp, int *exit);
-int			exe_command(t_command *command, t_envp **list, int *exit);
+int			exe_buildin(t_command *c, t_envp **envp, int *exit, t_token **t);
+int			exe_command(t_command *c, t_envp **list, int *exit, t_token **t);
 
 // token to command
 int			count_commands(t_token **tokens);

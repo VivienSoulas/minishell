@@ -6,11 +6,30 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:27 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:12:59 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/17 13:53:33 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
+
+int	is_valid(char *str)
+{
+	int	i;
+
+	if (str[0] != '_' && ft_isalpha(str[0]) == 0)
+		return (1);
+	i = 1;
+	if (str[i])
+	{
+		while (str[i] && str[i] != '=')
+		{
+			if ((ft_isalnum(str[i]) == 0) && str[i] != '_')
+				return (1);
+			i++;
+		}
+	}
+	return (0);
+}
 
 int	ft_replace_value(char *export, t_envp *current)
 {
@@ -32,25 +51,6 @@ int	ft_replace_value(char *export, t_envp *current)
 	if (current->value)
 		free(current->value);
 	current->value = new_value;
-	return (0);
-}
-
-int	is_valid(char *str)
-{
-	int	i;
-
-	if (str[0] != '_' && ft_isalpha(str[0]) == 0)
-		return (1);
-	i = 1;
-	if (str[i])
-	{
-		while (str[i] && str[i] != '=')
-		{
-			if ((ft_isalnum(str[i]) == 0) && str[i] != '_')
-				return (1);
-			i++;
-		}
-	}
 	return (0);
 }
 
