@@ -29,7 +29,7 @@ int	assign_redirection(t_token *current, int *is_red)
 	if (ft_strncmp(current->input, "<<", 2) == 0)
 	{
 		current->type = HEREDOC;
-		*is_red = HEREDOC;
+		*is_red = HEREDOCDELIM;
 	}
 	else if (ft_strncmp(current->input, ">>", 2) == 0)
 	{
@@ -61,6 +61,11 @@ int	assign_file(t_token *current, int *is_red)
 	else if (*is_red == OUTFILE)
 	{
 		current->type = OUTFILE;
+		*is_red = 0;
+	}
+	else if (*is_red == HEREDOC)
+	{
+		current->type = HEREDOCDELIM;
 		*is_red = 0;
 	}
 	if (current->type != -1)

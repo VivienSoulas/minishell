@@ -41,6 +41,7 @@ extern volatile sig_atomic_t	g_signal_caught;
 # define FORBIDDEN 7
 # define INFILE 8
 # define OUTFILE 9
+# define HEREDOCDELIM 10
 
 // struct to keep variables for export expansion
 typedef struct s_variable
