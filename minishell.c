@@ -109,7 +109,7 @@ int	ft_parse_input(char *in, int *exit, t_token **token)
 	if (ft_list_tokens(tokens, token) == 1)
 		return (ft_free_split(tokens), free(split), *exit = 1);
 	ft_assign_types(*token);
-//ft_print_tokens(token);
+ft_print_tokens(token);
 	if (ft_check_tokens(token) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
 	return (ft_free_split(tokens), free(split), 0);
@@ -140,29 +140,48 @@ void	ft_assign_types(t_token *token)
 	}
 }
 
+int	ft_pipe_check(t_token **token)
+{
+	int		pipes;
+	int		cmds;
+	t_token	*current;
+
+	current = *token;
+	while (current)
+	{
+		if (current->type == PIPE)
+			pipes++;
+		else if (current->type == CMD)
+			cmds++;
+		current = current->next;
+	}
+	if (cmds - pipes != 1)
+		return (1);
+	return (0);
+}
+
 int	ft_check_tokens(t_token **token)
 {
 	t_token	*node;
 
 	node = *token;
 	if (node == NULL)
-		return (1);
-	if (node->type == PIPE)
-		return (1);
+	if (node->type == PIPE || ft_pipe_check(token) == 1)
+		return (error(1, NULL), 1);
 	while (node && node->next)
 	{
 		if (node->type == FORBIDDEN)
-			return (1);
+			return (error(1, NULL), 1);
 		if (((node->type >= 1 && node->type <= 5)
 				&& (node->next->type >= 1 && node->next->type <= 5))
 			|| (node->type == 1 && node->next->type == 1))
-			return (1);
+				return (error(1, NULL), 1);
 		if (node->type == 1 && (node->next->type != 0
 				|| node->prev->type != 0))
-			return (1);
+			return (error(1, NULL), 1);
 		node = node->next;
 	}
 	if (node->next == NULL && (node->type >= 1 && node->type <= 5))
-		return (1);
+		return (error(1, NULL), 1);
 	return (0);
 }

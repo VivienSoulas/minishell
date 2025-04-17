@@ -59,19 +59,21 @@ typedef struct s_envp
 	struct s_envp	*prev;
 }	t_envp;
 
+// get input and asign it a type from the defines
+typedef struct s_token
+{
+	char			*input;
+	int				type;
+	struct s_token	*next;
+	struct s_token	*prev;
+}	t_token;
+
 typedef struct s_command
 {
-	char	*executable_path;
-	char	**args;
-	char	*heredoc_delimiter;
-	char	*input_file;
-	char	*output_file;
-	int		output_fd;
-	int		input_fd;
-	int		is_append;
-	int		is_heredoc;
-	int		is_pipe;
-	int		is_buildin;
+	char				*cmd;
+	t_token				**args;
+	char				*executable_path;
+	struct s_command	*next;
 }	t_command;
 
 // struct to manage split of tokens
@@ -86,15 +88,6 @@ typedef struct s_split
 	char	quote_type;
 	int		error;
 }	t_split;
-
-// get input and asign it a type from the defines
-typedef struct s_token
-{
-	char			*input;
-	int				type;
-	struct s_token	*next;
-	struct s_token	*prev;
-}	t_token;
 
 // struct to keep expansion variable norminette friendly
 typedef struct s_expansion
