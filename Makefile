@@ -26,7 +26,8 @@ SRC		=	minishell.c \
 			assign_type.c \
 			utils_parsing.c \
 			cd.c \
-			utils_process.c
+			utils_process.c \
+			init_redirection.c 
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)

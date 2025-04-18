@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_to_command.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/18 14:56:14 by jdavtian          #+#    #+#             */
+/*   Updated: 2025/04/18 14:56:15 by jdavtian         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parsing.h"
 
 int	count_commands(t_token **tokens)
@@ -48,7 +60,7 @@ int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 			return (-1);
 	}
 	command->args[i++] = ft_strdup((*token)->input);
-	if (command->args[i-1] == NULL)
+	if (command->args[i - 1] == NULL)
 		return (error(3, NULL), -1);
 	*token = (*token)->next;
 	while (*token && (*token)->type == ARG)
@@ -60,41 +72,6 @@ int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 		*token = (*token)->next;
 	}
 	command->args[i] = NULL;
-	return (0);
-}
-
-int	init_redirection(t_token **token, t_command *command)
-{
-	while (*token && ((*token)->type > 0 && (*token)->type < 6))
-	{
-		if ((*token)->type == PIPE)
-			command->is_pipe = 1;
-		else if ((*token)->type == IN)
-		{
-			*token = (*token)->next;
-			command->input_file = ft_strdup((*token)->input);
-			if (command->input_file == NULL)
-				return (error(3, NULL), -1);
-		}
-		else if ((*token)->type == HEREDOC)
-		{
-			command->is_heredoc = 1;
-			*token = (*token)->next;
-			command->heredoc_delimiter = ft_strdup((*token)->input);
-			if (command->heredoc_delimiter == NULL)
-				return (error(3, NULL), -1);
-		}
-		else if ((*token)->type == OUT || (*token)->type == APPEND)
-		{
-			if ((*token)->type == APPEND)
-				command->is_append = 1;
-			*token = (*token)->next;
-			command->output_file = ft_strdup((*token)->input);
-			if (command->output_file == NULL)
-				return (error(3, NULL), -1);
-		}
-		*token = (*token)->next;
-	}
 	return (0);
 }
 
@@ -132,7 +109,8 @@ t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list)
 	while (i < n_cmd)
 	{
 		commands[i] = malloc(sizeof(t_command));
-		if (commands[i] == NULL || init_command(&current, commands[i], envp_list) == -1)
+		if (commands[i] == NULL
+			|| init_command(&current, commands[i], envp_list) == -1)
 		{
 			command_cleanup(commands);
 			return (NULL);

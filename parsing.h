@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/18 14:43:06 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 15:01:40 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,15 +218,12 @@ t_envp		*copy_envp(char **envp);
 // env utils
 int			ft_strcmp(const char *s1, const char *s2);
 char		*env_get_value(t_envp **list, char *name);
-// static int	count_list(t_envp **list);
 int			init_array(char **res, t_envp **list);
 char		**list_to_array(t_envp **list);
 
 // exec
 void		pipe_manage(int is_not_last, int *last_pipe_read, int *fd);
 int			init_pipe(int *fd, int last_pipe_read);
-// static int	command_count(t_command **commands);
-// static void	cleanup_fd(int *fd, int last_read_pipe);
 int			exe_cmds(t_command **c, t_envp **list, int *exit, t_token **token);
 
 // find exec
@@ -236,14 +233,12 @@ void		free_directories(char **directories);
 char		*find_executable(char *command, t_envp **envp_list);
 
 // in out
-// static int	open_input_file(t_command *command);
-// static int	open_output_file(t_command *command);
 int			input_fd(t_command *command, int i, int last_pipe_read);
 int			output_fd(t_command *command, int *fd, int is_not_last);
 
 // process
-int			line_read(char *delimiter, int *here_pipe, t_envp **env, int expand, int *exit);
-void		readline_here(char *delimiter, t_envp **env, int *exit_s);
+int			line_read(char *delim, int *here_pipe, int expand, t_expansion *e);
+void		readline_here(char *delimiter, t_expansion *e);
 int			handle_redirection(t_command *command, t_envp **env, int *exit);
 void		exe_child(t_command *c, char **envp, t_envp **env, int *exit_s);
 int			exe_buildin(t_command *c, t_envp **envp, int *exit, t_token **t);
@@ -254,6 +249,7 @@ void		close_fds(t_command *command);
 void		exe_child(t_command *c, char **envp, t_envp **env, int *exit_s);
 void		reset_fds(int i_stdin, int i_stdout);
 int			ft_heredoc_delimiter(int *expand, char *delimiter);
+int			ft_fd_0(t_command *command);
 
 // token to command
 int			count_commands(t_token **tokens);

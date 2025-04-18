@@ -48,3 +48,15 @@ int	ft_heredoc_delimiter(int *expand, char *delimiter)
 	delimiter = temp;
 	return (0);
 }
+
+int	ft_fd_0(t_command *command)
+{
+	if (dup2(command->input_fd, STDIN_FILENO) == -1)
+	{
+		close_fds(command);
+		perror("dup2");
+		return (1);
+	}
+	close(command->input_fd);
+	return (0);
+}

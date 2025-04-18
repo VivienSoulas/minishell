@@ -6,13 +6,13 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 13:00:41 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/04/18 14:41:23 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 15:03:38 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-int	line_read(char *delimiter, int *here_pipe, t_envp **env, int expand, int *exit)
+int	line_read(char *delim, int *here_pipe, int expand, t_expansion *e)
 {
 	char		*line;
 	t_token		temp;
@@ -20,14 +20,14 @@ int	line_read(char *delimiter, int *here_pipe, t_envp **env, int expand, int *ex
 	line = readline(">");
 	if (!line)
 		return (1);
-	if (!ft_strcmp(line, delimiter))
+	if (!ft_strcmp(line, delim))
 		return (free(line), 1);
 	if (expand)
 	{
 		temp.input = ft_strdup(line);
 		if (temp.input == NULL)
 			error(3, NULL);
-		ft_variable_expansion(&temp, env, exit);
+		ft_variable_expansion(&temp, e->env, e->exit);
 		write(here_pipe[1], temp.input, ft_strlen(temp.input));
 		write(here_pipe[1], "\n", 1);
 		return (0);
@@ -40,9 +40,7 @@ int	line_read(char *delimiter, int *here_pipe, t_envp **env, int expand, int *ex
 }
 
 // if delimiter is inside quote signs then no expansion
-//
-
-void	readline_here(char *delimiter, t_envp **env, int *exit_s)
+void	readline_here(char *delimiter, t_expansion *e)
 {
 	int		here_pipe[2];
 	int		expand;
@@ -57,7 +55,7 @@ void	readline_here(char *delimiter, t_envp **env, int *exit_s)
 		exit(EXIT_FAILURE);
 	while (1)
 	{
-		if (line_read(delimiter, here_pipe, env, expand, exit_s) != 0)
+		if (line_read(delimiter, here_pipe, expand, e) != 0)
 			break ;
 	}
 	close(here_pipe[1]);
@@ -72,17 +70,18 @@ void	readline_here(char *delimiter, t_envp **env, int *exit_s)
 
 int	handle_redirection(t_command *command, t_envp **env, int *exit)
 {
+	t_expansion	*e;
+
+	e = malloc(sizeof(t_expansion));
+	if (e == NULL)
+		return (error(3, NULL), 1);
+	ft_initialise_expansion(e, env, exit);
 	if (command->is_heredoc)
-		readline_here(command->heredoc_delimiter, env, exit);
+		readline_here(command->heredoc_delimiter, e);
 	else if (command->input_fd > 0)
 	{
-		if (dup2(command->input_fd, STDIN_FILENO) == -1)
-		{
-			close_fds(command);
-			perror("dup2");
+		if (ft_fd_0(command) == 1)
 			return (1);
-		}
-		close(command->input_fd);
 	}
 	if (command->output_fd > 0)
 	{
@@ -94,7 +93,7 @@ int	handle_redirection(t_command *command, t_envp **env, int *exit)
 		}
 		close(command->output_fd);
 	}
-	return (0);
+	return (free(e), 0);
 }
 
 int	exe_buildin(t_command *c, t_envp **envp, int *exit, t_token **t)

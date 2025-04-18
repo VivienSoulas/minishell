@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:20 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:01:21 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 15:48:20 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,23 @@ char	*ft_state_1(t_expansion *exp, t_token *token)
 char	*ft_state_2(t_expansion *exp, t_token *token)
 {
 	char	*result;
+	char	*temp;
 
-	result = ft_copy_literal_double(token, exp);
-	exp->state = 0;
-	exp->i++;
+	result = NULL;
+	if (token->input[exp->i] =='\"' && token->input[exp->i + 1] == '\"')
+	{
+		temp = ft_strdup("");
+		if (temp == NULL)
+			return (error(3, NULL), NULL);
+		exp->i += 2;
+		result = ft_strjoin_free(result, temp);
+		free(temp);
+	}
+	else
+	{
+		result = ft_copy_literal_double(token, exp);
+		exp->state = 0;
+		exp->i++;
+	}
 	return (result);
 }

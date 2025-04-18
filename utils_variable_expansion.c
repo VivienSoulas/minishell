@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:36 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/17 14:31:34 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 15:17:56 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,20 @@ char	*ft_exit_status(char *res, t_expansion *exp)
 
 char	*ft_strip(char *res)
 {
-	int	len;
+	int		len;
+	char	*stripped;
 
+	if (res[0] == '\0')
+	{
+		stripped = ft_strdup(res);
+		return (stripped);
+	}
 	len = ft_strlen(res) - 1;
-	while (res[len] == '\"')
+	while (res[len] == '\"' && len > 0)
 	{
 		res[len] = '\0';
 		len--;
 	}
-	return (ft_strdup(res));
+	stripped = ft_strdup(res);
+	return (stripped);
 }

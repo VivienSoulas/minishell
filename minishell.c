@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/18 14:32:21 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 16:02:10 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,18 @@
 #include "parsing.h"
 
 volatile sig_atomic_t	g_signal_caught = 0;
+
+void	ft_print_token(t_token **token)
+{
+	t_token	*current;
+
+	current = *token;
+	while (current)
+	{
+		printf("current->input:%s\n", current->input);
+		current = current->next;
+	}
+}
 
 int	main(int ac, char **av, char **envp)
 {
@@ -92,6 +104,7 @@ int	ft_parse_input(char *in, int *exit, t_token **token)
 	if (ft_list_tokens(tokens, token) == 1)
 		return (ft_free_split(tokens), free(split), *exit = 1);
 	ft_assign_types(*token);
+//ft_print_token(token);
 	if (ft_check_tokens(token) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
 	return (ft_free_split(tokens), free(split), 0);

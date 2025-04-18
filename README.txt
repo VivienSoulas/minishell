@@ -6,15 +6,7 @@ $ARG="12 34" <infile grep    '$US<ER' "$USER"|wc  -l>outfile <<append           
 
 
 TO DO:
-cd
 check for exit status return
-expand on command to token
-
-
-exec should send to echo the args it needs to print (including -n if present)
-as well as the fd correstion to the pipe/redirection/stdout
-
-
 
 
 done/working:
@@ -41,7 +33,3 @@ done/working:
   $USER"   -----> ''vsoulas''
 - export VAR='$USER'
   look at ft_no_expansion for export (removing the ' and ")
-
-
-
-cat<a2.txt >a3.txt >a4.txt

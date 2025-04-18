@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:02 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:11:09 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 16:08:58 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	ft_export_check(t_envp **env, t_token **token, int *exit_stat)
 				return (1);
 		}
 		else
-			error(2, current->input);
+			return(error(2, current->input), *exit_stat = 5, 0);
 		current = current->next;
 	}
 	return (0);
