@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:00:36 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/17 13:26:24 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 13:22:12 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	assign_redirection(t_token *current, int *is_red)
 	if (ft_strncmp(current->input, "<<", 2) == 0)
 	{
 		current->type = HEREDOC;
-		*is_red = HEREDOCDELIM;
+		*is_red = HEREDOC;
 	}
 	else if (ft_strncmp(current->input, ">>", 2) == 0)
 	{
@@ -65,7 +65,7 @@ int	assign_file(t_token *current, int *is_red)
 	}
 	else if (*is_red == HEREDOC)
 	{
-		current->type = HEREDOCDELIM;
+		current->type = 10;
 		*is_red = 0;
 	}
 	if (current->type != -1)

@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:06 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:01:07 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 14:42:44 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,19 @@ void	ft_free_split(char **split)
 		free(split);
 		split = NULL;
 	}
+}
+
+void	free_array(char **array)
+{
+	int	i;
+
+	if (!array || !*array)
+		return ;
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
 }

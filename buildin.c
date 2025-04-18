@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   buildin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:40 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/17 15:14:17 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 14:25:04 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,12 @@ int	exec_buildin(t_command *cmd, t_envp **envp, int *exit, t_token **t)
 		unset(cmd, envp);
 	else if (!ft_strcmp(cmd->args[0], "env"))
 		env(envp);
-else if (!ft_strcmp(cmd->args[0], "echo"))
-	echo(t, envp, exit, fd);
+	else if (!ft_strcmp(cmd->args[0], "echo"))
+		echo(t, envp, exit, fd);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (*exit = 1);
+	else if (!ft_strcmp(cmd->args[0], "cd"))
+		(cd(cmd, envp));
 	return (0);
 }
 

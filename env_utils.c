@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:50 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:00:51 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 14:42:33 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,21 +83,6 @@ int	init_array(char **res, t_envp **list)
 	}
 	res[i] = NULL;
 	return (0);
-}
-
-void	free_array(char **array)
-{
-	int	i;
-
-	if (!array || !*array)
-		return ;
-	i = 0;
-	while (array[i])
-	{
-		free(array[i]);
-		i++;
-	}
-	free(array);
 }
 
 char	**list_to_array(t_envp **list)

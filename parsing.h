@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/17 14:45:45 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 14:43:06 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ extern volatile sig_atomic_t	g_signal_caught;
 # define FORBIDDEN 7
 # define INFILE 8
 # define OUTFILE 9
-# define HEREDOCDELIM 10
+# define HEREDOC_DELIMITER 10
+
+# define PATH_MAX 4096
 
 // struct to keep variables for export expansion
 typedef struct s_variable
@@ -60,21 +62,19 @@ typedef struct s_envp
 	struct s_envp	*prev;
 }	t_envp;
 
-// get input and asign it a type from the defines
-typedef struct s_token
-{
-	char			*input;
-	int				type;
-	struct s_token	*next;
-	struct s_token	*prev;
-}	t_token;
-
 typedef struct s_command
 {
-	char				*cmd;
-	t_token				**args;
-	char				*executable_path;
-	struct s_command	*next;
+	char	*executable_path;
+	char	**args;
+	char	*heredoc_delimiter;
+	char	*input_file;
+	char	*output_file;
+	int		output_fd;
+	int		input_fd;
+	int		is_append;
+	int		is_heredoc;
+	int		is_pipe;
+	int		is_buildin;
 }	t_command;
 
 // struct to manage split of tokens
@@ -89,6 +89,15 @@ typedef struct s_split
 	char	quote_type;
 	int		error;
 }	t_split;
+
+// get input and asign it a type from the defines
+typedef struct s_token
+{
+	char			*input;
+	int				type;
+	struct s_token	*next;
+	struct s_token	*prev;
+}	t_token;
 
 // struct to keep expansion variable norminette friendly
 typedef struct s_expansion
@@ -105,6 +114,9 @@ int			ft_parse_input(char *in, int *exit, t_token **token);
 void		ft_assign_types(t_token *token);
 int			ft_check_tokens(t_token **token);
 
+// utils pasing
+int			ft_pipe_check(t_token **token);
+
 // assign type
 int			assign_pipe(t_token *current, int *is_cmd, int *is_red);
 int			assign_redirection(t_token *current, int *is_red);
@@ -117,6 +129,7 @@ int			exec_buildin(t_command *cmd, t_envp **envp, int *exit, t_token **t);
 void		env(t_envp **env);
 void		pwd(t_envp **env);
 int			echo(t_token **token, t_envp **env, int *exit_stat, int fd);
+int			cd(t_command *cmd, t_envp **envp);
 
 // utils
 int			ft_count_args(char **tokens);
@@ -148,6 +161,7 @@ int			ft_double_operator(char *input, int i);
 void		ft_free_split(char **split);
 void		ft_free_list(t_token **token);
 void		ft_free_envp_list(t_envp **envp);
+void		free_array(char **array);
 
 // export
 int			ft_export_check(t_envp **env, t_token **token, int *exit_stat);
@@ -206,7 +220,6 @@ int			ft_strcmp(const char *s1, const char *s2);
 char		*env_get_value(t_envp **list, char *name);
 // static int	count_list(t_envp **list);
 int			init_array(char **res, t_envp **list);
-void		free_array(char **array);
 char		**list_to_array(t_envp **list);
 
 // exec
@@ -229,14 +242,18 @@ int			input_fd(t_command *command, int i, int last_pipe_read);
 int			output_fd(t_command *command, int *fd, int is_not_last);
 
 // process
-// static void	close_fds(t_command *command);
 int			line_read(char *delimiter, int *here_pipe, t_envp **env, int expand, int *exit);
 void		readline_here(char *delimiter, t_envp **env, int *exit_s);
-// static int	handle_redirection(t_command *command);
+int			handle_redirection(t_command *command, t_envp **env, int *exit);
 void		exe_child(t_command *c, char **envp, t_envp **env, int *exit_s);
-// static void	reset_fds(int i_stdin, int i_stdout);
 int			exe_buildin(t_command *c, t_envp **envp, int *exit, t_token **t);
 int			exe_command(t_command *c, t_envp **list, int *exit, t_token **t);
+
+// utils process
+void		close_fds(t_command *command);
+void		exe_child(t_command *c, char **envp, t_envp **env, int *exit_s);
+void		reset_fds(int i_stdin, int i_stdout);
+int			ft_heredoc_delimiter(int *expand, char *delimiter);
 
 // token to command
 int			count_commands(t_token **tokens);
@@ -248,5 +265,6 @@ t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list);
 
 // unset
 void		unset(t_command *command, t_envp **list);
+void		ft_free_env(t_envp *current);
 
 #endif

@@ -69,7 +69,5 @@ char	*find_executable(char *command, t_envp **envp_list)
 		free_directories(directories);
 		return (res);
 	}
-	free(path);
-	free_directories(directories);
-	return (NULL);
+	return (free(path), free_directories(directories), NULL);
 }

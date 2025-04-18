@@ -1,0 +1,50 @@
+#include "parsing.h"
+
+void	close_fds(t_command *command)
+{
+	if (command->input_fd > 0)
+		close(command->input_fd);
+	if (command->output_fd > 0)
+		close(command->output_fd);
+}
+
+void	exe_child(t_command *c, char **envp, t_envp **env, int *exit_s)
+{
+	if (handle_redirection(c, env, exit_s) != 0)
+		exit(EXIT_FAILURE);
+	execve(c->executable_path, c->args, envp);
+	perror("execv failed");
+	exit(EXIT_FAILURE);
+}
+
+void	reset_fds(int i_stdin, int i_stdout)
+{
+	if (i_stdin != -1)
+	{
+		dup2(i_stdin, STDIN_FILENO);
+		close(i_stdin);
+	}
+	if (i_stdout != -1)
+	{
+		dup2(i_stdout, STDOUT_FILENO);
+		close(i_stdout);
+	}
+}
+
+int	ft_heredoc_delimiter(int *expand, char *delimiter)
+{
+	char	*temp;
+	int		len;
+
+	*expand = 0;
+	temp = ft_strdup(delimiter + 1);
+	if (!temp)
+	{
+		printf("malloc error");
+		return (1);
+	}
+	len = ft_strlen(temp);
+	temp[len - 1] = '\0';
+	delimiter = temp;
+	return (0);
+}

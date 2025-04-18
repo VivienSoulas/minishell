@@ -23,9 +23,14 @@ void	unset(t_command *command, t_envp **list)
 	}
 	if (current)
 	{
+		ft_free_env(current);
 		prev->next = current->next;
-		free(current->name);
-		free(current->value);
-		free(current);
 	}
+}
+
+void	ft_free_env(t_envp *current)
+{
+	free(current->name);
+	free(current->value);
+	free(current);
 }

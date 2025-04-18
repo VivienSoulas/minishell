@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:53 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:00:54 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/18 13:51:46 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,6 @@ void	error(int i, char *str)
 		printf("`%s' not a valid identifier\n", str);
 	else if (i == 3)
 		printf("Malloc error, exiting minishell\n");
+	else
+		printf("%s\n", str);
 }
