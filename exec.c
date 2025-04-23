@@ -65,7 +65,7 @@ int	exe_cmds(t_command **c, t_envp **list, int *exit, t_token **token)
 	int	fd[2];
 	int	last_pipe_read;
 	int	n_cmds;
-
+printf("A.%i\n", *exit);
 	i = 0;
 	last_pipe_read = -1;
 	n_cmds = command_count(c);
@@ -84,5 +84,5 @@ int	exe_cmds(t_command **c, t_envp **list, int *exit, t_token **token)
 	}
 	if (last_pipe_read != -1)
 		close(last_pipe_read);
-	return (0);
+	return (*exit);
 }

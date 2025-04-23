@@ -38,6 +38,7 @@ int	exec_buildin(t_command *cmd, t_envp **envp, int *exit, t_token **t)
 {
 	int	fd;
 
+printf("exit stat:%i\n", *exit);
 	fd = STDOUT_FILENO;
 	if (!ft_strcmp(cmd->args[0], "pwd"))
 		pwd(envp);
@@ -51,7 +52,7 @@ int	exec_buildin(t_command *cmd, t_envp **envp, int *exit, t_token **t)
 		return (*exit = 1);
 	else if (!ft_strcmp(cmd->args[0], "cd"))
 		(cd(cmd, envp));
-	return (0);
+	return (*exit);
 }
 
 void	env(t_envp **env)

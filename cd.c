@@ -50,7 +50,7 @@ int	cd(t_command *cmd, t_envp **envp)
 	while (cmd->args[i])
 		i++;
 	if (i > 2)
-		return (error(0, "too many arguments"), -1);
+		return (error(0, " too many arguments\n"), -1);
 	if (i == 1)
 		target = get_env_value(envp, "HOME");
 	else

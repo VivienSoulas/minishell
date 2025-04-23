@@ -57,13 +57,25 @@ int	ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c)
 	add_history(input);
 	if (ft_parse_input(input, exit_c, token) != 1)
 	{
-		if (ft_strncmp((*token)->input, "export", 7) == 0
-			&& ft_export_check(env, token, exit_stat) == 1)
-			return (free(input), ft_free_list(token), *exit_c = 1);
-		commands = token_to_cmd(token, env);
-		*exit_stat = exe_cmds(commands, env, exit_c, token);
-		command_cleanup(commands);
+printf("exit status A:%i\n", *exit_stat);
+		if (ft_strncmp((*token)->input, "export", 7) == 0)
+		{
+			if (ft_export_check(env, token, exit_stat) == 1)
+				return (free(input), ft_free_list(token), *exit_c = 1);
+			if (*exit_stat == 1)
+				return (free(input), ft_free_list(token), 0);
+		}
+		else
+		{
+printf("exit status B:%i\n", *exit_stat);
+			commands = token_to_cmd(token, env);
+printf("exit status C:%i\n", *exit_stat);
+// needs to give exit_status to exe_cmds instead of exit call .....
+			*exit_stat = exe_cmds(commands, env, exit_c, token);
+			command_cleanup(commands);
+		}
 	}
+	*exit_stat = 1;
 	return (free(input), ft_free_list(token), 0);
 }
 

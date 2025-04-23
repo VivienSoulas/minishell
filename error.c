@@ -19,7 +19,9 @@ void	error(int i, char *str)
 	else if (i == 2)
 		write(2, " not a valid identifier\n", 24);
 	else if (i == 3)
-		printf("Malloc error, exiting minishell\n");
+		write(2, "Malloc error, exiting minishell\n", 33);
+	else if (i == 4)
+		write(2, " numeric argument required\n", 28);
 	else
 		write(2, str, ft_strlen(str));	
 }

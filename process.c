@@ -101,7 +101,7 @@ int	exe_buildin(t_command *c, t_envp **envp, int *exit, t_token **t)
 	int	return_value;
 	int	initial_stdin;
 	int	initial_stdout;
-
+printf("C.%i\n", *exit);
 	initial_stdin = -1;
 	initial_stdout = -1;
 	if (c->is_heredoc || c->input_fd > 0)
@@ -121,7 +121,7 @@ int	exe_command(t_command *c, t_envp **list, int *exit, t_token **t)
 	pid_t	pid;
 	int		status;
 	char	**envp;
-
+printf("B.%i\n", *exit);
 	if (c->is_buildin)
 		return (exe_buildin(c, list, exit, t));
 	envp = list_to_array(list);
@@ -142,5 +142,5 @@ int	exe_command(t_command *c, t_envp **list, int *exit, t_token **t)
 	free_array(envp);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	return (0);
+	return (*exit);
 }
