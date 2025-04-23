@@ -49,7 +49,7 @@ int	ft_export_check(t_envp **env, t_token **token, int *exit_stat)
 				return (1);
 		}
 		else
-			return(error(2, current->input), *exit_stat = 5, 0);
+			return(error(2, current->input), *exit_stat = 1, 0);
 		current = current->next;
 	}
 	return (0);

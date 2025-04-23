@@ -38,7 +38,7 @@ char	*ft_state_1(t_expansion *exp, t_token *token)
 {
 	char	*result;
 
-	result = ft_copy_literal(token, exp);
+	result = ft_copy_literal_single(token, exp);
 	exp->state = 0;
 	exp->i++;
 	return (result);

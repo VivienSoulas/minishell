@@ -61,22 +61,23 @@ char	*ft_exit_status(char *res, t_expansion *exp)
 	return (res);
 }
 
-char	*ft_strip(char *res)
-{
-	int		len;
-	char	*stripped;
+// char	*ft_strip(char *res)
+// {
+// 	int		len;
+// 	char	*stripped;
 
-	if (res[0] == '\0')
-	{
-		stripped = ft_strdup(res);
-		return (stripped);
-	}
-	len = ft_strlen(res) - 1;
-	while (res[len] == '\"' && len > 0)
-	{
-		res[len] = '\0';
-		len--;
-	}
-	stripped = ft_strdup(res);
-	return (stripped);
-}
+// 	if (res[0] == '\0')
+// 	{
+// 		stripped = ft_strdup(res);
+// 		return (stripped);
+// 	}
+// 	len = ft_strlen(res) - 1;
+// 	while (res[len] == '\"' && len > 0)
+// 	{
+// 		res[len] = '\0';
+// 		len--;
+// 	}
+// 	stripped = ft_strdup(res);
+// printf("stripped:%s\n", stripped);
+// 	return (stripped);
+// }

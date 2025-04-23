@@ -41,7 +41,7 @@ int	ft_variable_expansion(t_token *token, t_envp **env, int *exit)
 {
 	char		*res;
 	int			len;
-	char		*stripped;
+	// char		*stripped;
 	t_expansion	*exp;
 
 	exp = malloc(sizeof(t_expansion));
@@ -52,18 +52,26 @@ int	ft_variable_expansion(t_token *token, t_envp **env, int *exit)
 	res = ft_while_loop(exp, token);
 	if (res == NULL)
 		return (1);
-	stripped = ft_strip(res);
-	free(res);
+	// stripped = ft_strip(res);
+	// free(res);
+	// free(token->input);
+	// if (stripped == NULL)
+	// 	return (1);
+	// len = ft_strlen(stripped);
+	// token->input = malloc(sizeof(char) * (len + 1));
+	// if (token->input == NULL)
+	// 	return (free(stripped), error(3, NULL), 1);
+	// ft_memcpy(token->input, stripped, len);
+	// token->input[len] = '\0';
+	// return (free(stripped), 0);
 	free(token->input);
-	if (stripped == NULL)
-		return (1);
-	len = ft_strlen(stripped);
+	len = ft_strlen(res);
 	token->input = malloc(sizeof(char) * (len + 1));
 	if (token->input == NULL)
-		return (free(stripped), error(3, NULL), 1);
-	ft_memcpy(token->input, stripped, len);
+		return (free(res), error(3, NULL), 1);
+	ft_memcpy(token->input, res, len);
 	token->input[len] = '\0';
-	return (free(stripped), 0);
+	return (free(res), 0);
 }
 
 char	*ft_dollar_exp(t_token *token, t_expansion *exp)

@@ -17,7 +17,7 @@ void	error(int i, char *str)
 	if (i == 1)
 		write(2, "Invalid Input\n", 15);
 	else if (i == 2)
-		write(2, "not a valid identifier\n", 24);
+		write(2, " not a valid identifier\n", 24);
 	else if (i == 3)
 		printf("Malloc error, exiting minishell\n");
 	else

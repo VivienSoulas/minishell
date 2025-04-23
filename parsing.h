@@ -192,10 +192,11 @@ char		*ft_no_expansion(char *input, char *res, t_expansion *exp);
 char		*extract_name(char *input, t_expansion *exp);
 char		*get_env_value(t_envp **env, char *var_name);
 char		*ft_exit_status(char *res, t_expansion *exp);
-char		*ft_strip(char *res);
+// char		*ft_strip(char *res);
 
 // copy literals
 char		*ft_copy_literal(t_token *token, t_expansion *exp);
+char		*ft_copy_literal_single(t_token *token, t_expansion *exp);
 char		*ft_copy_literal_double(t_token *token, t_expansion *exp);
 
 // state

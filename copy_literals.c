@@ -16,10 +16,36 @@ char	*ft_copy_literal(t_token *token, t_expansion *exp)
 {
 	char	*substring;
 	int		start;
+	char	*res;
+
+	res = ft_strdup("");
+	start = exp->i;
+	while (token->input[exp->i] && token->input[exp->i] != '\'')
+	{
+		if (token->input[exp->i] == '\"' && token->input[exp->i + 1] == '\"')
+		{
+			substring= ft_substr(token->input, start, exp->i - start);
+			res = ft_strjoin_free(res, substring);
+			free(substring);
+			exp->i += 1;
+			start = exp->i + 1;
+		}
+		exp->i++;
+	}
+	substring = ft_substr(token->input, start, exp->i - start);
+	if (substring == NULL)
+		return (error(3, NULL), NULL);
+	res = ft_strjoin_free(res, substring);
+	return (free (substring), res);
+}
+
+char	*ft_copy_literal_single(t_token *token, t_expansion *exp)
+{
+	char	*substring;
+	int		start;
 
 	start = exp->i;
-	while (token->input[exp->i] && token->input[exp->i] != '\''
-		&& token->input[exp->i] != '\"')
+	while (token->input[exp->i] && token->input[exp->i] != '\'')
 		exp->i++;
 	substring = ft_substr(token->input, start, exp->i - start);
 	if (substring == NULL)

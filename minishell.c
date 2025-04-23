@@ -18,18 +18,6 @@
 
 volatile sig_atomic_t	g_signal_caught = 0;
 
-void	ft_print_token(t_token **token)
-{
-	t_token	*current;
-
-	current = *token;
-	while (current)
-	{
-		printf("current->input:%s\n", current->input);
-		current = current->next;
-	}
-}
-
 int	main(int ac, char **av, char **envp)
 {
 	int			exit_call;
@@ -63,7 +51,7 @@ int	ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c)
 
 	if (g_signal_caught == 1)
 		g_signal_caught = 0;
-	input = readline("minishell> ");
+	input = readline("\033[38;2;0;255;0mminishell> \033[0m");
 	if (input == NULL)
 		return (*exit_c = 1);
 	add_history(input);
@@ -104,7 +92,6 @@ int	ft_parse_input(char *in, int *exit, t_token **token)
 	if (ft_list_tokens(tokens, token) == 1)
 		return (ft_free_split(tokens), free(split), *exit = 1);
 	ft_assign_types(*token);
-//ft_print_token(token);
 	if (ft_check_tokens(token) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
 	return (ft_free_split(tokens), free(split), 0);
