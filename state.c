@@ -50,14 +50,15 @@ char	*ft_state_2(t_expansion *exp, t_token *token)
 	char	*temp;
 
 	result = NULL;
-	if (token->input[exp->i] =='\"' && token->input[exp->i + 1] == '\"')
+	if (token->input[exp->i + 1] && token->input[exp->i] == '\"'
+		&& token->input[exp->i + 1] == '\"')
 	{
 		temp = ft_strdup("");
 		if (temp == NULL)
 			return (error(3, NULL), NULL);
-		exp->i += 2;
 		result = ft_strjoin_free(result, temp);
 		free(temp);
+		ft_state_0(exp, token);
 	}
 	else
 	{

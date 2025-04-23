@@ -21,5 +21,5 @@ void	error(int i, char *str)
 	else if (i == 3)
 		printf("Malloc error, exiting minishell\n");
 	else
-		printf("%s\n", str);
+		write(2, str, ft_strlen(str));	
 }

@@ -37,88 +37,56 @@ char	*ft_while_loop(t_expansion *exp, t_token *token)
 }
 
 // state values : 0 unquotes, 1 single quotes, 2 double quotes
-int	ft_variable_expansion(t_token *token, t_envp **env, int *exit)
+int	ft_variable_expansion(t_token *token, t_expansion *exp)
 {
 	char		*res;
 	int			len;
-	t_expansion	*exp;
 	char		*stripped;
 
-	exp = malloc(sizeof(t_expansion));
-	if (exp == NULL)
-		return (error(3, NULL), 1);
-	ft_initialise_expansion(exp, env, exit);
 	len = 0;
 	res = ft_while_loop(exp, token);
 	if (res == NULL)
-		return (free(exp), 1);
+		return (1);
 	stripped = ft_strip(res);
 	free(res);
 	free(token->input);
 	if (stripped == NULL)
-		return (free(exp), 1);
+		return (1);
 	len = ft_strlen(stripped);
 	token->input = malloc(sizeof(char) * (len + 1));
 	if (token->input == NULL)
-		return (free(exp), free(stripped), error(3, NULL), 1);
+		return (free(stripped), error(3, NULL), 1);
 	ft_memcpy(token->input, stripped, len);
 	token->input[len] = '\0';
-	return (free(stripped), free(exp), 0);
+	return (free(stripped), 0);
 }
-
-//char	*ft_dollar_exp(t_token *token, t_expansion *exp)
-//{
-//	char	*res;
-
-//	res = strdup("");
-//	if (res == NULL)
-//		return (error(3, NULL), NULL);
-//	exp->i++;
-//	if (token->input[exp->i] == '\0')
-//		return (exp->i++, ft_strjoin_free(res, "$"));
-//	else if (token->input[exp->i] == '$')
-//	{
-//		while (token->input[exp->i] == '$')
-//		{
-//			res = ft_strjoin_free(res, "$");
-//			exp->i++;
-//		}
-//		return (exp->i--, res);
-//	}
-//	else if (token->input[exp->i] == '?')
-//		return (ft_exit_status(res, exp));
-//	else
-//		res = ft_no_expansion(token->input, res, exp);
-//	return (res);
-//}
 
 char	*ft_dollar_exp(t_token *token, t_expansion *exp)
 {
-    char	*res;
+	char	*res;
 
-    res = ft_strdup("");
-    if (res == NULL)
-        return (error(3, NULL), NULL);
-    exp->i++;
-    if (token->input[exp->i] == '\0') // Case: "$" at the end of the string
-        return (ft_strjoin_free(res, "$"));
-    else if (token->input[exp->i] == '$') // Case: multiple "$$"
-    {
-        while (token->input[exp->i] == '$')
-        {
-            res = ft_strjoin_free(res, "$");
-            exp->i++;
-        }
-        exp->i--; // Adjust index for the next character
-        return (res);
-    }
-    else if (token->input[exp->i] == '?') // Case: "$?" (exit status)
-        return (ft_exit_status(res, exp));
-    else if (!ft_isalnum(token->input[exp->i]) && token->input[exp->i] != '_')
-        return (ft_strjoin_free(res, "$")); // Case: "$" followed by invalid char
-    else
-        res = ft_no_expansion(token->input, res, exp); // Case: valid variable name
-    return (res);
+	res = strdup("");
+	if (res == NULL)
+		return (error(3, NULL), NULL);
+	exp->i++;
+	if (token->input[exp->i] == '\0')
+		return (ft_strjoin_free(res, "$"));
+	else if (token->input[exp->i] == '$')
+	{
+		while (token->input[exp->i] == '$')
+		{
+			res = ft_strjoin_free(res, "$");
+			exp->i++;
+		}
+		return (exp->i--, res);
+	}
+	else if (token->input[exp->i] == '?')
+		return (ft_exit_status(res, exp));
+	else if (!ft_isalnum(token->input[exp->i]) && token->input[exp->i] != '_')
+		return (ft_strjoin_free(res, "$"));
+	else
+		res = ft_no_expansion(token->input, res, exp);
+	return (res);
 }
 
 char	*ft_no_expansion(char *input, char *res, t_expansion *exp)
