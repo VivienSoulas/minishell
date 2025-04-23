@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:41 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/18 15:58:58 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/23 11:38:23 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,17 @@ char	*ft_while_loop(t_expansion *exp, t_token *token)
 }
 
 // state values : 0 unquotes, 1 single quotes, 2 double quotes
-int	ft_variable_expansion(t_token *token, t_expansion *exp)
+int	ft_variable_expansion(t_token *token, t_envp **env, int *exit)
 {
 	char		*res;
 	int			len;
 	char		*stripped;
+	t_expansion	*exp;
 
+	exp = malloc(sizeof(t_expansion));
+	if (exp == NULL)
+		return (error(3, NULL), 1);
+	ft_initialise_expansion(exp, env, exit);
 	len = 0;
 	res = ft_while_loop(exp, token);
 	if (res == NULL)

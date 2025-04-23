@@ -27,26 +27,25 @@ int	ft_initialise_split(t_split *split, char *input)
 }
 
 // check that open quotes are closed
-int	ft_check_quotes(char *input)
-{
+int ft_check_quotes(char *input) {
+    bool in_double_quotes;
+    bool in_single_quotes;
 	int	i;
-	int	single;
-	int	double_quote;
 
-	single = 0;
-	double_quote = 0;
 	i = 0;
+	in_double_quotes = false;
+	in_single_quotes = false;
 	while (input[i])
 	{
-		if (input[i] == '\'')
-			single++;
-		else if (input[i] == '\"')
-			double_quote++;
+		if (input[i] == '"' && !in_single_quotes)
+			in_double_quotes = !in_double_quotes;
+		else if (input[i] == '\'' && !in_double_quotes)
+			in_single_quotes = !in_single_quotes;
 		i++;
 	}
-	if (single % 2 != 0 || double_quote % 2 != 0)
+	if (in_double_quotes || in_single_quotes)
 		return (1);
-	return (0);
+    return 0;
 }
 
 // check if char c is an operator or white space

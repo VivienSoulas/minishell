@@ -21,6 +21,7 @@
 # include <signal.h>
 # include <errno.h>
 # include <sys/wait.h>
+# include <stdbool.h>
 
 extern volatile sig_atomic_t	g_signal_caught;
 
