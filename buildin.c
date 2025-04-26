@@ -40,31 +40,34 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 
 	fd = STDOUT_FILENO;
 	if (!ft_strcmp(cmd->args[0], "pwd"))
-		pwd(&e->env);
+		return (pwd(&e->env), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "unset"))
-		unset(cmd, &e->env);
+		return (unset(cmd, &e->env), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "env"))
-		env(&e->env);
+		return (env(&e->env, t, e), e->exit_stat);
 	else if (!ft_strcmp(cmd->args[0], "echo"))
-		echo(t, e, fd);
+		return (echo(t, e, fd), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (ft_exit(e, cmd));
 	else if (!ft_strcmp(cmd->args[0], "cd"))
-		cd(cmd, e);
+		return (cd(cmd, e), e->exit_stat = 1);
 	return (e->exit);
 }
 
-void	env(t_envp **env)
+int	env(t_envp **env, t_token **t, t_expansion *e)
 {
 	t_envp	*current;
 
 	current = *env;
+	if ((*t)->next)
+		return (error(0, (*t)->next->input), printf(" Permission denied\n"), e->exit_stat = 126);
 	while (current)
 	{
 		if (current->value != NULL && ft_strncmp(current->value, "", 1) != 0)
 			printf("%s=%s\n", current->name, current->value);
 		current = current->next;
 	}
+	return (e->exit_stat = 0);
 }
 
 void	pwd(t_envp **env)

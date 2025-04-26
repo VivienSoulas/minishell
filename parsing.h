@@ -128,7 +128,7 @@ int			assign_cmd_or_arg(t_token *current, int *is_cmd, int *is_red);
 // build-in
 int			is_buildin(char *command);
 int			exec_buildin(t_command *cmd, t_expansion *e, t_token **t);
-void		env(t_envp **env);
+int			env(t_envp **env, t_token **t, t_expansion *e);
 void		pwd(t_envp **env);
 int			echo(t_token **token, t_expansion *e, int fd);
 int			cd(t_command *cmd, t_expansion *e);

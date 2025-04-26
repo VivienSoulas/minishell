@@ -60,7 +60,7 @@ int	ft_loop(t_token **token, t_expansion *e)
 		if (ft_strncmp((*token)->input, "export", 7) == 0)
 		{
 			if (ft_export_check(token, e) == 1)
-				return (free(input), ft_free_list(token), e->exit = 1);
+				return (free(input), ft_free_list(token), e->exit_stat = 1, e->exit = 1);
 		}
 		else
 		{
@@ -99,13 +99,13 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	if (ft_variable_expansion(*token, e) == 1)
 		return (ft_free_split(tokens), free(split), e->exit = 1);
 	ft_assign_types(*token);
-// t_token *current;
-// current = *token;
-// while (current)
-// {
-// 	printf("%s.\ntype%i\n", current->input, current->type);
-// 	current = current->next;
-// }
+t_token *current;
+current = *token;
+while (current)
+{
+	printf("%s.\ntype%i\n", current->input, current->type);
+	current = current->next;
+}
 	if (ft_check_tokens(token) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), e->exit_stat = 127);
 	return (ft_free_split(tokens), free(split), 0);
