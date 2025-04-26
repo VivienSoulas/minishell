@@ -50,7 +50,7 @@ char	*ft_exit_status(char *res, t_expansion *exp)
 {
 	char	*exit_status;
 
-	exit_status = ft_itoa((*exp->exit));
+	exit_status = ft_itoa(exp->exit_stat);
 	if (exit_status == NULL)
 		return (error(3, NULL), NULL);
 	res = ft_strjoin_free(res, exit_status);
@@ -60,24 +60,3 @@ char	*ft_exit_status(char *res, t_expansion *exp)
 	exp->i++;
 	return (res);
 }
-
-// char	*ft_strip(char *res)
-// {
-// 	int		len;
-// 	char	*stripped;
-
-// 	if (res[0] == '\0')
-// 	{
-// 		stripped = ft_strdup(res);
-// 		return (stripped);
-// 	}
-// 	len = ft_strlen(res) - 1;
-// 	while (res[len] == '\"' && len > 0)
-// 	{
-// 		res[len] = '\0';
-// 		len--;
-// 	}
-// 	stripped = ft_strdup(res);
-// printf("stripped:%s\n", stripped);
-// 	return (stripped);
-// }

@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils_split.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 12:01:34 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:01:35 by vsoulas          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "parsing.h"
 
 // initialise split struct
@@ -27,10 +15,11 @@ int	ft_initialise_split(t_split *split, char *input)
 }
 
 // check that open quotes are closed
-int ft_check_quotes(char *input) {
-    bool in_double_quotes;
-    bool in_single_quotes;
-	int	i;
+int	ft_check_quotes(char *input)
+{
+	bool	in_double_quotes;
+	bool	in_single_quotes;
+	int		i;
 
 	i = 0;
 	in_double_quotes = false;
@@ -45,7 +34,7 @@ int ft_check_quotes(char *input) {
 	}
 	if (in_double_quotes || in_single_quotes)
 		return (1);
-    return 0;
+	return (0);
 }
 
 // check if char c is an operator or white space

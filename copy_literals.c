@@ -24,7 +24,7 @@ char	*ft_copy_literal(t_token *token, t_expansion *exp)
 	{
 		if (token->input[exp->i] == '\"' && token->input[exp->i + 1] == '\"')
 		{
-			substring= ft_substr(token->input, start, exp->i - start);
+			substring = ft_substr(token->input, start, exp->i - start);
 			res = ft_strjoin_free(res, substring);
 			free(substring);
 			exp->i += 1;

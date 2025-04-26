@@ -8,9 +8,9 @@ void	close_fds(t_command *command)
 		close(command->output_fd);
 }
 
-void	exe_child(t_command *c, char **envp, t_envp **env, int *exit_s)
+void	exe_child(t_command *c, char **envp, t_expansion *e)
 {
-	if (handle_redirection(c, env, exit_s) != 0)
+	if (handle_redirection(c, e) != 0)
 		exit(EXIT_FAILURE);
 	execve(c->executable_path, c->args, envp);
 	perror("execv failed");

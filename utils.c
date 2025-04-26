@@ -58,10 +58,14 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	return (new_str);
 }
 
-void	ft_initialise_expansion(t_expansion *exp, t_envp **env, int *exit)
+int	ft_initialise_expansion(t_expansion *exp, char **env)
 {
 	exp->state = 0;
 	exp->i = 0;
-	exp->exit = exit;
-	exp->env = env;
+	exp->exit_stat = 0;
+	exp->exit = 0;
+	exp->env = copy_envp(env);
+	if (exp->env == NULL)
+		return (ft_free_envp_list(&exp->env), exp->exit_stat = 1);
+	return (0);
 }

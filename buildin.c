@@ -34,25 +34,24 @@ int	is_buildin(char *command)
 	return (0);
 }
 
-int	exec_buildin(t_command *cmd, t_envp **envp, int *exit, t_token **t)
+int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 {
 	int	fd;
 
-printf("exit stat:%i\n", *exit);
 	fd = STDOUT_FILENO;
 	if (!ft_strcmp(cmd->args[0], "pwd"))
-		pwd(envp);
+		pwd(&e->env);
 	else if (!ft_strcmp(cmd->args[0], "unset"))
-		unset(cmd, envp);
+		unset(cmd, &e->env);
 	else if (!ft_strcmp(cmd->args[0], "env"))
-		env(envp);
+		env(&e->env);
 	else if (!ft_strcmp(cmd->args[0], "echo"))
-		echo(t, envp, exit, fd);
+		echo(t, e, fd);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
-		return (*exit = 1);
+		return (ft_exit(e, cmd));
 	else if (!ft_strcmp(cmd->args[0], "cd"))
-		(cd(cmd, envp));
-	return (*exit);
+		cd(cmd, e);
+	return (e->exit);
 }
 
 void	env(t_envp **env)
@@ -84,7 +83,7 @@ void	pwd(t_envp **env)
 	}
 }
 
-int	echo(t_token **token, t_envp **env, int *exit_stat, int fd)
+int	echo(t_token **token, t_expansion *e, int fd)
 {
 	int		no_new_line;
 	t_token	*current;
@@ -98,7 +97,7 @@ int	echo(t_token **token, t_envp **env, int *exit_stat, int fd)
 	}
 	while (current && current->type == ARG)
 	{
-		if (ft_variable_expansion(current, env, exit_stat) == 1)
+		if (ft_variable_expansion(current, e) == 1)
 			return (1);
 		write(fd, current->input, ft_strlen(current->input));
 		if (current->next != NULL && current->next->type == ARG)

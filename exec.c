@@ -59,13 +59,13 @@ static void	cleanup_fd(int *fd, int last_read_pipe)
 		close(last_read_pipe);
 }
 
-int	exe_cmds(t_command **c, t_envp **list, int *exit, t_token **token)
+int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 {
 	int	i;
 	int	fd[2];
 	int	last_pipe_read;
 	int	n_cmds;
-printf("A.%i\n", *exit);
+
 	i = 0;
 	last_pipe_read = -1;
 	n_cmds = command_count(c);
@@ -77,12 +77,12 @@ printf("A.%i\n", *exit);
 			return (cleanup_fd(fd, last_pipe_read), -1);
 		if (output_fd(c[i], fd, i < n_cmds - 1) != 0)
 			return (cleanup_fd(fd, last_pipe_read), -1);
-		if (exe_command(c[i], list, exit, token) == -1)
+		if (exe_command(c[i], e, token) == -1)
 			return (cleanup_fd(fd, last_pipe_read), -1);
 		pipe_manage(i < n_cmds - 1, &last_pipe_read, fd);
 		i++;
 	}
 	if (last_pipe_read != -1)
 		close(last_pipe_read);
-	return (*exit);
+	return (e->exit_stat);
 }

@@ -20,31 +20,31 @@ volatile sig_atomic_t	g_signal_caught = 0;
 
 int	main(int ac, char **av, char **envp)
 {
-	int			exit_call;
 	int			exit_status;
-	t_envp		*env_list;
+	t_expansion	*e;
 	t_token		*token;
 
+	e = malloc(sizeof(t_expansion));
+	if (e == NULL)
+		return (EXIT_FAILURE);
+	if (ft_initialise_expansion(e, envp) == 1)
+		return (ft_free_e(&e), EXIT_FAILURE);
 	(void)av;
 	if (ac != 1)
-		return (EXIT_FAILURE);
-	env_list = copy_envp(envp);
-	if (env_list == NULL)
-		return (ft_free_envp_list(&env_list), EXIT_FAILURE);
+		return (ft_free_e(&e), EXIT_FAILURE);
 	token = NULL;
-	exit_call = 0;
-	exit_status = 0;
 	signals_handling();
-	while (exit_call == 0)
+	while (e->exit == 0)
 	{
-		ft_loop(&exit_status, &token, &env_list, &exit_call);
+		ft_loop(&token, e);
 	}
-	return (ft_free_envp_list(&env_list), exit_status);
+	exit_status = e->exit_stat;
+	return (ft_free_e(&e), exit_status);
 }
 
 // loop that repeats itself until exit call = 1
 // (aka malloc fail or exit prompted)
-int	ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c)
+int	ft_loop(t_token **token, t_expansion *e)
 {
 	char		*input;
 	t_command	**commands;
@@ -53,56 +53,49 @@ int	ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c)
 		g_signal_caught = 0;
 	input = readline("\033[38;2;0;255;0mminishell> \033[0m");
 	if (input == NULL)
-		return (*exit_c = 1);
+		return (e->exit = 1);
 	add_history(input);
-	if (ft_parse_input(input, exit_c, token) != 1)
+	if (ft_parse_input(input, e, token) != 1)
 	{
-printf("exit status A:%i\n", *exit_stat);
 		if (ft_strncmp((*token)->input, "export", 7) == 0)
 		{
-			if (ft_export_check(env, token, exit_stat) == 1)
-				return (free(input), ft_free_list(token), *exit_c = 1);
-			if (*exit_stat == 1)
-				return (free(input), ft_free_list(token), 0);
+			if (ft_export_check(token, e) == 1)
+				return (free(input), ft_free_list(token), e->exit = 1);
 		}
 		else
 		{
-printf("exit status B:%i\n", *exit_stat);
-			commands = token_to_cmd(token, env);
-printf("exit status C:%i\n", *exit_stat);
-// needs to give exit_status to exe_cmds instead of exit call .....
-			*exit_stat = exe_cmds(commands, env, exit_c, token);
+			commands = token_to_cmd(token, &e->env);
+			e->exit_stat = exe_cmds(commands, e, token);
 			command_cleanup(commands);
 		}
 	}
-	*exit_stat = 1;
 	return (free(input), ft_free_list(token), 0);
 }
 
 /* split doesnt work for finding all args
 because not all args are separated by white space
 example : <infile grep '$USER' "$USER"|wc -l>outfile */
-int	ft_parse_input(char *in, int *exit, t_token **token)
+int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 {
 	char		**tokens;
 	t_split		*split;
 
 	if (in == NULL || in[0] == '\0')
-		return (1);
+		return (e->exit_stat = 1);
 	if (ft_check_quotes(in) == 1)
-		return (1);
+		return (e->exit_stat = 1);
 	split = malloc(sizeof(t_split));
 	if (split == NULL)
-		return (error(3, NULL), *exit = 1);
+		return (error(3, NULL), e->exit = 1);
 	if (ft_initialise_split(split, in) == 1)
-		return (free(split), *exit = 1);
-	tokens = ft_split_input(in, split, exit);
-	if (tokens == NULL && *exit == 1)
-		return (free(split), *exit = 1);
+		return (free(split), e->exit = 1);
+	tokens = ft_split_input(in, split, e->exit);
+	if (tokens == NULL && e->exit == 1)
+		return (free(split), 1);
 	else if (tokens == NULL)
 		return (free(split), 0);
 	if (ft_list_tokens(tokens, token) == 1)
-		return (ft_free_split(tokens), free(split), *exit = 1);
+		return (ft_free_split(tokens), free(split), e->exit = 1);
 	ft_assign_types(*token);
 	if (ft_check_tokens(token) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);

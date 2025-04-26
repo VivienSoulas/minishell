@@ -18,6 +18,7 @@ char	*ft_while_loop(t_expansion *exp, t_token *token)
 	char	*temp;
 	char	*(*state_funcs [3])(t_expansion *, t_token *);
 
+	exp->i = 0;
 	state_funcs[0] = ft_state_0;
 	state_funcs[1] = ft_state_1;
 	state_funcs[2] = ft_state_2;
@@ -37,33 +38,15 @@ char	*ft_while_loop(t_expansion *exp, t_token *token)
 }
 
 // state values : 0 unquotes, 1 single quotes, 2 double quotes
-int	ft_variable_expansion(t_token *token, t_envp **env, int *exit)
+int	ft_variable_expansion(t_token *token, t_expansion *e)
 {
 	char		*res;
 	int			len;
-	// char		*stripped;
-	t_expansion	*exp;
 
-	exp = malloc(sizeof(t_expansion));
-	if (exp == NULL)
-		return (error(3, NULL), 1);
-	ft_initialise_expansion(exp, env, exit);
 	len = 0;
-	res = ft_while_loop(exp, token);
+	res = ft_while_loop(e, token);
 	if (res == NULL)
 		return (1);
-	// stripped = ft_strip(res);
-	// free(res);
-	// free(token->input);
-	// if (stripped == NULL)
-	// 	return (1);
-	// len = ft_strlen(stripped);
-	// token->input = malloc(sizeof(char) * (len + 1));
-	// if (token->input == NULL)
-	// 	return (free(stripped), error(3, NULL), 1);
-	// ft_memcpy(token->input, stripped, len);
-	// token->input[len] = '\0';
-	// return (free(stripped), 0);
 	free(token->input);
 	len = ft_strlen(res);
 	token->input = malloc(sizeof(char) * (len + 1));
@@ -113,7 +96,7 @@ char	*ft_no_expansion(char *input, char *res, t_expansion *exp)
 	var_name = extract_name(input, exp);
 	if (result == NULL || var_name == NULL)
 		return (free(result), error(3, NULL), NULL);
-	var_value = get_env_value(exp->env, var_name);
+	var_value = get_env_value(&exp->env, var_name);
 	if (var_value == NULL)
 		result = ft_strjoin_free(result, "");
 	else

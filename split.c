@@ -12,7 +12,7 @@
 
 #include "parsing.h"
 
-char	**ft_split_input(char *input, t_split *s, int *exit)
+char	**ft_split_input(char *input, t_split *s, int exit)
 {
 	while (s->i < s->len && s->error == 0)
 	{
@@ -29,7 +29,7 @@ char	**ft_split_input(char *input, t_split *s, int *exit)
 			ft_handles_string(input, s);
 	}
 	if (s->error != 0)
-		return (ft_free_split(s->tokens), s->tokens = NULL, *exit = 1, NULL);
+		return (ft_free_split(s->tokens), s->tokens = NULL, exit = 1, NULL);
 	s->tokens[s->j] = NULL;
 	return (s->tokens);
 }

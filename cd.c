@@ -40,28 +40,29 @@ int	update_node_with_cwd(char *name, t_envp **envp)
 	return (0);
 }
 
-int	cd(t_command *cmd, t_envp **envp)
+int	cd(t_command *cmd, t_expansion *e)
 {
 	char	*target;
 	int		i;
 
-	(void)envp;
 	i = 0;
 	while (cmd->args[i])
 		i++;
 	if (i > 2)
-		return (error(0, " too many arguments\n"), -1);
+		return (error(0, " too many arguments\n"), e->exit_stat = 1);
 	if (i == 1)
-		target = get_env_value(envp, "HOME");
+		target = get_env_value(&e->env, "HOME");
 	else
 		target = cmd->args[1];
 	if (!ft_strcmp(target, "~"))
-		target = get_env_value(envp, "HOME");
-	if (update_node_with_cwd("OLDPWD", envp) == -1)
-		return (-1);
+		target = get_env_value(&e->env, "HOME");
+	else if (target[0] == '$')
+		return (1);
+	if (update_node_with_cwd("OLDPWD", &e->env) == -1)
+		return (e->exit_stat = 1);
 	if (chdir(target) != 0)
-		return (perror("cd"), -1);
-	if (update_node_with_cwd("PWD", envp) == -1)
-		return (-1);
+		return (perror("cd"), e->exit_stat = 1);
+	if (update_node_with_cwd("PWD", &e->env) == -1)
+		return (e->exit_stat = 1);
 	return (0);
 }

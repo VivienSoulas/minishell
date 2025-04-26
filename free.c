@@ -80,3 +80,12 @@ void	free_array(char **array)
 	}
 	free(array);
 }
+
+void	ft_free_e(t_expansion **e)
+{
+	if (!e && !(*e))
+		return ;
+	ft_free_envp_list(&(*e)->env);
+	free(*e);
+	*e = NULL;
+}

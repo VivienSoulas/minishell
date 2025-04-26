@@ -105,13 +105,14 @@ typedef struct s_expansion
 {
 	int		state;
 	int		i;
-	int		*exit;
-	t_envp	**env;
+	int		exit;
+	int		exit_stat;
+	t_envp	*env;
 }	t_expansion;
 
 // main
-int			ft_loop(int *exit_stat, t_token **token, t_envp **env, int *exit_c);
-int			ft_parse_input(char *in, int *exit, t_token **token);
+int			ft_loop(t_token **token, t_expansion *e);
+int			ft_parse_input(char *in, t_expansion *e, t_token **token);
 void		ft_assign_types(t_token *token);
 int			ft_check_tokens(t_token **token);
 
@@ -126,18 +127,18 @@ int			assign_cmd_or_arg(t_token *current, int *is_cmd, int *is_red);
 
 // build-in
 int			is_buildin(char *command);
-int			exec_buildin(t_command *cmd, t_envp **envp, int *exit, t_token **t);
+int			exec_buildin(t_command *cmd, t_expansion *e, t_token **t);
 void		env(t_envp **env);
 void		pwd(t_envp **env);
-int			echo(t_token **token, t_envp **env, int *exit_stat, int fd);
-int			cd(t_command *cmd, t_envp **envp);
+int			echo(t_token **token, t_expansion *e, int fd);
+int			cd(t_command *cmd, t_expansion *e);
 
 // utils
 int			ft_count_args(char **tokens);
 void		handler(int sig);
 void		signals_handling(void);
 char		*ft_strjoin_free(char *s1, char *s2);
-void		ft_initialise_expansion(t_expansion *exp, t_envp **env, int *exit);
+int			ft_initialise_expansion(t_expansion *exp, char **env);
 
 // utils list
 int			ft_list_tokens(char **tokens, t_token **token);
@@ -146,7 +147,7 @@ void		ft_add_last(t_token **token, t_token *node);
 t_token		*ft_last(t_token **token);
 
 // split
-char		**ft_split_input(char *input, t_split *split, int *exit);
+char		**ft_split_input(char *input, t_split *split, int exit);
 void		ft_handles_double(t_split *split, char *input);
 void		ft_handles_operator(t_split *split, char *input);
 void		ft_handles_quotes(char *input, t_split *split);
@@ -163,17 +164,18 @@ void		ft_free_split(char **split);
 void		ft_free_list(t_token **token);
 void		ft_free_envp_list(t_envp **envp);
 void		free_array(char **array);
+void		ft_free_e(t_expansion **e);
 
 // export
-int			ft_export_check(t_envp **env, t_token **token, int *exit_stat);
+int			ft_export_check(t_token **token, t_expansion *e);
 int			ft_print_export(t_envp **env);
 int			add_export_to_envp(t_envp **env, char *value, char *name);
 t_envp		*ft_new_export(char *value, char *name);
 int			ft_crop(t_token *token);
 
 // export equal
-int			ft_export_equal(t_token *current, int *exit_stat, t_envp **env);
-int			ft_dollar(t_token *cur, t_variable *vari, t_envp **env, int *exit);
+int			ft_export_equal(t_token *current, t_expansion *e);
+int			ft_dollar(t_token *cur, t_variable *vari, t_expansion *e);
 
 // utils export
 int			is_valid(char *str);
@@ -184,7 +186,7 @@ void		ft_print(t_envp **list, int total);
 
 // variable expansion
 char		*ft_while_loop(t_expansion *exp, t_token *token);
-int			ft_variable_expansion(t_token *token, t_envp **env, int *exit);
+int			ft_variable_expansion(t_token *token, t_expansion *e);
 char		*ft_dollar_exp(t_token *token, t_expansion *exp);
 char		*ft_no_expansion(char *input, char *res, t_expansion *exp);
 
@@ -207,6 +209,11 @@ char		*ft_state_2(t_expansion *exp, t_token *token);
 // error
 void		error(int i, char *str);
 
+// exit
+int			ft_exit(t_expansion *e, t_command *cmd);
+int			ft_atoi_exit(const char *nptr);
+int			ft_isnum_exit(char *str);
+
 // commandes free
 void		free_strings(t_command *command);
 void		command_cleanup(t_command **commands);
@@ -226,7 +233,7 @@ char		**list_to_array(t_envp **list);
 // exec
 void		pipe_manage(int is_not_last, int *last_pipe_read, int *fd);
 int			init_pipe(int *fd, int last_pipe_read);
-int			exe_cmds(t_command **c, t_envp **list, int *exit, t_token **token);
+int			exe_cmds(t_command **c, t_expansion *e, t_token **token);
 
 // find exec
 char		*find_executable_in_path(char *command);
@@ -241,14 +248,13 @@ int			output_fd(t_command *command, int *fd, int is_not_last);
 // process
 int			line_read(char *delim, int *here_pipe, int expand, t_expansion *e);
 void		readline_here(char *delimiter, t_expansion *e);
-int			handle_redirection(t_command *command, t_envp **env, int *exit);
-void		exe_child(t_command *c, char **envp, t_envp **env, int *exit_s);
-int			exe_buildin(t_command *c, t_envp **envp, int *exit, t_token **t);
-int			exe_command(t_command *c, t_envp **list, int *exit, t_token **t);
+int			handle_redirection(t_command *command, t_expansion *e);
+void		exe_child(t_command *c, char **envp, t_expansion *e);
+int			exe_buildin(t_command *c, t_expansion *e, t_token **t);
+int			exe_command(t_command *c, t_expansion *e, t_token **t);
 
 // utils process
 void		close_fds(t_command *command);
-void		exe_child(t_command *c, char **envp, t_envp **env, int *exit_s);
 void		reset_fds(int i_stdin, int i_stdout);
 int			ft_heredoc_delimiter(int *expand, char *delimiter);
 int			ft_fd_0(t_command *command);

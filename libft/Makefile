@@ -8,6 +8,7 @@ SOURCES =   ft_atoi_flag.c \
 			ft_isascii.c \
 			ft_isdigit.c \
 			ft_islower.c \
+			ft_isnum.c \
 			ft_isprint.c \
 			ft_isupper.c \
 			ft_itoa.c \

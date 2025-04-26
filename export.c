@@ -29,27 +29,27 @@ int	ft_crop(t_token *token)
 // if export is called, prints list of env + variable in order
 // if no equal sign, prints only when export is called as VAR
 // if no arg value VAR= only print when export is called
-int	ft_export_check(t_envp **env, t_token **token, int *exit_stat)
+int	ft_export_check(t_token **token, t_expansion *e)
 {
 	t_token	*current;
 
 	current = (*token)->next;
 	if (current == NULL)
-		return (ft_print_export(env));
+		return (ft_print_export(&e->env));
 	while (current)
 	{
 		if (is_valid(current->input) == 0)
 		{
 			if (ft_strchr(current->input, '=') != 0)
 			{
-				if (ft_export_equal(current, exit_stat, env) == 1)
-					return (1);
+				if (ft_export_equal(current, e) == 1)
+					return (e->exit_stat = 1);
 			}
-			else if (add_export_to_envp(env, NULL, current->input) == 1)
-				return (1);
+			else if (add_export_to_envp(&e->env, NULL, current->input) == 1)
+				return (e->exit_stat = 1);
 		}
 		else
-			return(error(2, current->input), *exit_stat = 1, 0);
+			return (error(2, current->input), e->exit_stat = 1, 0);
 		current = current->next;
 	}
 	return (0);

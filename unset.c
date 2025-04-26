@@ -5,14 +5,15 @@ void	unset(t_command *command, t_envp **list)
 	t_envp	*current;
 	t_envp	*prev;
 
+	if (!command->args[1])
+		return ;
 	if (!ft_strcmp((*list)->name, command->args[1]))
 	{
 		prev = *list;
 		*list = (*list)->next;
 		free(prev->name);
 		free(prev->value);
-		free(prev);
-		return ;
+		return (free(prev));
 	}
 	current = *list;
 	prev = current;

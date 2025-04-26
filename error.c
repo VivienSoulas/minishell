@@ -15,13 +15,15 @@
 void	error(int i, char *str)
 {
 	if (i == 1)
-		write(2, "Invalid Input\n", 15);
+		write(2, "Invalid Input\n", 14);
 	else if (i == 2)
 		write(2, " not a valid identifier\n", 24);
 	else if (i == 3)
-		write(2, "Malloc error, exiting minishell\n", 33);
+		write(2, "Malloc error, exiting minishell\n", 32);
 	else if (i == 4)
-		write(2, " numeric argument required\n", 28);
+		write(2, " numeric argument required\n", 27);
+	else if (i == 5)
+		write(2, " too many arguments\n", 20);
 	else
-		write(2, str, ft_strlen(str));	
+		write(2, str, ft_strlen(str));
 }
