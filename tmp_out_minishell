@@ -1,0 +1,3 @@
+[38;2;0;255;0mminishell> [0mexport T=-"n                    "
+[38;2;0;255;0mminishell> [0mEcho $T
+[38;2;0;255;0mminishell> [0m

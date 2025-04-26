@@ -59,10 +59,10 @@ int	cd(t_command *cmd, t_expansion *e)
 	else if (target[0] == '$')
 		return (1);
 	if (update_node_with_cwd("OLDPWD", &e->env) == -1)
-		return (e->exit_stat = 1);
+		return (e->exit_stat = 127);
 	if (chdir(target) != 0)
 		return (perror("cd"), e->exit_stat = 1);
 	if (update_node_with_cwd("PWD", &e->env) == -1)
-		return (e->exit_stat = 1);
+		return (e->exit_stat = 127);
 	return (0);
 }

@@ -14,7 +14,8 @@ void	exe_child(t_command *c, char **envp, t_expansion *e)
 		exit(EXIT_FAILURE);
 	execve(c->executable_path, c->args, envp);
 	perror("execv failed");
-	exit(EXIT_FAILURE);
+	e->exit_stat = 127;
+	exit(e->exit_stat);
 }
 
 void	reset_fds(int i_stdin, int i_stdout)

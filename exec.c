@@ -72,13 +72,13 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 	while (i < n_cmds)
 	{
 		if ((i < n_cmds - 1) && init_pipe(fd, last_pipe_read) != 0)
-			return (-1);
+			return (0);
 		if (input_fd(c[i], i, last_pipe_read) != 0)
-			return (cleanup_fd(fd, last_pipe_read), -1);
+			return (cleanup_fd(fd, last_pipe_read), 0);
 		if (output_fd(c[i], fd, i < n_cmds - 1) != 0)
-			return (cleanup_fd(fd, last_pipe_read), -1);
+			return (cleanup_fd(fd, last_pipe_read), 0);
 		if (exe_command(c[i], e, token) == -1)
-			return (cleanup_fd(fd, last_pipe_read), -1);
+			return (cleanup_fd(fd, last_pipe_read), 0);
 		pipe_manage(i < n_cmds - 1, &last_pipe_read, fd);
 		i++;
 	}

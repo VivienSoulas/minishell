@@ -56,8 +56,8 @@ int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 	else
 	{
 		command->executable_path = find_executable((*token)->input, envp_list);
-		if (command->executable_path == NULL)
-			return (-1);
+		// if (command->executable_path == NULL)
+		// 	return (-1);
 	}
 	command->args[i++] = ft_strdup((*token)->input);
 	if (command->args[i - 1] == NULL)

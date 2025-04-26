@@ -64,7 +64,7 @@ int	ft_exit(t_expansion *e, t_command *cmd)
 		{
 			e->exit_stat = 2;
 			error(4, NULL);
-			return (e->exit = 2);
+			return (e->exit = 1);
 		}
 	}
 	return (0);
