@@ -6,12 +6,13 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:20 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/18 15:48:20 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 13:01:22 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+// no quotations
 char	*ft_state_0(t_expansion *exp, t_token *token)
 {
 	char	*result;
@@ -34,6 +35,7 @@ char	*ft_state_0(t_expansion *exp, t_token *token)
 	return (result);
 }
 
+// single quotes
 char	*ft_state_1(t_expansion *exp, t_token *token)
 {
 	char	*result;
@@ -44,6 +46,7 @@ char	*ft_state_1(t_expansion *exp, t_token *token)
 	return (result);
 }
 
+// double quotes
 char	*ft_state_2(t_expansion *exp, t_token *token)
 {
 	char	*result;

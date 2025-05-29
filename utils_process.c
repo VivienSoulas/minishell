@@ -32,13 +32,13 @@ void	reset_fds(int i_stdin, int i_stdout)
 	}
 }
 
-int	ft_heredoc_delimiter(int *expand, char *delimiter)
+int	ft_heredoc_delimiter(int *expand, char **delimiter)
 {
 	char	*temp;
 	int		len;
 
 	*expand = 0;
-	temp = ft_strdup(delimiter + 1);
+	temp = ft_strdup(*delimiter + 1);
 	if (!temp)
 	{
 		printf("malloc error");
@@ -46,7 +46,7 @@ int	ft_heredoc_delimiter(int *expand, char *delimiter)
 	}
 	len = ft_strlen(temp);
 	temp[len - 1] = '\0';
-	delimiter = temp;
+	*delimiter = temp;
 	return (0);
 }
 

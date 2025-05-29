@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 13:00:41 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/04/18 15:03:38 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 15:10:02 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	readline_here(char *delimiter, t_expansion *e)
 	expand = 1;
 	if (delimiter[0] == 34 || delimiter[0] == 39)
 	{
-		if (ft_heredoc_delimiter(&expand, delimiter) == 1)
+		if (ft_heredoc_delimiter(&expand, &delimiter) == 1)
 			exit(EXIT_FAILURE);
 	}
 	if (init_pipe(here_pipe, -1) != 0)

@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/18 16:02:10 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 15:10:26 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,15 @@ int	ft_loop(t_token **token, t_expansion *e)
 	if (g_signal_caught == 1)
 		g_signal_caught = 0;
 	input = readline("\033[38;2;0;255;0mminishell> \033[0m");
+//if (isatty(fileno(stdin)))
+//input = readline("\033[38;2;0;255;0mminishell> \033[0m");
+//else
+//{
+//char *line;
+//line = get_next_line(fileno(stdin));
+//input = ft_strtrim(line, "\n");
+//free(line);
+//}
 	if (input == NULL)
 		return (e->exit = 1);
 	add_history(input);
@@ -99,15 +108,15 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	if (ft_variable_expansion(*token, e) == 1)
 		return (ft_free_split(tokens), free(split), e->exit = 1);
 	ft_assign_types(*token);
-t_token *current;
-current = *token;
-while (current)
-{
-	printf("%s.\ntype%i\n", current->input, current->type);
-	current = current->next;
-}
+//t_token *current;
+//current = *token;
+//while (current)
+//{
+//	printf("%s.\ntype%i\n", current->input, current->type);
+//	current = current->next;
+//}
 	if (ft_check_tokens(token) == 1)
-		return (error(1, NULL), ft_free_split(tokens), free(split), e->exit_stat = 127);
+		return (error(1, NULL), ft_free_split(tokens), free(split), e->exit_stat = 127, 1);
 	return (ft_free_split(tokens), free(split), 0);
 }
 

@@ -28,13 +28,16 @@ SRC		=	minishell.c \
 			cd.c \
 			utils_process.c \
 			init_redirection.c \
-			exit.c
+			exit.c \
+			get_next_line/get_next_line.c \
+			get_next_line/get_next_line_utils.c
+
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 
 CC		=	cc
-CFLAGS	=	-Werror -Wall -g
+CFLAGS	=	-Werror -Wall -Wextra -g
 RDFLAG	=	-lreadline
 
 # ANSI color codes
@@ -48,7 +51,7 @@ RESET	=	\033[0m # No Color
 
 # compile source files into object files in a directory
 $(OBJ_DIR)/%.o:%.c
-	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 # LIBft library

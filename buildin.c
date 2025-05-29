@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   buildin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:40 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/18 14:25:04 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/05/29 13:19:51 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@ int	is_buildin(char *command)
 		"unset",
 		"env",
 		"exit",
-		"echo"
+		"echo",
+		"/bin/echo"
 	};
 	int			i;
 
 	i = 0;
-	while (i < 6)
+	while (i < 7)
 	{
 		if (ft_strcmp(command, buildins[i]) == 0)
 			return (1);
@@ -45,7 +46,8 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 		return (unset(cmd, &e->env), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "env"))
 		return (env(&e->env, t, e), e->exit_stat);
-	else if (!ft_strcmp(cmd->args[0], "echo"))
+	else if (!ft_strcmp(cmd->args[0], "echo")
+		|| !ft_strcmp(cmd->args[0], "/bin/echo"))
 		return (echo(t, e, fd), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (ft_exit(e, cmd));
@@ -60,7 +62,10 @@ int	env(t_envp **env, t_token **t, t_expansion *e)
 
 	current = *env;
 	if ((*t)->next)
-		return (error(0, (*t)->next->input), printf(" Permission denied\n"), e->exit_stat = 126);
+	{
+		printf(" Permission denied\n");
+		return (error(0, (*t)->next->input), e->exit_stat = 126);
+	}
 	while (current)
 	{
 		if (current->value != NULL && ft_strncmp(current->value, "", 1) != 0)

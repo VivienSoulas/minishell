@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/18 15:01:40 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 13:57:18 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <errno.h>
 # include <sys/wait.h>
 # include <stdbool.h>
+# include "get_next_line/get_next_line.h"
 
 extern volatile sig_atomic_t	g_signal_caught;
 
@@ -256,7 +257,7 @@ int			exe_command(t_command *c, t_expansion *e, t_token **t);
 // utils process
 void		close_fds(t_command *command);
 void		reset_fds(int i_stdin, int i_stdout);
-int			ft_heredoc_delimiter(int *expand, char *delimiter);
+int			ft_heredoc_delimiter(int *expand, char **delimiter);
 int			ft_fd_0(t_command *command);
 
 // token to command

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_to_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:56:14 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/04/18 14:56:15 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/05/29 13:42:35 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	count_commands(t_token **tokens)
 	current = *tokens;
 	while (current != NULL)
 	{
-		if (current->type == CMD)
+		if (current->type == CMD && ft_strlen(current->input) != 0)
 			n++;
 		current = current->next;
 	}
@@ -56,8 +56,6 @@ int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 	else
 	{
 		command->executable_path = find_executable((*token)->input, envp_list);
-		// if (command->executable_path == NULL)
-		// 	return (-1);
 	}
 	command->args[i++] = ft_strdup((*token)->input);
 	if (command->args[i - 1] == NULL)
@@ -101,22 +99,23 @@ t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list)
 	int			i;
 
 	n_cmd = count_commands(tokens);
-	commands = ft_calloc(n_cmd + 1, sizeof(t_command *));
-	if (commands == NULL)
-		return (error(3, NULL), NULL);
-	i = 0;
-	current = *tokens;
-	while (i < n_cmd)
+	if (n_cmd != 0)
 	{
-		commands[i] = malloc(sizeof(t_command));
-		if (commands[i] == NULL
-			|| init_command(&current, commands[i], envp_list) == -1)
+			commands = ft_calloc(n_cmd + 1, sizeof(t_command *));
+		if (commands == NULL)
+			return (error(3, NULL), NULL);
+		i = -1;
+		current = *tokens;
+		while (++i < n_cmd)
 		{
-			command_cleanup(commands);
-			return (NULL);
+			commands[i] = malloc(sizeof(t_command));
+			if (commands[i] == NULL
+				|| init_command(&current, commands[i], envp_list) == -1)
+				return (command_cleanup(commands), NULL);
 		}
-		i++;
+		commands[i] = NULL;
+		return (commands);
 	}
-	commands[i] = NULL;
-	return (commands);
+	else
+		return (NULL);
 }

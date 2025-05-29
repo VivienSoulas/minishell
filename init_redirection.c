@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_redirection.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:51:59 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/04/18 14:55:58 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/05/29 13:53:49 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 static int	grab_word(t_token **token, char **dest)
 {
 	*token = (*token)->next;
+	if (*dest)
+		free(*dest);
 	*dest = ft_strdup((*token)->input);
 	if (!*dest)
 		return (error(3, NULL), -1);
