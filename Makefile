@@ -28,9 +28,7 @@ SRC		=	minishell.c \
 			cd.c \
 			utils_process.c \
 			init_redirection.c \
-			exit.c \
-			get_next_line/get_next_line.c \
-			get_next_line/get_next_line_utils.c
+			exit.c
 
 
 OBJ_DIR	=	objects
@@ -51,7 +49,7 @@ RESET	=	\033[0m # No Color
 
 # compile source files into object files in a directory
 $(OBJ_DIR)/%.o:%.c
-	@mkdir -p $(dir $@)
+	@mkdir -p $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 # LIBft library
