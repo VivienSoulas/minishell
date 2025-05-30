@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cmds_free.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/30 14:07:53 by vsoulas           #+#    #+#             */
+/*   Updated: 2025/05/30 14:07:54 by vsoulas          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parsing.h"
 
 void	free_strings(t_command *command)
@@ -38,5 +50,4 @@ void	command_cleanup(t_command **commands)
 		commands[i] = NULL;
 	}
 	free(commands);
-	commands = NULL;
 }

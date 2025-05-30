@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 13:00:41 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/05/30 10:15:08 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 13:33:30 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int	exe_command(t_command *c, t_expansion *e, t_token **t)
 		if (c->is_buildin)
 		{
 			status = exe_buildin(c, e, t);
+			ft_free_e(&e);
 			exit(status);
 		}
 		exe_child(c, e);

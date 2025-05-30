@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:40 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/29 17:35:57 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 14:07:14 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,11 @@ int	is_buildin(char *command)
 		"env",
 		"exit",
 		"echo",
-		"/bin/echo"
 	};
 	int			i;
 
 	i = 0;
-	while (i < 7)
+	while (i < 6)
 	{
 		if (ft_strcmp(command, buildins[i]) == 0)
 			return (1);
@@ -54,8 +53,7 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 			return (printf("env: too many arguments\n"), e->exit_stat = 0);
 		return (env(&e->env, t, e), e->exit_stat);
 	}
-	else if (!ft_strcmp(cmd->args[0], "echo")
-		|| !ft_strcmp(cmd->args[0], "/bin/echo"))
+	else if (!ft_strcmp(cmd->args[0], "echo"))
 		return (echo(t, e, fd), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (ft_exit(e, cmd));

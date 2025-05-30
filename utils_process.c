@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_process.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/30 14:08:17 by vsoulas           #+#    #+#             */
+/*   Updated: 2025/05/30 14:08:18 by vsoulas          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parsing.h"
 
 void	close_fds(t_command *command)
@@ -12,11 +24,14 @@ void	exe_child(t_command *c, t_expansion *e)
 {
 	if (handle_redirection(c, e) != 0)
 		exit(e->exit_stat = 1);
-	if (c->executable_path != NULL)
+	if (c->executable_path == NULL)
 	{
-		execve(c->executable_path, c->args, e->envp);
+		perror("invalid command");
+		ft_free_e(&e);
+		exit(127);
 	}
-	perror("execv failed");
+	execve(c->executable_path, c->args, e->envp);
+	perror("execve");
 	ft_free_e(&e);
 	exit(127);
 }

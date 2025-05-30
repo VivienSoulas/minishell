@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/30 14:08:13 by vsoulas           #+#    #+#             */
+/*   Updated: 2025/05/30 14:08:14 by vsoulas          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parsing.h"
 
 void	unset(t_command *command, t_envp **list)
@@ -24,8 +36,8 @@ void	unset(t_command *command, t_envp **list)
 	}
 	if (current)
 	{
-		ft_free_env(current);
 		prev->next = current->next;
+		ft_free_env(current);
 	}
 }
 

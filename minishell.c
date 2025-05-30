@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 10:16:57 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 12:44:03 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int	main(int ac, char **av, char **envp)
 int	ft_loop(t_token **token, t_expansion *e)
 {
 	char		*input;
-	t_command	**commands;
 
 	if (g_signal_caught == 1)
 	{
@@ -56,34 +55,15 @@ int	ft_loop(t_token **token, t_expansion *e)
 		g_signal_caught = 0;
 	}
 	input = readline("\033[38;2;0;255;0mminishell> \033[0m");
-//if (isatty(fileno(stdin)))
-//input = readline("\033[38;2;0;255;0mminishell> \033[0m");
-//else
-//{
-//char *line;
-//line = get_next_line(fileno(stdin));
-//input = ft_strtrim(line, "\n");
-//free(line);
-//}
 	if (input == NULL)
 		return (e->exit = 1);
 	add_history(input);
 	if (ft_parse_input(input, e, token) != 1)
 	{
-		if (ft_strncmp((*token)->input, "export", 7) == 0)
-		{
-			if (ft_export_check(token, e) == 1)
-				return (free(input), ft_free_list(token), e->exit_stat = 1, e->exit = 1);
-		}
-		else
-		{
-			commands = token_to_cmd(token, &e->env);
-			e->cmd = commands;
-			e->exit_stat = exe_cmds(commands, e, token);
-			command_cleanup(commands);
-		}
+		if (ft_exe(token, e, input) == 1)
+			return (e->exit = 1);
 	}
-	return (free(input), 0);
+	return (ft_free_list(token), free(input), 0);
 }
 
 /* split doesnt work for finding all args
@@ -113,16 +93,26 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	if (ft_variable_expansion(*token, e) == 1)
 		return (ft_free_split(tokens), free(split), e->exit = 1);
 	ft_assign_types(*token);
-//t_token *current;
-//current = *token;
-//while (current)
-//{
-//	printf("%s.\ntype%i\n", current->input, current->type);
-//	current = current->next;
-//}
-	if (ft_check_tokens(token) == 1)
-		return (error(1, NULL), ft_free_split(tokens), free(split), e->exit_stat = 127, 1);
+	if (ft_check_tokens(token, e) == 1)
+		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
 	return (ft_free_split(tokens), free(split), 0);
+}
+
+int	ft_exe(t_token **token, t_expansion *e, char *input)
+{
+	if (ft_strncmp((*token)->input, "export", 7) == 0)
+	{
+		if (ft_export_check(token, e) == 1)
+			return (free(input), ft_free_list(token), 1);
+	}
+	else
+	{
+		token_to_cmd(token, e);
+		e->exit_stat = exe_cmds(e->cmd, e, token);
+		command_cleanup(e->cmd);
+		e->cmd = NULL;
+	}
+	return (0);
 }
 
 void	ft_assign_types(t_token *token)
@@ -148,28 +138,4 @@ void	ft_assign_types(t_token *token)
 			;
 		current = current->next;
 	}
-}
-
-int	ft_check_tokens(t_token **token)
-{
-	t_token	*node;
-
-	node = *token;
-	if (node == NULL)
-		return (1);
-	if (ft_pipe_check(token) == 1)
-		return (1);
-	while (node && node->next)
-	{
-		if (node->type == FORBIDDEN)
-			return (1);
-		if (((node->type >= 1 && node->type <= 5)
-				&& (node->next->type >= 1 && node->next->type <= 5))
-			|| (node->type == 1 && node->next->type == 1))
-			return (1);
-		node = node->next;
-	}
-	if (node->next == NULL && (node->type >= 1 && node->type <= 5))
-		return (1);
-	return (0);
 }

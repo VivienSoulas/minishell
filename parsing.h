@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 09:44:25 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 12:23:16 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,19 +107,21 @@ typedef struct s_expansion
 	int			i;
 	int			exit;
 	int			exit_stat;
-	t_envp		*env;
 	char		**envp;
+	t_envp		*env;
 	t_command	**cmd;
+	t_token		**token;
 }	t_expansion;
 
 // main
 int			ft_loop(t_token **token, t_expansion *e);
 int			ft_parse_input(char *in, t_expansion *e, t_token **token);
+int			ft_exe(t_token **token, t_expansion *e, char *input);
 void		ft_assign_types(t_token *token);
-int			ft_check_tokens(t_token **token);
 
 // utils pasing
 int			ft_pipe_check(t_token **token);
+int			ft_check_tokens(t_token **token, t_expansion *e);
 
 // assign type
 int			assign_pipe(t_token *current, int *is_cmd, int *is_red);
@@ -267,7 +269,7 @@ int			count_args(t_token *token);
 int			init_args(t_command *command, t_token **token, t_envp **envp_list);
 int			init_redirection(t_token **token, t_command *command);
 int			init_command(t_token **token, t_command *cmd, t_envp **envp_list);
-t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list);
+t_command	**token_to_cmd(t_token **tokens, t_expansion *e);
 
 // unset
 void		unset(t_command *command, t_envp **list);

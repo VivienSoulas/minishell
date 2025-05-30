@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:56:14 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/05/29 17:40:25 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 11:43:27 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	init_command(t_token **token, t_command *cmd, t_envp **envp_list)
 	return (0);
 }
 
-t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list)
+t_command	**token_to_cmd(t_token **tokens, t_expansion *e)
 {
 	t_command	**commands;
 	t_token		*current;
@@ -99,23 +99,21 @@ t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list)
 	int			i;
 
 	n_cmd = count_commands(tokens);
-	if (n_cmd != 0)
-	{
-		commands = ft_calloc(n_cmd + 1, sizeof(t_command *));
-		if (commands == NULL)
-			return (ft_free_list(tokens), error(3, NULL), NULL);
-		i = -1;
-		current = *tokens;
-		while (++i < n_cmd)
-		{
-			commands[i] = malloc(sizeof(t_command));
-			if (commands[i] == NULL
-				|| init_command(&current, commands[i], envp_list) == -1)
-				return (ft_free_list(tokens), command_cleanup(commands), NULL);
-		}
-		commands[i] = NULL;
-		return (ft_free_list(tokens), commands);
-	}
-	else
+	if (n_cmd == 0)
 		return (ft_free_list(tokens), NULL);
+	commands = ft_calloc(n_cmd + 1, sizeof(t_command *));
+	if (commands == NULL)
+		return (ft_free_list(tokens), error(3, NULL), NULL);
+	e->cmd = commands;
+	current = *tokens;
+	i = -1;
+	while (++i < n_cmd)
+	{
+		commands[i] = malloc(sizeof(t_command));
+		if (commands[i] == NULL
+			|| init_command(&current, commands[i], &e->env) == -1)
+			return (ft_free_list(tokens), command_cleanup(commands), NULL);
+	}
+	commands[i] = NULL;
+	return (e->token = tokens, commands);
 }
