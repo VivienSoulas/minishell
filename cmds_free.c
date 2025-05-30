@@ -17,24 +17,26 @@ void	command_cleanup(t_command **commands)
 	int			i;
 	int			j;
 
-	i = 0;
+	i = -1;
 	if (!commands || !*commands)
 		return ;
-	while (commands[i])
+	while (commands[++i])
 	{
 		free_strings(commands[i]);
 		if (commands[i]->args)
 		{
-			j = 0;
-			while (commands[i]->args[j])
+			j = -1;
+			while (commands[i]->args[++j])
 			{
 				free(commands[i]->args[j]);
-				j++;
+				commands[i]->args[j] = NULL;
 			}
 			free(commands[i]->args);
+			commands[i]->args = NULL;
 		}
 		free(commands[i]);
-		i++;
+		commands[i] = NULL;
 	}
 	free(commands);
+	commands = NULL;
 }

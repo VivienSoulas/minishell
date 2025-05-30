@@ -4,11 +4,6 @@ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressi
 test_input
 $ARG="12 34" <infile grep    '$US<ER' "$USER"|wc  -l>outfile <<append                >>append echo -n "hello world   this" expdand $ARG dont_expand '$ARG' expand "$ARG"
 
-
-TO DO:
-check for exit status return
-
-
 done/working:
 - echo $$$$
 - echo $?
@@ -33,3 +28,14 @@ done/working:
   $USER"   -----> ''vsoulas''
 - export VAR='$USER'
   look at ft_no_expansion for export (removing the ' and ")
+
+  to do:
+  leaks when execve exits
+
+
+
+  exit via ctl+D doesn't print exit
+  exit needs to print exit in all cases
+  env with arguments should just display simple error message - too many arguments
+  exit error statements to give more detailed info
+  export without any arguments should display declare -x before variables and their values

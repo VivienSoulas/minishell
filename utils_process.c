@@ -8,14 +8,17 @@ void	close_fds(t_command *command)
 		close(command->output_fd);
 }
 
-void	exe_child(t_command *c, char **envp, t_expansion *e)
+void	exe_child(t_command *c, t_expansion *e)
 {
 	if (handle_redirection(c, e) != 0)
 		exit(e->exit_stat = 1);
-	execve(c->executable_path, c->args, envp);
+	if (c->executable_path != NULL)
+	{
+		execve(c->executable_path, c->args, e->envp);
+	}
 	perror("execv failed");
-	e->exit_stat = 127;
-	exit(e->exit_stat);
+	ft_free_e(&e);
+	exit(127);
 }
 
 void	reset_fds(int i_stdin, int i_stdout)

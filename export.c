@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:02 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/18 16:08:58 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 16:22:50 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,6 @@ t_envp	*ft_new_export(char *value, char *name)
 	new->name = ft_strdup(name);
 	if (new->name == NULL)
 		return (free(new), error(3, NULL), NULL);
-	if (value == NULL)
-		new->value = ft_strdup("''");
 	else
 		new->value = ft_strdup(value);
 	if (new->value == NULL)

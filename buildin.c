@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:40 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/29 13:19:51 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 17:35:57 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,19 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 
 	fd = STDOUT_FILENO;
 	if (!ft_strcmp(cmd->args[0], "pwd"))
+	{
+		if (cmd->args[1])
+			return (printf("pwd: too many arguments\n"), e->exit_stat = 0);
 		return (pwd(&e->env), e->exit_stat = 0);
+	}
 	else if (!ft_strcmp(cmd->args[0], "unset"))
 		return (unset(cmd, &e->env), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "env"))
+	{
+		if (cmd->args[1])
+			return (printf("env: too many arguments\n"), e->exit_stat = 0);
 		return (env(&e->env, t, e), e->exit_stat);
+	}
 	else if (!ft_strcmp(cmd->args[0], "echo")
 		|| !ft_strcmp(cmd->args[0], "/bin/echo"))
 		return (echo(t, e, fd), e->exit_stat = 0);

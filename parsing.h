@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/29 13:57:18 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 09:44:25 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,13 @@ typedef struct s_token
 // struct to keep expansion variable norminette friendly
 typedef struct s_expansion
 {
-	int		state;
-	int		i;
-	int		exit;
-	int		exit_stat;
-	t_envp	*env;
+	int			state;
+	int			i;
+	int			exit;
+	int			exit_stat;
+	t_envp		*env;
+	char		**envp;
+	t_command	**cmd;
 }	t_expansion;
 
 // main
@@ -249,7 +251,7 @@ int			output_fd(t_command *command, int *fd, int is_not_last);
 int			line_read(char *delim, int *here_pipe, int expand, t_expansion *e);
 void		readline_here(char *delimiter, t_expansion *e);
 int			handle_redirection(t_command *command, t_expansion *e);
-void		exe_child(t_command *c, char **envp, t_expansion *e);
+void		exe_child(t_command *c, t_expansion *e);
 int			exe_buildin(t_command *c, t_expansion *e, t_token **t);
 int			exe_command(t_command *c, t_expansion *e, t_token **t);
 

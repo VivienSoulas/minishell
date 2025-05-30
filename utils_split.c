@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 13:16:46 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/29 13:16:47 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 16:36:54 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	ft_check_quotes(char *input)
 		i++;
 	}
 	if (in_double_quotes || in_single_quotes)
-		return (1);
+		return (printf("error: unclosed quotes\n"), 1);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:56:14 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/05/29 13:42:35 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 17:40:25 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,9 @@ t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list)
 	n_cmd = count_commands(tokens);
 	if (n_cmd != 0)
 	{
-			commands = ft_calloc(n_cmd + 1, sizeof(t_command *));
+		commands = ft_calloc(n_cmd + 1, sizeof(t_command *));
 		if (commands == NULL)
-			return (error(3, NULL), NULL);
+			return (ft_free_list(tokens), error(3, NULL), NULL);
 		i = -1;
 		current = *tokens;
 		while (++i < n_cmd)
@@ -111,11 +111,11 @@ t_command	**token_to_cmd(t_token **tokens, t_envp **envp_list)
 			commands[i] = malloc(sizeof(t_command));
 			if (commands[i] == NULL
 				|| init_command(&current, commands[i], envp_list) == -1)
-				return (command_cleanup(commands), NULL);
+				return (ft_free_list(tokens), command_cleanup(commands), NULL);
 		}
 		commands[i] = NULL;
-		return (commands);
+		return (ft_free_list(tokens), commands);
 	}
 	else
-		return (NULL);
+		return (ft_free_list(tokens), NULL);
 }

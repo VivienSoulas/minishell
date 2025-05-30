@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:06 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/18 14:42:44 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 10:09:09 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,21 @@ void	ft_free_e(t_expansion **e)
 {
 	if (!e && !(*e))
 		return ;
-	ft_free_envp_list(&(*e)->env);
+	if ((*e)->env)
+	{
+		ft_free_envp_list(&(*e)->env);
+		(*e)->env = NULL;
+	}
+	if ((*e)->envp)
+	{
+		free_array((*e)->envp);
+		(*e)->envp = NULL;
+	}
+	if ((*e)->cmd)
+	{
+		command_cleanup((*e)->cmd);
+		(*e)->cmd = NULL;
+	}
 	free(*e);
 	*e = NULL;
 }

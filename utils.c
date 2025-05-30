@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:39 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 12:01:40 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 10:14:32 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void	handler(int sig)
 
 void	signals_handling(void)
 {
-	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &handler);
 }
 
@@ -67,5 +66,12 @@ int	ft_initialise_expansion(t_expansion *exp, char **env)
 	exp->env = copy_envp(env);
 	if (exp->env == NULL)
 		return (ft_free_envp_list(&exp->env), exp->exit_stat = 1);
+	exp->envp = list_to_array(&exp->env);
+	if (!exp->envp)
+	{
+		free_array(exp->envp);
+		ft_free_envp_list(&exp->env);
+		return (exp->exit_stat = 1);
+	}
 	return (0);
 }

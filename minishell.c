@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/29 15:10:26 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 10:16:57 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ volatile sig_atomic_t	g_signal_caught = 0;
 
 int	main(int ac, char **av, char **envp)
 {
-	int			exit_status;
 	t_expansion	*e;
 	t_token		*token;
 
 	e = malloc(sizeof(t_expansion));
 	if (e == NULL)
 		return (EXIT_FAILURE);
+	ft_memset(e, 0, sizeof(t_expansion));
 	if (ft_initialise_expansion(e, envp) == 1)
 		return (ft_free_e(&e), EXIT_FAILURE);
 	(void)av;
@@ -38,8 +38,9 @@ int	main(int ac, char **av, char **envp)
 	{
 		ft_loop(&token, e);
 	}
-	exit_status = e->exit_stat;
-	return (ft_free_e(&e), exit_status);
+	if (e->exit != 0)
+		printf("exit\n");
+	return (ft_free_e(&e), ft_free_list(&token), 0);
 }
 
 // loop that repeats itself until exit call = 1
@@ -50,7 +51,10 @@ int	ft_loop(t_token **token, t_expansion *e)
 	t_command	**commands;
 
 	if (g_signal_caught == 1)
+	{
+		e->exit_stat = 130;
 		g_signal_caught = 0;
+	}
 	input = readline("\033[38;2;0;255;0mminishell> \033[0m");
 //if (isatty(fileno(stdin)))
 //input = readline("\033[38;2;0;255;0mminishell> \033[0m");
@@ -74,11 +78,12 @@ int	ft_loop(t_token **token, t_expansion *e)
 		else
 		{
 			commands = token_to_cmd(token, &e->env);
+			e->cmd = commands;
 			e->exit_stat = exe_cmds(commands, e, token);
 			command_cleanup(commands);
 		}
 	}
-	return (free(input), ft_free_list(token), 0);
+	return (free(input), 0);
 }
 
 /* split doesnt work for finding all args

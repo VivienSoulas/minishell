@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:27 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/17 13:53:33 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 16:24:30 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	ft_print(t_envp **list, int total)
 	i = 0;
 	while (i < total)
 	{
-		printf("%s", list[i]->name);
+		printf("declare -x %s", list[i]->name);
 		if (list[i]->value)
 			printf("=%s", list[i]->value);
 		printf("\n");

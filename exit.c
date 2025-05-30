@@ -47,25 +47,16 @@ int	ft_atoi_exit(const char *nptr)
 
 int	ft_exit(t_expansion *e, t_command *cmd)
 {
-	if (cmd->args[2])
+	if (cmd->args[1])
 	{
 		e->exit_stat = 1;
-		error(5, NULL);
-		return (e->exit = 1);
+		return (printf("exit: too many arguments\n"), 0);
 	}
-	else if (cmd->args[1])
+	else
 	{
-		if (ft_isnum_exit(cmd->args[1]) == 1)
-		{
-			e->exit_stat = ft_atoi_exit(cmd->args[1]);
-			return (e->exit = 1);
-		}
-		else
-		{
-			e->exit_stat = 2;
-			error(4, NULL);
-			return (e->exit = 1);
-		}
+		printf("exit\n");
+		ft_free_e(&e);
+		exit(0);
 	}
 	return (0);
 }

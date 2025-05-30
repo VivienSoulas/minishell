@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 13:00:41 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/05/29 15:10:02 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 10:15:08 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,26 +114,24 @@ int	exe_command(t_command *c, t_expansion *e, t_token **t)
 {
 	pid_t	pid;
 	int		status;
-	char	**envp;
 
-	if (c->is_buildin)
+	if (c->is_buildin && !(c->input_fd > 0 || c->output_fd > 1))
 		return (exe_buildin(c, e, t));
-	envp = list_to_array(&e->env);
-	if (!envp)
-		return (-1);
 	pid = fork();
 	if (pid < 0)
-	{
-		close_fds(c);
-		perror("fork");
-		return (-1);
-	}
+		return (close_fds(c), perror("fork"), -1);
 	if (pid == 0)
-		exe_child(c, envp, e);
+	{
+		if (c->is_buildin)
+		{
+			status = exe_buildin(c, e, t);
+			exit(status);
+		}
+		exe_child(c, e);
+	}
 	close_fds(c);
 	if (waitpid(pid, &status, 0) == -1)
 		return (-1);
-	free_array(envp);
 	if (WIFEXITED(status))
 		return (e->exit_stat = WEXITSTATUS(status));
 	return (e->exit_stat);
