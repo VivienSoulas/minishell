@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 13:00:41 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/05/30 13:33:30 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 16:23:09 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,19 @@ int	line_read(char *delim, int *here_pipe, int expand, t_expansion *e)
 	return (0);
 }
 
+static void heredoc_sigint_handler(int sig)
+{
+    (void)sig;
+    g_signal_caught = 1;
+    write(1, "\n", 1);
+}
+
 // if delimiter is inside quote signs then no expansion
 void	readline_here(char *delimiter, t_expansion *e)
 {
 	int		here_pipe[2];
 	int		expand;
+void	(*here_doc_handler)(int);
 
 	expand = 1;
 	if (delimiter[0] == 34 || delimiter[0] == 39)
@@ -53,12 +61,19 @@ void	readline_here(char *delimiter, t_expansion *e)
 	}
 	if (init_pipe(here_pipe, -1) != 0)
 		exit(EXIT_FAILURE);
-	while (1)
-	{
-		if (line_read(delimiter, here_pipe, expand, e) != 0)
-			break ;
-	}
-	close(here_pipe[1]);
+
+		
+g_signal_caught = 0; // Reset before heredoc
+here_doc_handler = signal(SIGINT, heredoc_sigint_handler); // Set heredoc handler
+
+while (g_signal_caught == 0)
+{
+	if (line_read(delimiter, here_pipe, expand, e) != 0)
+		break ;
+}
+signal(SIGINT, here_doc_handler);
+
+
 	if (dup2(here_pipe[0], STDIN_FILENO) == -1)
 	{
 		close(here_pipe[0]);

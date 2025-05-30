@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:39 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 10:14:32 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 16:17:26 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,17 @@ int	ft_count_args(char **tokens)
 void	handler(int sig)
 {
 	(void)sig;
-	printf("\n");
+	//printf("\n");
 	g_signal_caught = 1;
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	//rl_on_new_line();
+	//rl_replace_line("", 0);
+	//rl_redisplay();
 }
 
 void	signals_handling(void)
 {
 	signal(SIGINT, &handler);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 char	*ft_strjoin_free(char *s1, char *s2)

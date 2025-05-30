@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 12:44:03 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 15:39:51 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	char		**tokens;
 	t_split		*split;
 
-	if (in == NULL || in[0] == '\0')
+	if (in == NULL || in[0] == '\0' || in[0] == ' ')
 		return (e->exit_stat = 1);
 	if (ft_check_quotes(in) == 1)
 		return (e->exit_stat = 1);
