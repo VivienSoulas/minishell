@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/06/05 13:07:10 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/06/05 16:14:44 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,15 @@
 // assign each token to different type and redirect them to exec
 #include "parsing.h"
 
+volatile sig_atomic_t g_heredoc_sigint = 0;
+
 int	main(int ac, char **av, char **envp)
 {
 	t_expansion	*e;
 	t_token		*token;
 
 	(void)av;
+	g_heredoc_sigint = 0;
 	if (ac != 1)
 		return (EXIT_FAILURE);
 	e = malloc(sizeof(t_expansion));

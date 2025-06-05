@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:06 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 13:16:42 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/06/05 16:41:34 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,11 @@ void	ft_free_e(t_expansion **e)
 	{
 		ft_free_list((*e)->token);
 		(*e)->token = NULL;
+	}
+	if ((*e)->pids)
+	{
+		free((*e)->pids);
+		(*e)->pids = NULL;
 	}
 	free(*e);
 	*e = NULL;

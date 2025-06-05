@@ -24,6 +24,7 @@ void	heredoc(int sig)
 {
 	if (sig == SIGINT)
 	{
+		g_heredoc_sigint = 1;
 		rl_replace_line("", 0);
 		rl_on_new_line();
 	}

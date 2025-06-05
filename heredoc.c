@@ -31,16 +31,17 @@ int	line_read(char *delim, int *here_pipe, int expand, t_expansion *e)
 
 void	ft_heredoc(char *delimiter, t_expansion *e, int *here_pipe, int expand)
 {
-	while (1)
+	while (g_heredoc_sigint == 0)
 	{
 		if (line_read(delimiter, here_pipe, expand, e) != 0)
 			break ;
 	}
+	ft_free_e(&e);		//needed for leak free oef heredoc
 	close(here_pipe[1]);
 	exit(EXIT_SUCCESS);
 }
 
-void	readline_cleanup(pid_t pid, int *here_pipe)
+void	readline_cleanup(pid_t pid, int *here_pipe, t_expansion *e)
 {
 	int	status;
 
@@ -75,6 +76,7 @@ void	readline_here(char *delimiter, t_expansion *e)
 	int		expand;
 	pid_t	pid;
 
+	g_heredoc_sigint = 0;
 	expand = 1;
 	if (delimiter[0] == 34 || delimiter[0] == 39)
 	{
@@ -99,5 +101,5 @@ void	readline_here(char *delimiter, t_expansion *e)
 		ft_heredoc(delimiter, e, here_pipe, expand);
 	}
 	close(here_pipe[1]);
-	readline_cleanup(pid, here_pipe);
+	readline_cleanup(pid, here_pipe, e);
 }

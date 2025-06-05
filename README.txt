@@ -2,6 +2,7 @@ valgrind memory leaks without the readline still reacheable showing:
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=rl.supp --track-fds=yes --trace-children=yes ./minishell
 
 
+free memory of heredoc on CTL+C during heredoc
 
 cat | cat | cat | echo hi	--> should print hi and wait
 env | echo hi				--> shouldnt print a pipe

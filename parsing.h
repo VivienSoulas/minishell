@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/06/05 14:57:24 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/06/05 16:14:37 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # include <sys/wait.h>
 # include <stdbool.h>
 
+extern volatile sig_atomic_t g_heredoc_sigint;
+ 
 # define MAIN 0
 # define CHILD 1
 
@@ -113,6 +115,7 @@ typedef struct s_expansion
 	t_envp		*env;
 	t_command	**cmd;
 	t_token		**token;
+	pid_t		*pids;
 }	t_expansion;
 
 // main
