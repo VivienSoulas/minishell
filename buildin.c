@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:40 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 14:07:14 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/06/05 15:38:41 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@ int	is_buildin(char *command)
 		"env",
 		"exit",
 		"echo",
+		"/bin/echo"
 	};
 	int			i;
 
 	i = 0;
-	while (i < 6)
+	while (i < 7)
 	{
 		if (ft_strcmp(command, buildins[i]) == 0)
 			return (1);
@@ -53,8 +54,9 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 			return (printf("env: too many arguments\n"), e->exit_stat = 0);
 		return (env(&e->env, t, e), e->exit_stat);
 	}
-	else if (!ft_strcmp(cmd->args[0], "echo"))
-		return (echo(t, e, fd), e->exit_stat = 0);
+	else if (!ft_strcmp(cmd->args[0], "echo")
+			|| !ft_strcmp(cmd->args[0], "/bin/echo"))
+		return (echo(cmd, e, fd), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (ft_exit(e, cmd));
 	else if (!ft_strcmp(cmd->args[0], "cd"))
@@ -64,19 +66,18 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 
 int	env(t_envp **env, t_token **t, t_expansion *e)
 {
-	t_envp	*current;
+	int	i;
 
-	current = *env;
-	if ((*t)->next)
+	i = 0;
+	if ((*t)->next && (*t)->next->type == ARG)
 	{
 		printf(" Permission denied\n");
 		return (error(0, (*t)->next->input), e->exit_stat = 126);
 	}
-	while (current)
+	while (e->envp[i])
 	{
-		if (current->value != NULL && ft_strncmp(current->value, "", 1) != 0)
-			printf("%s=%s\n", current->name, current->value);
-		current = current->next;
+		printf("%s\n", e->envp[i]);
+		i++;
 	}
 	return (e->exit_stat = 0);
 }
@@ -97,26 +98,30 @@ void	pwd(t_envp **env)
 	}
 }
 
-int	echo(t_token **token, t_expansion *e, int fd)
+int	echo(t_command *cmd, t_expansion *e, int fd)
 {
 	int		no_new_line;
-	t_token	*current;
+	char	*current;
+	t_token token;
+	int		i;
 
+	i = 1;
 	no_new_line = 0;
-	current = (*token)->next;
-	if (current && !ft_strcmp(current->input, "-n"))
+	current = cmd->args[i];
+	if (current && !ft_strcmp(current, "-n"))
 	{
 		no_new_line = 1;
-		current = current->next;
+		current = cmd->args[++i];
 	}
-	while (current && current->type == ARG)
+	while (current)
 	{
-		if (ft_variable_expansion(current, e) == 1)
+		token.input = current;
+		if (ft_variable_expansion(&token, e) == 1)
 			return (1);
-		write(fd, current->input, ft_strlen(current->input));
-		if (current->next != NULL && current->next->type == ARG)
-			write(fd, " ", 1);
-		current = current->next;
+		write(1, token.input, ft_strlen(token.input));
+		current = cmd->args[++i];
+		if (current)
+			write(1, " ", 1);
 	}
 	if (!no_new_line)
 		write(fd, "\n", 1);

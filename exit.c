@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 14:07:57 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 15:41:41 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/06/05 13:05:09 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_isnum_exit(char *str)
 	return (1);
 }
 
-int	ft_atoi_exit(const char *nptr)
+long	ft_atol_exit(const char *nptr)
 {
 	int	i;
 	int	sign;
@@ -59,16 +59,28 @@ int	ft_atoi_exit(const char *nptr)
 
 int	ft_exit(t_expansion *e, t_command *cmd)
 {
-	if (cmd->args[1])
-	{
-		e->exit_stat = 1;
-		return (printf("exit: too many arguments\n"), 0);
-	}
-	else
+	long	exit_st;
+
+	if (cmd->args[1] == NULL)
 	{
 		printf("exit\n");
 		ft_free_e(&e);
 		exit(0);
 	}
-	return (0);
+	if (!ft_isnum_exit(cmd->args[1]))
+	{
+		printf("exit\n");
+		printf("exit: %s: numeric argument required\n", cmd->args[1]);
+		ft_free_e(&e);
+		exit(2);
+	}
+	if (cmd->args[2])
+	{
+		printf("exit: too many arguments\n");
+		return (1);
+	}
+	printf("exit\n");
+	exit_st = ft_atol_exit(cmd->args[1]);
+	ft_free_e(&e);
+	exit(exit_st % 256);
 }

@@ -28,14 +28,15 @@ SRC		=	minishell.c \
 			cd.c \
 			utils_process.c \
 			init_redirection.c \
-			exit.c
-
+			exit.c \
+			signals.c \
+			heredoc.c
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 
 CC		=	cc
-CFLAGS	=	-Werror -Wall -Wextra -g
+CFLAGS	=	-Werror -Wall -g
 RDFLAG	=	-lreadline
 
 # ANSI color codes

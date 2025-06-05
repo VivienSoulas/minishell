@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_to_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:56:14 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/05/30 11:43:27 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/06/05 12:15:04 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ t_command	**token_to_cmd(t_token **tokens, t_expansion *e)
 		commands[i] = malloc(sizeof(t_command));
 		if (commands[i] == NULL
 			|| init_command(&current, commands[i], &e->env) == -1)
-			return (ft_free_list(tokens), command_cleanup(commands), NULL);
+			return (ft_free_list(tokens), NULL);
 	}
 	commands[i] = NULL;
 	return (e->token = tokens, commands);

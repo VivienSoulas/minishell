@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 12:23:16 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/06/05 14:57:24 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 # include <sys/wait.h>
 # include <stdbool.h>
 
-extern volatile sig_atomic_t	g_signal_caught;
+# define MAIN 0
+# define CHILD 1
 
 // PIPE (1): pipe symbol ('|') indicating a command pipeline.
 // IN (2): input redirection ('<') indicating input redirection from a file.
@@ -76,6 +77,7 @@ typedef struct s_command
 	int		is_heredoc;
 	int		is_pipe;
 	int		is_buildin;
+	int		is_out;
 }	t_command;
 
 // struct to manage split of tokens
@@ -134,13 +136,11 @@ int			is_buildin(char *command);
 int			exec_buildin(t_command *cmd, t_expansion *e, t_token **t);
 int			env(t_envp **env, t_token **t, t_expansion *e);
 void		pwd(t_envp **env);
-int			echo(t_token **token, t_expansion *e, int fd);
+int			echo(t_command *cmd, t_expansion *e, int fd);
 int			cd(t_command *cmd, t_expansion *e);
 
 // utils
 int			ft_count_args(char **tokens);
-void		handler(int sig);
-void		signals_handling(void);
 char		*ft_strjoin_free(char *s1, char *s2);
 int			ft_initialise_expansion(t_expansion *exp, char **env);
 
@@ -213,6 +213,12 @@ char		*ft_state_2(t_expansion *exp, t_token *token);
 // error
 void		error(int i, char *str);
 
+// signals
+void		sig_hand(int sig);
+void		parent(int sig);
+void		child(int sig);
+void		heredoc(int sig);
+
 // exit
 int			ft_exit(t_expansion *e, t_command *cmd);
 int			ft_atoi_exit(const char *nptr);
@@ -235,8 +241,6 @@ int			init_array(char **res, t_envp **list);
 char		**list_to_array(t_envp **list);
 
 // exec
-void		pipe_manage(int is_not_last, int *last_pipe_read, int *fd);
-int			init_pipe(int *fd, int last_pipe_read);
 int			exe_cmds(t_command **c, t_expansion *e, t_token **token);
 
 // find exec

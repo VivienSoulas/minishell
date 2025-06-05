@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_process.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 14:08:17 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 14:08:18 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/06/03 14:27:59 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	close_fds(t_command *command)
 {
-	if (command->input_fd > 0)
+	if (command->input_fd >= 0)
 		close(command->input_fd);
 	if (command->output_fd > 0)
 		close(command->output_fd);

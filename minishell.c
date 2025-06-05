@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 15:39:51 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/06/05 13:07:10 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,22 @@
 // assign each token to different type and redirect them to exec
 #include "parsing.h"
 
-volatile sig_atomic_t	g_signal_caught = 0;
-
 int	main(int ac, char **av, char **envp)
 {
 	t_expansion	*e;
 	t_token		*token;
 
+	(void)av;
+	if (ac != 1)
+		return (EXIT_FAILURE);
 	e = malloc(sizeof(t_expansion));
 	if (e == NULL)
 		return (EXIT_FAILURE);
 	ft_memset(e, 0, sizeof(t_expansion));
 	if (ft_initialise_expansion(e, envp) == 1)
 		return (ft_free_e(&e), EXIT_FAILURE);
-	(void)av;
-	if (ac != 1)
-		return (ft_free_e(&e), EXIT_FAILURE);
 	token = NULL;
-	signals_handling();
+	sig_hand(MAIN);
 	while (e->exit == 0)
 	{
 		ft_loop(&token, e);
@@ -49,11 +47,6 @@ int	ft_loop(t_token **token, t_expansion *e)
 {
 	char		*input;
 
-	if (g_signal_caught == 1)
-	{
-		e->exit_stat = 130;
-		g_signal_caught = 0;
-	}
 	input = readline("\033[38;2;0;255;0mminishell> \033[0m");
 	if (input == NULL)
 		return (e->exit = 1);
@@ -95,6 +88,15 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	ft_assign_types(*token);
 	if (ft_check_tokens(token, e) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
+
+//t_token *current;
+//current = *token;
+//while(current)
+//{
+//	printf("token: %s\ntype: %d\n", current->input, current->type);
+//	current = current->next;
+//}
+
 	return (ft_free_split(tokens), free(split), 0);
 }
 
