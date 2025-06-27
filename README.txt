@@ -4,20 +4,20 @@ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressi
 
 free memory of heredoc on CTL+C during heredoc
 
-cat | cat | cat | echo hi	--> should print hi and wait
-env | echo hi				--> shouldnt print a pipe
-
-in the case of :
-touch Permission
-chmod 000 Permission
-cat hello > Permission
-
-(echo hi) | echo | bye 		--> break on ()
-break on && and || ??
-
 
 DONE :
+cat < missing | echo hi		--> should print "file not found" AND print hi (double free !)
+heredoc exit status --> 130
 echo hi > 1 > permission > 2 > 3 --> should stop on permission
 echo hi > 1 > 2 > 3 > 4		--> should create all the files and onlu writte in the last one
 CTL+C in heredoc should out of heredoc, CTL+D too, CTL+\ shouldnt do anything
 CTL+C in nested minishells	--> should print new line after signal
+in the case of :
+touch Permission
+chmod 000 Permission
+cat hello > Permission
+exit 2 3 		--> shouldnt exit
+echo when not in first arg:
+		cat | cat | cat | echo hi	--> should print hi and wait
+		env | echo hi				--> shouldnt print a pipe
+echo memory leak

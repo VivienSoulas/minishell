@@ -17,7 +17,7 @@ static int	open_input_file(t_command *command)
 	command->input_fd = open(command->input_file, O_RDONLY);
 	if (command->input_fd == -1)
 	{
-		perror("open");
+		perror(command->input_file);
 		return (-1);
 	}
 	return (0);

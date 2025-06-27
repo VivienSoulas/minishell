@@ -23,8 +23,6 @@
 # include <sys/wait.h>
 # include <stdbool.h>
 
-extern volatile sig_atomic_t g_heredoc_sigint;
- 
 # define MAIN 0
 # define CHILD 1
 
@@ -111,6 +109,8 @@ typedef struct s_expansion
 	int			i;
 	int			exit;
 	int			exit_stat;
+	int			initial_stdin;
+	int			initial_stdout;
 	char		**envp;
 	t_envp		*env;
 	t_command	**cmd;
@@ -139,8 +139,15 @@ int			is_buildin(char *command);
 int			exec_buildin(t_command *cmd, t_expansion *e, t_token **t);
 int			env(t_envp **env, t_token **t, t_expansion *e);
 void		pwd(t_envp **env);
-int			echo(t_command *cmd, t_expansion *e, int fd);
+
+// cd
+t_envp		*find_node_env(t_envp **list, char *name);
+int			update_node_with_cwd(char *name, t_envp **envp);
 int			cd(t_command *cmd, t_expansion *e);
+
+// echo
+int			echo(t_command *cmd, t_expansion *e, int fd);
+int			echo_print(char *current, t_expansion *e, t_command *cmd, int fd);
 
 // utils
 int			ft_count_args(char **tokens);
@@ -171,7 +178,10 @@ void		ft_free_split(char **split);
 void		ft_free_list(t_token **token);
 void		ft_free_envp_list(t_envp **envp);
 void		free_array(char **array);
+
+// free e 2
 void		ft_free_e(t_expansion **e);
+void		ft_free_e_2(t_expansion **e);
 
 // export
 int			ft_export_check(t_token **token, t_expansion *e);
@@ -222,10 +232,18 @@ void		parent(int sig);
 void		child(int sig);
 void		heredoc(int sig);
 
+// heredoc
+void		readline_here(char *delimiter, t_expansion *e);
+void		ft_pid_0(int *here_pipe, char *delim, t_expansion *e, int *expand);
+void		readline_cleanup(pid_t pid, int *here_pipe, t_expansion *e);
+void		ft_heredoc(char *deli, t_expansion *e, int *here_pipe, int *expand);
+int			line_read(char *delim, int *here_pipe, int expand, t_expansion *e);
+
+// heredoc utils
+int			init_pipe(int *fd);
+
 // exit
 int			ft_exit(t_expansion *e, t_command *cmd);
-int			ft_atoi_exit(const char *nptr);
-int			ft_isnum_exit(char *str);
 
 // commandes free
 void		free_strings(t_command *command);
@@ -257,8 +275,6 @@ int			input_fd(t_command *command, int i, int last_pipe_read);
 int			output_fd(t_command *command, int *fd, int is_not_last);
 
 // process
-int			line_read(char *delim, int *here_pipe, int expand, t_expansion *e);
-void		readline_here(char *delimiter, t_expansion *e);
 int			handle_redirection(t_command *command, t_expansion *e);
 void		exe_child(t_command *c, t_expansion *e);
 int			exe_buildin(t_command *c, t_expansion *e, t_token **t);

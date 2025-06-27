@@ -48,6 +48,7 @@ int	ft_variable_expansion(t_token *token, t_expansion *e)
 	if (res == NULL)
 		return (1);
 	free(token->input);
+	token->input = NULL;
 	len = ft_strlen(res);
 	token->input = malloc(sizeof(char) * (len + 1));
 	if (token->input == NULL)

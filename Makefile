@@ -30,7 +30,10 @@ SRC		=	minishell.c \
 			init_redirection.c \
 			exit.c \
 			signals.c \
-			heredoc.c
+			heredoc.c \
+			utils_heredoc.c \
+			free_e.c \
+			echo.c
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)
@@ -67,7 +70,7 @@ $(LIBFT_LIB):
 	@make -C $(LIBFT)
 	@echo "$(BLUE)libft: libft.a created$(RESET)"
 
-PHONY: all clean fclean re run
+PHONY: all clean fclean re val
 
 all: $(LIBFT_LIB) $(NAME)
 
@@ -83,5 +86,5 @@ fclean: clean
 
 re: fclean all
 
-run: all
-	@./$(NAME)
+val:
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=rl.supp --track-fds=yes --trace-children=yes ./minishell

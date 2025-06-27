@@ -37,20 +37,15 @@ int	handle_redirection(t_command *command, t_expansion *e)
 int	exe_buildin(t_command *c, t_expansion *e, t_token **t)
 {
 	int	return_value;
-	int	initial_stdin;
-	int	initial_stdout;
 
-	initial_stdin = -1;
-	initial_stdout = -1;
 	if (c->is_heredoc || c->input_fd >= 0)
-		initial_stdin = dup(STDIN_FILENO);
+		e->initial_stdin = dup(STDIN_FILENO);
 	if (c->output_fd > 0)
-		initial_stdout = dup(STDOUT_FILENO);
+		e->initial_stdout = dup(STDOUT_FILENO);
 	if (handle_redirection(c, e) != 0)
 		return (1);
 	return_value = exec_buildin(c, e, t);
-	reset_fds(initial_stdin, initial_stdout);
-	close_fds(c);
+	reset_fds(e->initial_stdin, e->initial_stdout);
 	return (return_value);
 }
 

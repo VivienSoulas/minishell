@@ -55,7 +55,7 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 		return (env(&e->env, t, e), e->exit_stat);
 	}
 	else if (!ft_strcmp(cmd->args[0], "echo")
-			|| !ft_strcmp(cmd->args[0], "/bin/echo"))
+		|| !ft_strcmp(cmd->args[0], "/bin/echo"))
 		return (echo(cmd, e, fd), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (ft_exit(e, cmd));
@@ -96,34 +96,4 @@ void	pwd(t_envp **env)
 		}
 		current = current->next;
 	}
-}
-
-int	echo(t_command *cmd, t_expansion *e, int fd)
-{
-	int		no_new_line;
-	char	*current;
-	t_token token;
-	int		i;
-
-	i = 1;
-	no_new_line = 0;
-	current = cmd->args[i];
-	if (current && !ft_strcmp(current, "-n"))
-	{
-		no_new_line = 1;
-		current = cmd->args[++i];
-	}
-	while (current)
-	{
-		token.input = current;
-		if (ft_variable_expansion(&token, e) == 1)
-			return (1);
-		write(1, token.input, ft_strlen(token.input));
-		current = cmd->args[++i];
-		if (current)
-			write(1, " ", 1);
-	}
-	if (!no_new_line)
-		write(fd, "\n", 1);
-	return (0);
 }

@@ -38,9 +38,15 @@ static int	wait_for_childs(int n_cmds, t_expansion *e)
 	{
 		signal(SIGINT, &child);
 		if (waitpid(e->pids[i], &status, 0) == -1)
-			return (sig_hand(MAIN), perror("waitpid"), free(e->pids), 1);
+		{
+			free(e->pids);
+			e->pids = NULL;
+			return (sig_hand(MAIN)/* , perror("waitpid") */, 1);
+		}
 		if (WIFEXITED(status))
+		{
 			last_exit_status = WEXITSTATUS(status);
+		}
 	}
 	sig_hand(MAIN);
 	free(e->pids);
@@ -68,7 +74,6 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 
 	i = -1;
 	n_cmds = command_count(c);
-
 	if (n_cmds == 1 && !ft_strcmp(c[0]->args[0], "exit"))
 		return (exe_buildin(c[0], e, token));
 	e->pids = malloc(sizeof(pid_t) * n_cmds);
@@ -79,10 +84,19 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 	{
 		if (i < n_cmds - 1)
 			if (pipe(pipe_fd) == -1)
-				return (perror("pipe"), free(e->pids), 1);
-		if (input_fd(c[i], i, last_pipe_read) != 0
-			|| output_fd(c[i], pipe_fd, i < n_cmds - 1) != 0)
-			return (free(e->pids), 1);
+				return (perror("pipe"), free(e->pids), e->pids = NULL, 1);
+		if ((input_fd(c[i], i, last_pipe_read) != 0
+			|| output_fd(c[i], pipe_fd, i < n_cmds - 1) != 0))
+			// return (free(e->pids), 1);
+			{
+				if ( i < n_cmds -1)
+				{
+					close(pipe_fd[0]);
+					close(pipe_fd[1]);
+				}
+				e->pids[i] = -1;
+				continue ;
+			}
 		e->pids[i] = fork();
 		if (e->pids[i] == 0)
 		{
@@ -91,11 +105,11 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 				close(pipe_fd[0]);
 			if (c[i]->is_buildin)
 			{
-				if (!ft_strcmp(c[i]->args[0], "exit"))
-				{
-					ft_free_e(&e);
-					exit(0);
-				}
+				// if (!ft_strcmp(c[i]->args[0], "exit"))
+				// {
+				// 	ft_free_e(&e);
+				// 	exit(0);
+				// }
 				i = exe_buildin(c[i], e, token);
 				ft_free_e(&e);
 				exit(i);
@@ -103,7 +117,7 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 			exe_child(c[i], e);
 		}
 		else if (e->pids[i] < 0)
-			return (perror("fork"), free(e->pids), 1);
+			return (perror("fork"), free(e->pids), e->pids = NULL, 1);
 		clean_fds(i, n_cmds, pipe_fd, &last_pipe_read);
 	}
 	if (last_pipe_read != -1)

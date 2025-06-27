@@ -23,6 +23,39 @@ static int	grab_word(t_token **token, char **dest)
 	return (0);
 }
 
+int	ft_cmd_out(t_command *command)
+{
+	int	temp_fd;
+
+	if (command->is_append)
+		temp_fd = open(command->output_file,
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		temp_fd = open(command->output_file,
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (temp_fd != -1)
+		close(temp_fd);
+	else
+		return (-1);
+	return (0);
+}
+
+int	ft_out_append(t_command *command, t_token **token)
+{
+	if (command->output_file)
+	{
+		if (ft_cmd_out(command) == -1)
+			return (-1);
+	}
+	if ((*token)->type == APPEND)
+		command->is_append = 1;
+	else
+		command->is_append = 0;
+	if (grab_word(token, &command->output_file) == -1)
+		return (-1);
+	return (0);
+}
+
 int	init_redirection(t_token **token, t_command *command)
 {
 	while (*token && ((*token)->type > 0 && (*token)->type < 6))
@@ -42,25 +75,7 @@ int	init_redirection(t_token **token, t_command *command)
 		}
 		else if ((*token)->type == OUT || (*token)->type == APPEND)
 		{
-			if (command->output_file)
-			{
-				int temp_fd;
-				if (command->is_append)
-					temp_fd = open(command->output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-				else
-					temp_fd = open(command->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-				if (temp_fd != -1)
-					close(temp_fd);
-				else
-				{
-					return (-1);
-				}
-			}
-			if ((*token)->type == APPEND)
-				command->is_append = 1;
-			else
-				command->is_append = 0;
-			if (grab_word(token, &command->output_file) == -1)
+			if (ft_out_append(command, token) == -1)
 				return (-1);
 		}
 		*token = (*token)->next;

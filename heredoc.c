@@ -29,14 +29,14 @@ int	line_read(char *delim, int *here_pipe, int expand, t_expansion *e)
 	return (0);
 }
 
-void	ft_heredoc(char *delimiter, t_expansion *e, int *here_pipe, int expand)
+void	ft_heredoc(char *deli, t_expansion *e, int *here_pipe, int *expand)
 {
-	while (g_heredoc_sigint == 0)
+	while (1)
 	{
-		if (line_read(delimiter, here_pipe, expand, e) != 0)
+		if (line_read(deli, here_pipe, *expand, e) != 0)
 			break ;
 	}
-	ft_free_e(&e);		//needed for leak free oef heredoc
+	ft_free_e(&e);
 	close(here_pipe[1]);
 	exit(EXIT_SUCCESS);
 }
@@ -46,13 +46,16 @@ void	readline_cleanup(pid_t pid, int *here_pipe, t_expansion *e)
 	int	status;
 
 	waitpid(pid, &status, 0);
+	signal(SIGINT, &heredoc);
 	if (WEXITSTATUS(status) != 0)
 	{
+		ft_free_e(&e);
 		close(here_pipe[0]);
-		exit(EXIT_FAILURE);
+		exit(130);
 	}
 	if (dup2(here_pipe[0], STDIN_FILENO) == -1)
 	{
+		ft_free_e(&e);
 		close(here_pipe[0]);
 		perror("dup2");
 		exit(EXIT_FAILURE);
@@ -60,32 +63,27 @@ void	readline_cleanup(pid_t pid, int *here_pipe, t_expansion *e)
 	close(here_pipe[0]);
 }
 
-static int	init_pipe(int *fd)
+void	ft_pid_0(int *here_pipe, char *delim, t_expansion *e, int *expand)
 {
-	if (pipe(fd) != 0)
-	{
-		perror("pipe");
-		return (-1);
-	}
-	return (0);
+	sig_hand(HEREDOC);
+	close(here_pipe[0]);
+	ft_heredoc(delim, e, here_pipe, expand);
 }
 
-void	readline_here(char *delimiter, t_expansion *e)
+void	readline_here(char *delim, t_expansion *e)
 {
 	int		here_pipe[2];
-	int		expand;
 	pid_t	pid;
+	int		expand;
 
-	g_heredoc_sigint = 0;
 	expand = 1;
-	if (delimiter[0] == 34 || delimiter[0] == 39)
+	if (delim[0] == 34 || delim[0] == 39)
 	{
-		if (ft_heredoc_delimiter(&expand, &delimiter) == 1)
+		if (ft_heredoc_delimiter(&expand, &delim) == 1)
 			exit(EXIT_FAILURE);
 	}
 	if (init_pipe(here_pipe) != 0)
 		exit(EXIT_FAILURE);
-	signal(SIGINT, &heredoc);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -95,11 +93,7 @@ void	readline_here(char *delimiter, t_expansion *e)
 		exit(EXIT_FAILURE);
 	}
 	if (pid == 0)
-	{
-		close(here_pipe[0]);
-		sig_hand(HEREDOC);
-		ft_heredoc(delimiter, e, here_pipe, expand);
-	}
+		ft_pid_0(here_pipe, delim, e, &expand);
 	close(here_pipe[1]);
 	readline_cleanup(pid, here_pipe, e);
 }

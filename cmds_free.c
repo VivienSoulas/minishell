@@ -50,4 +50,5 @@ void	command_cleanup(t_command **commands)
 		commands[i] = NULL;
 	}
 	free(commands);
+	commands = NULL;
 }

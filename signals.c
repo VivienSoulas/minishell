@@ -24,9 +24,9 @@ void	heredoc(int sig)
 {
 	if (sig == SIGINT)
 	{
-		g_heredoc_sigint = 1;
 		rl_replace_line("", 0);
 		rl_on_new_line();
+		exit(130);
 	}
 }
 
@@ -44,7 +44,7 @@ void	sig_hand(int sig)
 	}
 	if (sig == HEREDOC)
 	{
-		signal(SIGINT, SIG_DFL);
+		signal(SIGINT, &heredoc);
 		signal(SIGQUIT, SIG_IGN);
 	}
 }

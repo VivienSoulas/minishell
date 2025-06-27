@@ -16,15 +16,12 @@
 // assign each token to different type and redirect them to exec
 #include "parsing.h"
 
-volatile sig_atomic_t g_heredoc_sigint = 0;
-
 int	main(int ac, char **av, char **envp)
 {
 	t_expansion	*e;
 	t_token		*token;
 
 	(void)av;
-	g_heredoc_sigint = 0;
 	if (ac != 1)
 		return (EXIT_FAILURE);
 	e = malloc(sizeof(t_expansion));
@@ -91,15 +88,6 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	ft_assign_types(*token);
 	if (ft_check_tokens(token, e) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
-
-//t_token *current;
-//current = *token;
-//while(current)
-//{
-//	printf("token: %s\ntype: %d\n", current->input, current->type);
-//	current = current->next;
-//}
-
 	return (ft_free_split(tokens), free(split), 0);
 }
 
