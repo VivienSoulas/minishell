@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/06/05 16:14:37 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/10 16:53:10 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <errno.h>
 # include <sys/wait.h>
 # include <stdbool.h>
+
+extern sig_atomic_t	g_heredoc_variable;
 
 # define MAIN 0
 # define CHILD 1
@@ -118,6 +120,14 @@ typedef struct s_expansion
 	pid_t		*pids;
 }	t_expansion;
 
+typedef struct s_exec
+{
+	int	i;
+	int	n_cmds;
+	int	pipe_fds[2];
+	int	last_pipe_read;
+}	t_exec;
+
 // main
 int			ft_loop(t_token **token, t_expansion *e);
 int			ft_parse_input(char *in, t_expansion *e, t_token **token);
@@ -137,7 +147,7 @@ int			assign_cmd_or_arg(t_token *current, int *is_cmd, int *is_red);
 // build-in
 int			is_buildin(char *command);
 int			exec_buildin(t_command *cmd, t_expansion *e, t_token **t);
-int			env(t_envp **env, t_token **t, t_expansion *e);
+int			env(t_expansion *e);
 void		pwd(t_envp **env);
 
 // cd
@@ -227,6 +237,7 @@ char		*ft_state_2(t_expansion *exp, t_token *token);
 void		error(int i, char *str);
 
 // signals
+int			forceout(void);
 void		sig_hand(int sig);
 void		parent(int sig);
 void		child(int sig);
@@ -234,10 +245,10 @@ void		heredoc(int sig);
 
 // heredoc
 void		readline_here(char *delimiter, t_expansion *e);
-void		ft_pid_0(int *here_pipe, char *delim, t_expansion *e, int *expand);
-void		readline_cleanup(pid_t pid, int *here_pipe, t_expansion *e);
-void		ft_heredoc(char *deli, t_expansion *e, int *here_pipe, int *expand);
-int			line_read(char *delim, int *here_pipe, int expand, t_expansion *e);
+void		ft_pid_0(int fd, char *delim, t_expansion *e, int *expand);
+void		readline_cleanup(int fd, t_expansion *e, char *filename);
+void		ft_heredoc(char *deli, t_expansion *e, int fd, int *expand);
+int			line_read(char *delim, int fd, int expand, t_expansion *e);
 
 // heredoc utils
 int			init_pipe(int *fd);
@@ -263,6 +274,9 @@ char		**list_to_array(t_envp **list);
 
 // exec
 int			exe_cmds(t_command **c, t_expansion *e, t_token **token);
+int			pipe_init(t_exec *exec, t_expansion *e);
+int			in_out_setup(t_exec *exec, t_expansion *e);
+int			exec_process(t_exec *exec, t_expansion *e);
 
 // find exec
 char		*find_executable_in_path(char *command);

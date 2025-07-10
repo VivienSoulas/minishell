@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/10 15:55:34 by vsoulas           #+#    #+#             */
+/*   Updated: 2025/07/10 15:55:35 by vsoulas          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parsing.h"
 
 int	echo_print(char *current, t_expansion *e, t_command *cmd, int fd)
@@ -6,7 +18,7 @@ int	echo_print(char *current, t_expansion *e, t_command *cmd, int fd)
 	int		i;
 
 	i = 1;
-	if (!ft_strcmp(current, "-n"))
+	if (current && !ft_strcmp(current, "-n"))
 		current = cmd->args[++i];
 	while (current)
 	{

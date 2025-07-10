@@ -1,0 +1,65 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/10 11:20:23 by jdavtian          #+#    #+#             */
+/*   Updated: 2025/07/10 11:53:27 by jdavtian         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "parsing.h"
+
+int	pipe_init(t_exec *exec, t_expansion *e)
+{
+	if (exec->i < exec->n_cmds - 1)
+		if (init_pipe(exec->pipe_fds) == -1)
+			return (free(e->pids), e->pids = NULL, 1);
+	return (0);
+}
+
+int	in_out_setup(t_exec *exec, t_expansion *e)
+{
+	t_command	**c;
+
+	c = e->cmd;
+	if ((input_fd(c[exec->i], exec->i, exec->last_pipe_read) != 0
+			|| output_fd(c[exec->i], exec->pipe_fds,
+				exec->i < exec->n_cmds - 1) != 0))
+	{
+		if (exec->i < exec->n_cmds -1)
+		{
+			close(exec->pipe_fds[0]);
+			close(exec->pipe_fds[1]);
+		}
+		e->pids[exec->i] = -1;
+		return (1);
+	}
+	return (0);
+}
+
+int	exec_process(t_exec *exec, t_expansion *e)
+{
+	t_command	**c;
+
+	c = e->cmd;
+	e->pids[exec->i] = fork();
+	if (e->pids[exec->i] == 0)
+	{
+		sig_hand(CHILD);
+		if (exec->i < exec->n_cmds - 1)
+			close(exec->pipe_fds[0]);
+		if (c[exec->i]->is_buildin)
+		{
+			exec->i = exe_buildin(c[exec->i], e, e->token);
+			ft_free_e(&e);
+			exit(exec->i);
+		}
+		exe_child(c[exec->i], e);
+	}
+	else if (e->pids[exec->i] < 0)
+		return (perror("fork"), free(e->pids), e->pids = NULL, 1);
+	return (0);
+}

@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:40 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/06/05 15:38:41 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/10 15:55:29 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 	{
 		if (cmd->args[1])
 			return (printf("env: too many arguments\n"), e->exit_stat = 0);
-		return (env(&e->env, t, e), e->exit_stat);
+		return (env(e), e->exit_stat);
 	}
 	else if (!ft_strcmp(cmd->args[0], "echo")
 		|| !ft_strcmp(cmd->args[0], "/bin/echo"))
@@ -64,20 +64,18 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 	return (e->exit);
 }
 
-int	env(t_envp **env, t_token **t, t_expansion *e)
+int	env(t_expansion *e)
 {
-	int	i;
+	t_envp	*current;
 
-	i = 0;
-	if ((*t)->next && (*t)->next->type == ARG)
+	current = e->env;
+	while (current)
 	{
-		printf(" Permission denied\n");
-		return (error(0, (*t)->next->input), e->exit_stat = 126);
-	}
-	while (e->envp[i])
-	{
-		printf("%s\n", e->envp[i]);
-		i++;
+		printf("%s", current->name);
+		if (current->value)
+			printf("=%s", current->value);
+		printf("\n");
+		current = current->next;
 	}
 	return (e->exit_stat = 0);
 }

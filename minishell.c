@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/06/05 16:14:44 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/10 16:52:17 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 // check tokens to find operators, input, output, args, redirections etc
 // assign each token to different type and redirect them to exec
 #include "parsing.h"
+
+sig_atomic_t	g_heredoc_variable = 0;
 
 int	main(int ac, char **av, char **envp)
 {
@@ -47,6 +49,12 @@ int	ft_loop(t_token **token, t_expansion *e)
 {
 	char		*input;
 
+	sig_hand(MAIN);
+	if (g_heredoc_variable == 1)
+	{
+		e->exit_stat = 130;
+		g_heredoc_variable = 0;
+	}
 	input = readline("\033[38;2;0;255;0mminishell> \033[0m");
 	if (input == NULL)
 		return (e->exit = 1);

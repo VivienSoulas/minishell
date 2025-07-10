@@ -6,6 +6,7 @@ SRC		=	minishell.c \
 			split.c \
 			utils_split.c \
 			exec.c \
+			exec_utils.c \
 			find_exec.c \
 			token_to_command.c \
 			cmds_free.c \
@@ -33,7 +34,7 @@ SRC		=	minishell.c \
 			heredoc.c \
 			utils_heredoc.c \
 			free_e.c \
-			echo.c
+			echo.c \
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)
@@ -53,7 +54,7 @@ RESET	=	\033[0m # No Color
 
 # compile source files into object files in a directory
 $(OBJ_DIR)/%.o:%.c
-	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 # LIBft library
