@@ -43,7 +43,6 @@ void	heredoc(int sig)
 	{
 		rl_replace_line("", 0);
 		rl_on_new_line();
-		printf("\n");
 		g_heredoc_variable = 1;
 		rl_done = 1;
 	}
