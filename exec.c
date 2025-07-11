@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:34:39 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/07/10 15:23:51 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/11 11:54:14 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,6 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 
 	exec.i = -1;
 	exec.n_cmds = command_count(c);
-	if (exec.n_cmds == 1 && is_buildin(c[0]->args[0]))
-		return (exe_buildin(c[0], e, token));
 	e->pids = malloc(sizeof(pid_t) * exec.n_cmds);
 	if (!e->pids)
 		return (error(3, NULL), 1);
@@ -80,11 +78,13 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 	while (++exec.i < exec.n_cmds)
 	{
 		if (pipe_init(&exec, e))
-			return (1);
+			return (free(e->pids), e->pids = NULL, 1);
 		if (in_out_setup(&exec, e))
 			continue ;
+		if (exec.n_cmds == 1 && is_buildin(c[0]->args[0]))
+			return (free(e->pids), e->pids = NULL, exe_buildin(c[0], e, token));
 		if (exec_process(&exec, e))
-			return (1);
+			return (free(e->pids), e->pids = NULL, 1);
 		clean_fds(exec.i, exec.n_cmds, exec.pipe_fds, &exec.last_pipe_read);
 	}
 	if (exec.last_pipe_read != -1)
