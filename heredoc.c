@@ -106,7 +106,7 @@ void	readline_here(char *delim, t_expansion *e)
 	if (g_heredoc_variable == 1)
 	{
 		close(fd);
-		fd = open(tmpfile, O_RDWR | O_CREAT | O_TRUNC, 0600); 
+		fd = open(tmpfile, O_RDWR | O_CREAT | O_TRUNC, 0600);
 	}
 	readline_cleanup(fd, e, tmpfile);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_process.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 14:08:17 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/06/03 14:27:59 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/07/11 11:08:16 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	exe_child(t_command *c, t_expansion *e)
 		exit(e->exit_stat = 1);
 	if (c->executable_path == NULL)
 	{
-		perror("invalid command");
+		printf("invalid command: %s\n", c->args[0]);
 		ft_free_e(&e);
 		exit(127);
 	}
