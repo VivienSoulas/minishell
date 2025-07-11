@@ -104,6 +104,13 @@ typedef struct s_token
 	struct s_token	*prev;
 }	t_token;
 
+// typedef struct s_export
+// {
+// 	char			*name;
+// 	char			*value;
+// 	struct s_export	*next;
+// }	t_export;
+
 // struct to keep expansion variable norminette friendly
 typedef struct s_expansion
 {
@@ -115,6 +122,7 @@ typedef struct s_expansion
 	int			initial_stdout;
 	char		**envp;
 	t_envp		*env;
+	// t_export	*export;
 	t_command	**cmd;
 	t_token		**token;
 	pid_t		*pids;
@@ -205,7 +213,7 @@ int			ft_export_equal(t_token *current, t_expansion *e);
 int			ft_dollar(t_token *cur, t_variable *vari, t_expansion *e);
 
 // utils export
-int			is_valid(char *str);
+int			is_valid(t_token *current);
 int			ft_replace_value(char *export, t_envp *current);
 void		ft_sort_list(t_envp **array, int total);
 int			ft_compare_names(char *name1, char *name2);

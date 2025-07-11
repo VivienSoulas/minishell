@@ -12,18 +12,20 @@
 
 #include "parsing.h"
 
-int	is_valid(char *str)
+int	is_valid(t_token *current)
 {
 	int	i;
 
-	if (str[0] != '_' && ft_isalpha(str[0]) == 0)
-		return (1);
+	if (current->type >= CMD && current->type <= APPEND)
+		return(printf("command to be interpreted here\n"), 0);
+	else if (current->input[0] != '_' && ft_isalpha(current->input[0]) == 0)
+		return (printf("noo\n"), 1);
 	i = 1;
-	if (str[i])
+	if (current->input[i])
 	{
-		while (str[i] && str[i] != '=')
+		while (current->input[i] && current->input[i] != '=')
 		{
-			if ((ft_isalnum(str[i]) == 0) && str[i] != '_')
+			if ((ft_isalnum(current->input[i]) == 0) && current->input[i] != '_')
 				return (1);
 			i++;
 		}

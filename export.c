@@ -38,15 +38,17 @@ int	ft_export_check(t_token **token, t_expansion *e)
 		return (ft_print_export(&e->env));
 	while (current)
 	{
-		if (is_valid(current->input) == 0)
+		if (is_valid(current) == 0)
 		{
 			if (ft_strchr(current->input, '=') != 0)
 			{
 				if (ft_export_equal(current, e) == 1)
 					return (e->exit_stat = 1);
 			}
-			else if (add_export_to_envp(&e->env, NULL, current->input) == 1)
-				return (e->exit_stat = 1);
+			// else if (add_export_to_envp(&e->env, NULL, current->input) == 1)
+			// 	return (e->exit_stat = 1);
+			else
+				return (0);
 		}
 		else
 			return (error(2, current->input), e->exit_stat = 1, 0);

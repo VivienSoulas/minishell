@@ -75,7 +75,7 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	char		**tokens;
 	t_split		*split;
 
-	if (in == NULL || in[0] == '\0' || in[0] == ' ')
+	if (in == NULL || in[0] == '\0' || (in[0] >= 7 && in[0] <= 13))
 		return (e->exit_stat = 1);
 	if (ft_check_quotes(in) == 1)
 		return (e->exit_stat = 1);
@@ -94,6 +94,14 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	if (ft_variable_expansion(*token, e) == 1)
 		return (ft_free_split(tokens), free(split), e->exit = 1);
 	ft_assign_types(*token);
+// t_token	*current;
+// current = *token;
+// while (current)
+// {
+// 	printf("token->input = %s\n", current->input);
+// 	printf("token->input = %d\n", current->type);
+// 	current = current->next;
+// }
 	if (ft_check_tokens(token, e) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
 	return (ft_free_split(tokens), free(split), 0);

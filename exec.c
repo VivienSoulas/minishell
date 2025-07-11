@@ -55,14 +55,14 @@ static int	wait_for_childs(int n_cmds, t_expansion *e)
 	return (e->exit_stat);
 }
 
-static void	clean_fds(int i, int n_cmds, int *pipe_fd, int *last_pipe_read)
+static void	clean_fds(t_exec *exec)
 {
-	if (i < n_cmds - 1)
-		close(pipe_fd[1]);
-	if (*last_pipe_read != -1)
-		close(*last_pipe_read);
-	if (i < n_cmds - 1)
-		*last_pipe_read = pipe_fd[0];
+	if (exec->i < exec->n_cmds - 1)
+		close(exec->pipe_fds[1]);
+	if (exec->last_pipe_read != -1)
+		close(exec->last_pipe_read);
+	if (exec->i < exec->n_cmds - 1)
+		exec->last_pipe_read = exec->pipe_fds[0];
 }
 
 int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
@@ -78,14 +78,14 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 	while (++exec.i < exec.n_cmds)
 	{
 		if (pipe_init(&exec, e))
-			return (free(e->pids), e->pids = NULL, 1);
+			return (clean_fds(&exec), free(e->pids), e->pids = NULL, 1);
 		if (in_out_setup(&exec, e))
 			continue ;
 		if (exec.n_cmds == 1 && is_buildin(c[0]->args[0]))
-			return (free(e->pids), e->pids = NULL, exe_buildin(c[0], e, token));
+			return (clean_fds(&exec), free(e->pids), e->pids = NULL, exe_buildin(c[0], e, token));
 		if (exec_process(&exec, e))
-			return (free(e->pids), e->pids = NULL, 1);
-		clean_fds(exec.i, exec.n_cmds, exec.pipe_fds, &exec.last_pipe_read);
+			return (clean_fds(&exec), free(e->pids), e->pids = NULL, 1);
+		clean_fds(&exec);
 	}
 	if (exec.last_pipe_read != -1)
 		close(exec.last_pipe_read);
