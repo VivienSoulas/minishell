@@ -29,16 +29,16 @@ int	ft_crop(t_token *token)
 // if export is called, prints list of env + variable in order
 // if no equal sign, prints only when export is called as VAR
 // if no arg value VAR= only print when export is called
-int	ft_export_check(t_token **token, t_expansion *e)
+int	ft_export_check(t_token **token, t_expansion *e, int fd)
 {
 	t_token	*current;
 
 	current = (*token)->next;
 	if (current == NULL)
-		return (ft_print_export(&e->export));
+		return (ft_print_export(&e->export, fd, e));
 	while (current)
 	{
-		if (is_valid(current) == 0)
+		if (is_valid(current, fd, e) == 0)
 		{
 			if (ft_strchr(current->input, '=') != 0)
 			{
@@ -108,7 +108,7 @@ t_envp	*ft_new_export(char *value, char *name)
 }
 
 // prints export list in alphabetic order
-int	ft_print_export(t_export **export)
+int	ft_print_export(t_export **export, int fd, t_expansion *e)
 {
 	t_export	**list;
 	int			total;
@@ -133,6 +133,6 @@ int	ft_print_export(t_export **export)
 		current = current->next;
 	}
 	ft_sort_list((t_envp **)list, total);
-	ft_print((t_envp **)list, total);
+	ft_print((t_envp **)list, total, fd);
 	return (free(list), 0);
 }

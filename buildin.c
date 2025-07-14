@@ -21,12 +21,13 @@ int	is_buildin(char *command)
 		"env",
 		"exit",
 		"echo",
-		"/bin/echo"
+		"/bin/echo",
+		"export"
 	};
 	int			i;
 
 	i = 0;
-	while (i < 7)
+	while (i < 8)
 	{
 		if (ft_strcmp(command, buildins[i]) == 0)
 			return (1);
@@ -49,11 +50,7 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 	else if (!ft_strcmp(cmd->args[0], "unset"))
 		return (unset(cmd, &e->env), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "env"))
-	{
-		if (cmd->args[1])
-			return (printf("env: too many arguments\n"), e->exit_stat = 0);
-		return (env(e), e->exit_stat);
-	}
+		return (env(cmd, e), e->exit_stat);
 	else if (!ft_strcmp(cmd->args[0], "echo")
 		|| !ft_strcmp(cmd->args[0], "/bin/echo"))
 		return (echo(cmd, e, fd), e->exit_stat = 0);
@@ -61,13 +58,17 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 		return (ft_exit(e, cmd));
 	else if (!ft_strcmp(cmd->args[0], "cd"))
 		return (cd(cmd, e), e->exit_stat = 1);
+	else if (!ft_strcmp(cmd->args[0], "export"))
+		return (ft_export_check(t, e, fd), e->exit_stat = 0);
 	return (e->exit);
 }
 
-int	env(t_expansion *e)
+int	env(t_command *cmd, t_expansion *e)
 {
 	t_envp	*current;
 
+	if (cmd->args[1])
+		return (printf("env: too many arguments\n"), e->exit_stat = 0);
 	current = e->env;
 	while (current)
 	{

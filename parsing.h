@@ -155,7 +155,7 @@ int			assign_cmd_or_arg(t_token *current, int *is_cmd, int *is_red);
 // build-in
 int			is_buildin(char *command);
 int			exec_buildin(t_command *cmd, t_expansion *e, t_token **t);
-int			env(t_expansion *e);
+int			env(t_command *c, t_expansion *e);
 void		pwd(t_envp **env);
 
 // cd
@@ -203,8 +203,8 @@ void		ft_free_e_2(t_expansion **e);
 void		ft_free_export_list(t_export **envp);
 
 // export
-int			ft_export_check(t_token **token, t_expansion *e);
-int			ft_print_export(t_export **export);
+int			ft_export_check(t_token **token, t_expansion *e, int fd);
+int			ft_print_export(t_export **export, int fd, t_expansion *e);
 int			add_export_to_envp(t_envp **env, char *value, char *name);
 t_envp		*ft_new_export(char *value, char *name);
 int			ft_crop(t_token *token);
@@ -216,11 +216,11 @@ int			ft_replace_value_export(char *export, t_export *current);
 int			ft_export_env(t_expansion *e, t_variable *vari);
 
 // utils export
-int			is_valid(t_token *current);
+int			is_valid(t_token *cur, int fd, t_expansion *e);
 int			ft_replace_value(char *export, t_envp *current);
 void		ft_sort_list(t_envp **array, int total);
 int			ft_compare_names(char *name1, char *name2);
-void		ft_print(t_envp **list, int total);
+void		ft_print(t_envp **list, int total, int fd);
 
 // variable expansion
 char		*ft_while_loop(t_expansion *exp, t_token *token);

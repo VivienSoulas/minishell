@@ -101,18 +101,10 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 
 int	ft_exe(t_token **token, t_expansion *e, char *input)
 {
-	if (ft_strncmp((*token)->input, "export", 7) == 0)
-	{
-		if (ft_export_check(token, e) == 1)
-			return (free(input), ft_free_list(token), 1);
-	}
-	else
-	{
-		token_to_cmd(token, e);
-		e->exit_stat = exe_cmds(e->cmd, e, token);
-		command_cleanup(e->cmd);
-		e->cmd = NULL;
-	}
+	token_to_cmd(token, e);
+	e->exit_stat = exe_cmds(e->cmd, e, token);
+	command_cleanup(e->cmd);
+	e->cmd = NULL;
 	return (0);
 }
 

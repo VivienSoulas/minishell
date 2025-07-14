@@ -12,20 +12,20 @@
 
 #include "parsing.h"
 
-int	is_valid(t_token *current)
+int	is_valid(t_token *cur, int fd, t_expansion *e)
 {
 	int	i;
 
-	if (current->type >= CMD && current->type <= APPEND)
-		return (printf("command to be interpreted here\n"), 0); // work to do here
-	else if (current->input[0] != '_' && ft_isalpha(current->input[0]) == 0)
+	if (cur->type >= CMD && cur->type <= APPEND)
+		return (ft_print_export(&e->export, fd, e), 0);
+	else if (cur->input[0] != '_' && ft_isalpha(cur->input[0]) == 0)
 		return (1);
 	i = 1;
-	if (current->input[i])
+	if (cur->input[i])
 	{
-		while (current->input[i] && current->input[i] != '=')
+		while (cur->input[i] && cur->input[i] != '=')
 		{
-			if ((ft_isalnum(current->input[i]) == 0) && current->input[i] != '_')
+			if ((ft_isalnum(cur->input[i]) == 0) && cur->input[i] != '_')
 				return (1);
 			i++;
 		}
@@ -56,17 +56,21 @@ int	ft_replace_value(char *export, t_envp *current)
 	return (0);
 }
 
-void	ft_print(t_envp **list, int total)
+void	ft_print(t_envp **list, int total, int fd)
 {
 	int	i;
 
 	i = 0;
 	while (i < total)
 	{
-		printf("declare -x %s", list[i]->name);
+		write(fd, "declare -x ", 11);
+		write(fd, list[i]->name, ft_strlen(list[i]->name));
 		if (list[i]->value)
-			printf("=%s", list[i]->value);
-		printf("\n");
+		{
+			write(fd, "=", 1);
+			write(fd, list[i]->value, ft_strlen(list[i]->value));
+		}
+		write(fd, "\n", 1);
 		i++;
 	}
 }
