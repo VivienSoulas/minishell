@@ -64,12 +64,12 @@ int	cd(t_command *cmd, t_expansion *e)
 	if (target && !ft_strcmp(target, "~"))
 		target = get_env_value(&e->env, "HOME");
 	else if (target && target[0] == '$')
-		return (1);
+		return (e->exit_stat = 1);
 	if (update_node_with_cwd("OLDPWD", &e->env) == -1)
 		return (e->exit_stat = 127);
 	if (chdir(target) != 0)
 		return (perror("cd"), e->exit_stat = 1);
 	if (update_node_with_cwd("PWD", &e->env) == -1)
 		return (e->exit_stat = 127);
-	return (0);
+	return (e->exit_stat = 0);
 }

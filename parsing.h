@@ -156,7 +156,7 @@ int			assign_cmd_or_arg(t_token *current, int *is_cmd, int *is_red);
 int			is_buildin(char *command);
 int			exec_buildin(t_command *cmd, t_expansion *e, t_token **t);
 int			env(t_command *c, t_expansion *e);
-void		pwd(t_envp **env);
+int			pwd(t_envp **env, t_command *cmd, t_expansion *e);
 
 // cd
 t_envp		*find_node_env(t_envp **list, char *name);
@@ -327,7 +327,11 @@ int			init_command(t_token **token, t_command *cmd, t_envp **envp_list);
 t_command	**token_to_cmd(t_token **tokens, t_expansion *e);
 
 // unset
+void		ft_name_found(t_envp *prev, t_envp **list);
+void		ft_name_found_export(t_export *prev, t_export **list);
 void		unset(t_command *command, t_envp **list);
+void		unset_export(t_command *command, t_export **list);
 void		ft_free_env(t_envp *current);
+void		free_export(t_export *current);
 
 #endif

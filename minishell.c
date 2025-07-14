@@ -122,13 +122,17 @@ void	ft_assign_types(t_token *token)
 	while (current)
 	{
 		if (assign_pipe(current, &is_cmd_context, &is_redirection))
-			{}
+		{
+		}
 		else if (assign_redirection(current, &is_redirection))
-			{}
+		{
+		}
 		else if (assign_file(current, &is_redirection))
-			{}
+		{
+		}
 		else if (assign_cmd_or_arg(current, &is_cmd_context, &is_redirection))
-			{}
+		{
+		}
 		current = current->next;
 	}
 }
