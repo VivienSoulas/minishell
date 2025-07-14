@@ -35,7 +35,7 @@ int	ft_export_check(t_token **token, t_expansion *e, int fd)
 
 	current = (*token)->next;
 	if (current == NULL)
-		return (ft_print_export(&e->export, fd, e));
+		return (ft_print_export(&e->export, fd));
 	while (current)
 	{
 		if (is_valid(current, fd, e) == 0)
@@ -108,7 +108,7 @@ t_envp	*ft_new_export(char *value, char *name)
 }
 
 // prints export list in alphabetic order
-int	ft_print_export(t_export **export, int fd, t_expansion *e)
+int	ft_print_export(t_export **export, int fd)
 {
 	t_export	**list;
 	int			total;

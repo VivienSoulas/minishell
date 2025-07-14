@@ -61,7 +61,7 @@ int	ft_loop(t_token **token, t_expansion *e)
 	add_history(input);
 	if (ft_parse_input(input, e, token) != 1)
 	{
-		if (ft_exe(token, e, input) == 1)
+		if (ft_exe(token, e) == 1)
 			return (e->exit = 1);
 	}
 	return (ft_free_list(token), free(input), 0);
@@ -84,7 +84,7 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 		return (error(3, NULL), e->exit = 1);
 	if (ft_initialise_split(split, in) == 1)
 		return (free(split), e->exit = 1);
-	tokens = ft_split_input(in, split, e->exit);
+	tokens = ft_split_input(in, split, e);
 	if (tokens == NULL && e->exit == 1)
 		return (free(split), 1);
 	else if (tokens == NULL)
@@ -99,7 +99,7 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	return (ft_free_split(tokens), free(split), 0);
 }
 
-int	ft_exe(t_token **token, t_expansion *e, char *input)
+int	ft_exe(t_token **token, t_expansion *e)
 {
 	token_to_cmd(token, e);
 	e->exit_stat = exe_cmds(e->cmd, e, token);
@@ -122,13 +122,13 @@ void	ft_assign_types(t_token *token)
 	while (current)
 	{
 		if (assign_pipe(current, &is_cmd_context, &is_redirection))
-			;
+			{}
 		else if (assign_redirection(current, &is_redirection))
-			;
+			{}
 		else if (assign_file(current, &is_redirection))
-			;
+			{}
 		else if (assign_cmd_or_arg(current, &is_cmd_context, &is_redirection))
-			;
+			{}
 		current = current->next;
 	}
 }

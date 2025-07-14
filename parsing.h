@@ -139,7 +139,7 @@ typedef struct s_exec
 // main
 int			ft_loop(t_token **token, t_expansion *e);
 int			ft_parse_input(char *in, t_expansion *e, t_token **token);
-int			ft_exe(t_token **token, t_expansion *e, char *input);
+int			ft_exe(t_token **token, t_expansion *e);
 void		ft_assign_types(t_token *token);
 
 // utils pasing
@@ -179,7 +179,7 @@ void		ft_add_last(t_token **token, t_token *node);
 t_token		*ft_last(t_token **token);
 
 // split
-char		**ft_split_input(char *input, t_split *split, int exit);
+char		**ft_split_input(char *input, t_split *split, t_expansion *e);
 void		ft_handles_double(t_split *split, char *input);
 void		ft_handles_operator(t_split *split, char *input);
 void		ft_handles_quotes(char *input, t_split *split);
@@ -204,7 +204,7 @@ void		ft_free_export_list(t_export **envp);
 
 // export
 int			ft_export_check(t_token **token, t_expansion *e, int fd);
-int			ft_print_export(t_export **export, int fd, t_expansion *e);
+int			ft_print_export(t_export **export, int fd);
 int			add_export_to_envp(t_envp **env, char *value, char *name);
 t_envp		*ft_new_export(char *value, char *name);
 int			ft_crop(t_token *token);

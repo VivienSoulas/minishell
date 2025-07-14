@@ -17,7 +17,7 @@ int	is_valid(t_token *cur, int fd, t_expansion *e)
 	int	i;
 
 	if (cur->type >= CMD && cur->type <= APPEND)
-		return (ft_print_export(&e->export, fd, e), 0);
+		return (ft_print_export(&e->export, fd), 0);
 	else if (cur->input[0] != '_' && ft_isalpha(cur->input[0]) == 0)
 		return (1);
 	i = 1;
