@@ -27,6 +27,12 @@ void	ft_free_e(t_expansion **e)
 		free_array((*e)->envp);
 		(*e)->envp = NULL;
 	}
+	if ((*e)->export)
+	{
+		ft_free_export_list(&(*e)->export);
+		free((*e)->export);
+		(*e)->export = NULL;
+	}
 	ft_free_e_2(e);
 	free(*e);
 	*e = NULL;
@@ -53,4 +59,23 @@ void	ft_free_e_2(t_expansion **e)
 		close((*e)->initial_stdin);
 	if ((*e)->initial_stdout != -1)
 		close((*e)->initial_stdout);
+}
+
+void	ft_free_export_list(t_export **envp)
+{
+	t_export	*current;
+	t_export	*next;
+
+	if (envp == NULL || *envp == NULL)
+		return ;
+	current = *envp;
+	while (current)
+	{
+		next = current->next;
+		free(current->name);
+		free(current->value);
+		free(current);
+		current = next;
+	}
+	*envp = NULL;
 }

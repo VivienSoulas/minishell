@@ -35,6 +35,7 @@ SRC		=	minishell.c \
 			utils_heredoc.c \
 			free_e.c \
 			echo.c \
+			cpy_export.c \
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)
