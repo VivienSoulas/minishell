@@ -104,12 +104,12 @@ typedef struct s_token
 	struct s_token	*prev;
 }	t_token;
 
-// typedef struct s_export
-// {
-// 	char			*name;
-// 	char			*value;
-// 	struct s_export	*next;
-// }	t_export;
+typedef struct s_export
+{
+	char			*name;
+	char			*value;
+	struct s_export	*next;
+}	t_export;
 
 // struct to keep expansion variable norminette friendly
 typedef struct s_expansion
@@ -122,7 +122,7 @@ typedef struct s_expansion
 	int			initial_stdout;
 	char		**envp;
 	t_envp		*env;
-	// t_export	*export;
+	t_export	*export;
 	t_command	**cmd;
 	t_token		**token;
 	pid_t		*pids;
@@ -200,10 +200,11 @@ void		free_array(char **array);
 // free e 2
 void		ft_free_e(t_expansion **e);
 void		ft_free_e_2(t_expansion **e);
+void		ft_free_export_list(t_export **envp);
 
 // export
 int			ft_export_check(t_token **token, t_expansion *e);
-int			ft_print_export(t_envp **env);
+int			ft_print_export(t_export **export);
 int			add_export_to_envp(t_envp **env, char *value, char *name);
 t_envp		*ft_new_export(char *value, char *name);
 int			ft_crop(t_token *token);
@@ -211,6 +212,8 @@ int			ft_crop(t_token *token);
 // export equal
 int			ft_export_equal(t_token *current, t_expansion *e);
 int			ft_dollar(t_token *cur, t_variable *vari, t_expansion *e);
+int			ft_replace_value_export(char *export, t_export *current);
+int			ft_export_env(t_expansion *e, t_variable *vari);
 
 // utils export
 int			is_valid(t_token *current);
@@ -270,9 +273,16 @@ void		command_cleanup(t_command **commands);
 
 // copy envp
 char		*copy_str_delimiter(char *str, int check);
-t_envp		*new_envp(char *envp);
+t_export	*new_export(char *envp);
 int			add_to_envp(t_envp **envp_list, char *envp);
 t_envp		*copy_envp(char **envp);
+
+// copy export
+t_export	*new_export(char *envp);
+int			add_to_export(t_export **envp_list, char *envp);
+t_export	*copy_export(char **envp);
+int			add_export_to_export(t_export **env, char *value, char *name);
+t_export	*ft_new_export_export(char *value, char *name);
 
 // env utils
 int			ft_strcmp(const char *s1, const char *s2);

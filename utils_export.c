@@ -17,9 +17,9 @@ int	is_valid(t_token *current)
 	int	i;
 
 	if (current->type >= CMD && current->type <= APPEND)
-		return(printf("command to be interpreted here\n"), 0);
+		return (printf("command to be interpreted here\n"), 0); // work to do here
 	else if (current->input[0] != '_' && ft_isalpha(current->input[0]) == 0)
-		return (printf("noo\n"), 1);
+		return (1);
 	i = 1;
 	if (current->input[i])
 	{

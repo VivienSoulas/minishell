@@ -51,14 +51,20 @@ int	ft_initialise_expansion(t_expansion *exp, char **env)
 	exp->initial_stdout = -1;
 	exp->initial_stdin = -1;
 	exp->env = copy_envp(env);
-	// exp->export = copy_envp(env);
 	if (exp->env == NULL)
 		return (ft_free_envp_list(&exp->env), exp->exit_stat = 1);
+	exp->export = copy_export(env);
+	if (exp->export == NULL)
+	{
+		ft_free_export_list(&exp->export);
+		return (ft_free_envp_list(&exp->env), exp->exit_stat = 1);
+	}
 	exp->envp = list_to_array(&exp->env);
 	if (!exp->envp)
 	{
 		free_array(exp->envp);
 		ft_free_envp_list(&exp->env);
+		ft_free_export_list(&exp->export);
 		return (exp->exit_stat = 1);
 	}
 	return (0);

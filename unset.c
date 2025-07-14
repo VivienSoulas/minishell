@@ -33,7 +33,7 @@ void	unset(t_command *command, t_envp **list)
 	while (command->args[i])
 	{
 		if (!ft_strcmp((*list)->name, command->args[i]))
-			return(ft_name_found(prev, list));
+			return (ft_name_found(prev, list));
 		current = *list;
 		prev = current;
 		while (current && ft_strcmp(current->name, command->args[i]))

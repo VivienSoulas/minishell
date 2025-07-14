@@ -36,7 +36,7 @@ int	ft_export_equal(t_token *current, t_expansion *e)
 		free(vari->value);
 		vari->value = NULL;
 	}
-	if (add_export_to_envp(&e->env, vari->value, vari->name) == 1)
+	if (ft_export_env(e, vari) == 1)
 		return (free(vari->name), free(vari->value), free(vari), 1);
 	return (free(vari->name), free(vari->value), free(vari), 0);
 }
@@ -58,5 +58,37 @@ int	ft_dollar(t_token *cur, t_variable *vari, t_expansion *e)
 	}
 	else
 		vari->value = NULL;
+	return (0);
+}
+
+int	ft_replace_value_export(char *export, t_export *current)
+{
+	char	*new_value;
+
+	new_value = "";
+	if (export)
+	{
+		new_value = ft_strdup(export);
+		if (new_value == NULL)
+			return (error(3, NULL), 1);
+	}
+	else
+	{
+		new_value = ft_strdup("''");
+		if (new_value == NULL)
+			return (error(3, NULL), 1);
+	}
+	if (current->value)
+		free(current->value);
+	current->value = new_value;
+	return (0);
+}
+
+int	ft_export_env(t_expansion *e, t_variable *vari)
+{
+	if (add_export_to_envp(&e->env, vari->value, vari->name) == 1)
+		return (free(vari->name), free(vari->value), free(vari), 1);
+	if (add_export_to_export(&e->export, vari->value, vari->name) == 1)
+		return (free(vari->name), free(vari->value), free(vari), 1);
 	return (0);
 }

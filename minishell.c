@@ -94,14 +94,6 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	if (ft_variable_expansion(*token, e) == 1)
 		return (ft_free_split(tokens), free(split), e->exit = 1);
 	ft_assign_types(*token);
-// t_token	*current;
-// current = *token;
-// while (current)
-// {
-// 	printf("token->input = %s\n", current->input);
-// 	printf("token->input = %d\n", current->type);
-// 	current = current->next;
-// }
 	if (ft_check_tokens(token, e) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
 	return (ft_free_split(tokens), free(split), 0);

@@ -18,7 +18,7 @@ char	*ft_copy_literal(t_token *token, t_expansion *exp)
 	int		start;
 
 	start = exp->i;
-	while (token->input[exp->i] && token->input[exp->i] != '\'' 
+	while (token->input[exp->i] && token->input[exp->i] != '\''
 		&& token->input[exp->i] != '\"' && token->input[exp->i] != '$')
 		exp->i++;
 	substring = ft_substr(token->input, start, exp->i - start);

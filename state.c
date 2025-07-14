@@ -19,7 +19,7 @@ char	*ft_state_0(t_expansion *exp, t_token *token)
 
 	result = NULL;
 	if (token->input[exp->i] == '\'')
-	{		
+	{
 		exp->state = 1;
 		exp->i++;
 	}
