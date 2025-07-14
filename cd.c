@@ -31,12 +31,19 @@ int	update_node_with_cwd(char *name, t_envp **envp)
 	t_envp	*env;
 	char	path[PATH_MAX];
 
+	if (!getcwd(path, PATH_MAX))
+		return (error(0, "getcwd error"), -1);
 	env = find_node_env(envp, name);
 	if (!env)
-		return (error(0, "env parameter not found\n"), -1);
-	if (!getcwd(path, PATH_MAX))
-		return (error(0, "gwtcwd error"), -1);
-	ft_replace_value(path, env);
+	{
+		if (add_export_to_envp(envp, path, name) == 1)
+			return (-1);
+	}
+	else
+	{
+		if (ft_replace_value(path, env) == 1)
+			return (-1);
+	}
 	return (0);
 }
 
@@ -51,12 +58,20 @@ int	cd(t_command *cmd, t_expansion *e)
 	if (i > 2)
 		return (error(0, " too many arguments\n"), e->exit_stat = 1);
 	if (i == 1)
+	{
 		target = get_env_value(&e->env, "HOME");
+		if (!target)
+			return (error(0, "HOME not set\n"), e->exit_stat = 1);
+	}
 	else
 		target = cmd->args[1];
-	if (!ft_strcmp(target, "~"))
+	if (target && !ft_strcmp(target, "~"))
+	{
 		target = get_env_value(&e->env, "HOME");
-	else if (target[0] == '$')
+		if (!target)
+			return (error(0, "HOME not set\n"), e->exit_stat = 1);
+	}
+	else if (target && target[0] == '$')
 		return (1);
 	if (update_node_with_cwd("OLDPWD", &e->env) == -1)
 		return (e->exit_stat = 127);
