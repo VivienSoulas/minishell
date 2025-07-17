@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:34:39 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/07/17 14:47:10 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 15:46:00 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ static int	wait_for_childs(int n_cmds, t_expansion *e)
 
 	last_exit_status = 0;
 	i = -1;
+	if (e->pids == NULL)
+		return (e->exit_stat);
 	while (++i < n_cmds)
 	{
 		signal(SIGINT, &child);
@@ -36,9 +38,7 @@ static int	wait_for_childs(int n_cmds, t_expansion *e)
 	}
 	sig_hand(MAIN);
 	free(e->pids);
-	e->pids = NULL;
-	e->exit_stat = last_exit_status;
-	return (e->exit_stat);
+	return (e->pids = NULL, e->exit_stat = last_exit_status);
 }
 
 void	clean_fds(t_exec *exec)
@@ -80,17 +80,18 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 {
 	t_exec	exec;
 
-	exec.i = -1;
+	exec.i = 0;
 	exec.n_cmds = command_count(c);
 	e->pids = malloc(sizeof(pid_t) * exec.n_cmds);
 	if (!e->pids)
 		return (error(3, NULL), 1);
 	close_heredoc_fds(e, exec.n_cmds);
 	exec.last_pipe_read = -1;
-	while (++exec.i < exec.n_cmds)
+	while (exec.i < exec.n_cmds)
 	{
 		if (execution(exec, e, token, c) == 1)
 			return (1);
+		exec.i++;
 	}
 	if (exec.last_pipe_read != -1)
 		close(exec.last_pipe_read);
