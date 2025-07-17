@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:02 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/29 16:22:50 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 14:15:02 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,11 @@ int	ft_export_check(t_token **token, t_expansion *e, int fd)
 	current = (*token)->next;
 	if (current == NULL)
 		return (ft_print_export(&e->export, fd));
+	if (current->type >= CMD && current->type <= APPEND)
+		return (ft_print_export(&e->export, fd), 0);
 	while (current)
 	{
-		if (is_valid(current, fd, e) == 0)
+		if (is_valid(current) == 0)
 		{
 			if (ft_strchr(current->input, '=') != 0)
 			{
@@ -46,10 +48,8 @@ int	ft_export_check(t_token **token, t_expansion *e, int fd)
 					return (e->exit_stat = 1);
 			}
 			else
-			{
 				if (add_export_to_export(&e->export, NULL, current->input) == 1)
 					return (e->exit_stat = 1);
-			}
 		}
 		else
 			return (error(2, current->input), e->exit_stat = 1, 0);

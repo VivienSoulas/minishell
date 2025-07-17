@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/10 16:53:10 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 14:46:57 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,8 @@ int			echo_print(char *current, t_expansion *e, t_command *cmd, int fd);
 int			ft_count_args(char **tokens);
 char		*ft_strjoin_free(char *s1, char *s2);
 int			ft_initialise_expansion(t_expansion *exp, char **env);
+int			ft_remove_quotes(char **delimiter);
+int			command_count(t_command **commands);
 
 // utils list
 int			ft_list_tokens(char **tokens, t_token **token);
@@ -216,7 +218,7 @@ int			ft_replace_value_export(char *export, t_export *current);
 int			ft_export_env(t_expansion *e, t_variable *vari);
 
 // utils export
-int			is_valid(t_token *cur, int fd, t_expansion *e);
+int			is_valid(t_token *cur);
 int			ft_replace_value(char *export, t_envp *current);
 void		ft_sort_list(t_envp **array, int total);
 int			ft_compare_names(char *name1, char *name2);
@@ -255,11 +257,7 @@ void		child(int sig);
 void		heredoc(int sig);
 
 // heredoc
-void		readline_here(char *delimiter, t_expansion *e);
-void		ft_pid_0(int fd, char *delim, t_expansion *e, int *expand);
-void		readline_cleanup(int fd, t_expansion *e, char *filename);
-void		ft_heredoc(char *deli, t_expansion *e, int fd, int *expand);
-int			line_read(char *delim, int fd, int expand, t_expansion *e);
+int			readline_here(t_command *command, t_expansion *e);
 
 // heredoc utils
 int			init_pipe(int *fd);
@@ -295,6 +293,9 @@ int			exe_cmds(t_command **c, t_expansion *e, t_token **token);
 int			pipe_init(t_exec *exec, t_expansion *e);
 int			in_out_setup(t_exec *exec, t_expansion *e);
 int			exec_process(t_exec *exec, t_expansion *e);
+int			execution(t_exec exe, t_expansion *e, t_token **t, t_command **c);
+void		clean_fds(t_exec *exec);
+void		close_current_heredoc_fd(t_exec *exec, t_expansion *e);
 
 // find exec
 char		*find_executable_in_path(char *command);
@@ -305,9 +306,11 @@ char		*find_executable(char *command, t_envp **envp_list);
 // in out
 int			input_fd(t_command *command, int i, int last_pipe_read);
 int			output_fd(t_command *command, int *fd, int is_not_last);
+int			open_input_file(t_command *command);
+int			open_output_file(t_command *command);
 
 // process
-int			handle_redirection(t_command *command, t_expansion *e);
+int			handle_redirection(t_command *command);
 void		exe_child(t_command *c, t_expansion *e);
 int			exe_buildin(t_command *c, t_expansion *e, t_token **t);
 int			exe_command(t_command *c, t_expansion *e, t_token **t);
@@ -322,8 +325,10 @@ int			ft_fd_0(t_command *command);
 int			count_commands(t_token **tokens);
 int			count_args(t_token *token);
 int			init_args(t_command *command, t_token **token, t_envp **envp_list);
-int			init_redirection(t_token **token, t_command *command);
-int			init_command(t_token **token, t_command *cmd, t_envp **envp_list);
+int			init_redirection(t_token **token,
+				t_command *command, t_expansion *e);
+int			init_command(t_token **token, t_command *cmd,
+				t_envp **envp_list, t_expansion *e);
 t_command	**token_to_cmd(t_token **tokens, t_expansion *e);
 
 // unset

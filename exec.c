@@ -6,25 +6,11 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:34:39 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/07/11 11:54:14 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 14:47:10 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
-
-static int	command_count(t_command **commands)
-{
-	int	res;
-
-	res = 0;
-	if (commands == NULL)
-		return (res);
-	while (commands[res])
-	{
-		res++;
-	}
-	return (res);
-}
 
 static int	wait_for_childs(int n_cmds, t_expansion *e)
 {
@@ -55,7 +41,7 @@ static int	wait_for_childs(int n_cmds, t_expansion *e)
 	return (e->exit_stat);
 }
 
-static void	clean_fds(t_exec *exec)
+void	clean_fds(t_exec *exec)
 {
 	if (exec->i < exec->n_cmds - 1)
 		close(exec->pipe_fds[1]);
@@ -63,6 +49,31 @@ static void	clean_fds(t_exec *exec)
 		close(exec->last_pipe_read);
 	if (exec->i < exec->n_cmds - 1)
 		exec->last_pipe_read = exec->pipe_fds[0];
+}
+
+static void	close_heredoc_fds(t_expansion *e, int n_cmds)
+{
+	int	i;
+
+	i = 0;
+	while (i < n_cmds)
+	{
+		if (e->cmd[i]->is_heredoc && e->cmd[i]->input_fd > 2)
+		{
+			close(e->cmd[i]->input_fd);
+			e->cmd[i]->input_fd = -1;
+		}
+		i++;
+	}
+}
+
+void	close_current_heredoc_fd(t_exec *exec, t_expansion *e)
+{
+	if (e->cmd[exec->i]->is_heredoc && e->cmd[exec->i]->input_fd > 2)
+	{
+		close(e->cmd[exec->i]->input_fd);
+		e->cmd[exec->i]->input_fd = -1;
+	}
 }
 
 int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
@@ -74,20 +85,15 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 	e->pids = malloc(sizeof(pid_t) * exec.n_cmds);
 	if (!e->pids)
 		return (error(3, NULL), 1);
+	close_heredoc_fds(e, exec.n_cmds);
 	exec.last_pipe_read = -1;
 	while (++exec.i < exec.n_cmds)
 	{
-		if (pipe_init(&exec, e))
-			return (clean_fds(&exec), free(e->pids), e->pids = NULL, 1);
-		if (in_out_setup(&exec, e))
-			continue ;
-		if (exec.n_cmds == 1 && is_buildin(c[0]->args[0]))
-			return (clean_fds(&exec), free(e->pids), e->pids = NULL, exe_buildin(c[0], e, token));
-		if (exec_process(&exec, e))
-			return (clean_fds(&exec), free(e->pids), e->pids = NULL, 1);
-		clean_fds(&exec);
+		if (execution(exec, e, token, c) == 1)
+			return (1);
 	}
 	if (exec.last_pipe_read != -1)
 		close(exec.last_pipe_read);
+	close_heredoc_fds(e, exec.n_cmds);
 	return (wait_for_childs(exec.n_cmds, e));
 }

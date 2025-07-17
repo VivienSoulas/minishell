@@ -3,17 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   in_out.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:41:10 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/07/11 11:27:03 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 11:39:52 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-static int	open_input_file(t_command *command)
+int	open_input_file(t_command *command)
 {
+	if (command->input_fd > 2)
+		close(command->input_fd);
 	command->input_fd = open(command->input_file, O_RDONLY);
 	if (command->input_fd == -1)
 	{
@@ -23,8 +25,10 @@ static int	open_input_file(t_command *command)
 	return (0);
 }
 
-static int	open_output_file(t_command *command)
+int	open_output_file(t_command *command)
 {
+	if (command->output_fd > 2)
+		close(command->output_fd);
 	if (command->is_append)
 		command->output_fd
 			= open(command->output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);

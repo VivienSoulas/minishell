@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmds_free.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 14:07:53 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/30 14:07:54 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 12:36:19 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 void	free_strings(t_command *command)
 {
+	if (command->input_fd > 2)
+		close(command->input_fd);
+	if (command->input_file && !ft_strncmp(command->input_file, "herefile", 8))
+		unlink(command->input_file);
 	if (command->input_file)
 		free(command->input_file);
 	if (command->output_file)

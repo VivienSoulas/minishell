@@ -3,20 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   process.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 13:00:41 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/07/11 11:22:53 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 11:23:22 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-int	handle_redirection(t_command *command, t_expansion *e)
+int	handle_redirection(t_command *command)
 {
-	if (command->is_heredoc)
-		readline_here(command->heredoc_delimiter, e);
-	else if (command->input_fd >= 0)
+	if (command->input_fd >= 0)
 	{
 		if (ft_fd_0(command) == 1)
 			return (1);
@@ -42,7 +40,7 @@ int	exe_buildin(t_command *c, t_expansion *e, t_token **t)
 		e->initial_stdin = dup(STDIN_FILENO);
 	if (c->output_fd > 0)
 		e->initial_stdout = dup(STDOUT_FILENO);
-	if (handle_redirection(c, e) != 0)
+	if (handle_redirection(c) != 0)
 		return (1);
 	return_value = exec_buildin(c, e, t);
 	reset_fds(e->initial_stdin, e->initial_stdout);

@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 14:08:17 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/11 11:08:16 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 14:17:45 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	close_fds(t_command *command)
 
 void	exe_child(t_command *c, t_expansion *e)
 {
-	if (handle_redirection(c, e) != 0)
+	if (handle_redirection(c) != 0)
 		exit(e->exit_stat = 1);
 	if (c->executable_path == NULL)
 	{
@@ -54,18 +54,28 @@ int	ft_heredoc_delimiter(int *expand, char **delimiter)
 {
 	char	*temp;
 	int		len;
+	int		i;
+	int		j;
+	int		quote;
 
 	*expand = 0;
-	temp = ft_strdup(*delimiter + 1);
+	i = -1;
+	j = 0;
+	quote = (*delimiter)[0];
+	len = ft_strlen((*delimiter) + 1);
+	temp = malloc(len + 1);
 	if (!temp)
-	{
-		printf("malloc error");
 		return (1);
+	while (++i < len)
+	{
+		if ((*delimiter)[i] == quote)
+			i++;
+		temp[j] = (*delimiter)[i];
+		j++;
 	}
-	len = ft_strlen(temp);
-	temp[len - 1] = '\0';
-	*delimiter = temp;
-	return (0);
+	temp[j] = '\0';
+	free(*delimiter);
+	return (*delimiter = temp, 0);
 }
 
 int	ft_fd_0(t_command *command)

@@ -6,7 +6,7 @@
 /*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:56:14 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/06/05 12:15:04 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/07/17 12:05:11 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,13 @@ int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 	return (0);
 }
 
-int	init_command(t_token **token, t_command *cmd, t_envp **envp_list)
+int	init_command(t_token **token, t_command *cmd,
+	t_envp **envp_list, t_expansion *e)
 {
 	int	n_args;
 
 	ft_memset(cmd, 0, sizeof(t_command));
-	if (init_redirection(token, cmd) == -1)
+	if (init_redirection(token, cmd, e) == -1)
 		return (-1);
 	n_args = count_args(*token);
 	cmd->args = ft_calloc(n_args + 1, sizeof(char *));
@@ -86,7 +87,7 @@ int	init_command(t_token **token, t_command *cmd, t_envp **envp_list)
 		return (error(3, NULL), -1);
 	if (init_args(cmd, token, envp_list) == -1)
 		return (-1);
-	if (init_redirection(token, cmd) == -1)
+	if (init_redirection(token, cmd, e) == -1)
 		return (-1);
 	return (0);
 }
@@ -111,7 +112,7 @@ t_command	**token_to_cmd(t_token **tokens, t_expansion *e)
 	{
 		commands[i] = malloc(sizeof(t_command));
 		if (commands[i] == NULL
-			|| init_command(&current, commands[i], &e->env) == -1)
+			|| init_command(&current, commands[i], &e->env, e) == -1)
 			return (ft_free_list(tokens), NULL);
 	}
 	commands[i] = NULL;

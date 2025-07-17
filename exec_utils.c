@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 11:20:23 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/07/10 11:53:27 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:48:32 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,21 @@ int	exec_process(t_exec *exec, t_expansion *e)
 	}
 	else if (e->pids[exec->i] < 0)
 		return (perror("fork"), free(e->pids), e->pids = NULL, 1);
+	return (0);
+}
+
+int	execution(t_exec exe, t_expansion *e, t_token **t, t_command **c)
+{
+	if (pipe_init(&exe, e))
+		return (clean_fds(&exe), free(e->pids), e->pids = NULL, 1);
+	if (in_out_setup(&exe, e))
+		return (0);
+	if (exe.n_cmds == 1 && is_buildin(c[0]->args[0]))
+		return (clean_fds(&exe), free(e->pids), e->pids = NULL,
+			exe_buildin(c[0], e, t));
+	if (exec_process(&exe, e))
+		return (clean_fds(&exe), free(e->pids), e->pids = NULL, 1);
+	clean_fds(&exe);
+	close_current_heredoc_fd(&exe, e);
 	return (0);
 }

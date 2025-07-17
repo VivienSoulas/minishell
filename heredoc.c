@@ -6,13 +6,13 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 15:56:02 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/10 16:53:20 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 13:58:31 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-int	line_read(char *delim, int fd, int expand, t_expansion *e)
+int	line_read(t_command *command, int expand, t_expansion *e)
 {
 	char		*line;
 	t_token		temp;
@@ -20,7 +20,7 @@ int	line_read(char *delim, int fd, int expand, t_expansion *e)
 	line = readline(">");
 	if (!line)
 		return (1);
-	if (!ft_strcmp(line, delim))
+	if (!ft_strcmp(line, command->heredoc_delimiter))
 		return (free(line), 1);
 	if (expand)
 	{
@@ -28,35 +28,35 @@ int	line_read(char *delim, int fd, int expand, t_expansion *e)
 		if (temp.input == NULL)
 			error(3, NULL);
 		ft_variable_expansion(&temp, e);
-		write(fd, temp.input, ft_strlen(temp.input));
-		write(fd, "\n", 1);
+		write(command->input_fd, temp.input, ft_strlen(temp.input));
+		write(command->input_fd, "\n", 1);
 		free((void *)temp.input);
 		free(line);
 		return (0);
 	}
-	write(fd, line, ft_strlen(line));
-	write(fd, "\n", 1);
+	write(command->input_fd, line, ft_strlen(line));
+	write(command->input_fd, "\n", 1);
 	if (line)
 		free(line);
 	return (0);
 }
 
-void	ft_heredoc(char *deli, t_expansion *e, int fd, int *expand)
+void	ft_heredoc(t_command *command, t_expansion *e, int *expand)
 {
 	rl_event_hook = forceout;
 	while (g_heredoc_variable == 0)
 	{
-		if (line_read(deli, fd, *expand, e) != 0)
+		if (line_read(command, *expand, e) != 0)
 			break ;
 	}
 }
 
-void	readline_cleanup(int fd, t_expansion *e, char *filename)
+void	readline_cleanup(t_command *command, t_expansion *e, char *filename)
 {
 	signal(SIGINT, &heredoc);
-	close(fd);
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
+	close(command->input_fd);
+	command->input_fd = open(filename, O_RDONLY);
+	if (command->input_fd == -1)
 	{
 		ft_free_e(&e);
 		unlink(filename);
@@ -64,49 +64,54 @@ void	readline_cleanup(int fd, t_expansion *e, char *filename)
 		perror("open");
 		exit(EXIT_FAILURE);
 	}
-	if (dup2(fd, STDIN_FILENO) == -1)
+	if (command->input_file)
+		free(command->input_file);
+	command->input_file = filename;
+}
+
+int	ft_pid_0(t_command *command, t_expansion *e, int *expand)
+{
+	if (command->heredoc_delimiter[0] == 34
+		|| command->heredoc_delimiter[0] == 39)
 	{
-		ft_free_e(&e);
-		unlink(filename);
-		free(filename);
-		perror("dup2");
-		exit(EXIT_FAILURE);
+		if (ft_heredoc_delimiter(expand, &command->heredoc_delimiter) == 1)
+			return (1);
 	}
-	close(fd);
-	unlink(filename);
-	free(filename);
-}
-
-void	ft_pid_0(int fd, char *delim, t_expansion *e, int *expand)
-{
+	else
+	{
+		if (ft_remove_quotes(&command->heredoc_delimiter) == 1)
+			return (1);
+	}
 	sig_hand(HEREDOC);
-	ft_heredoc(delim, e, fd, expand);
+	ft_heredoc(command, e, expand);
 	sig_hand(MAIN);
+	return (0);
 }
 
-void	readline_here(char *delim, t_expansion *e)
+int	readline_here(t_command *command, t_expansion *e)
 {
-	static char	heredoc_count = 'a';
 	int			expand;
-	int			fd;
 	char		*tmpfile;
 
 	expand = 1;
-	tmpfile = ft_strjoin("herefile", &heredoc_count);
-	++heredoc_count;
-	fd = open(tmpfile, O_RDWR | O_CREAT | O_TRUNC, 0600);
-	if (fd == -1)
-		return (free(tmpfile), error(3, NULL));
-	if (delim[0] == 34 || delim[0] == 39)
-	{
-		if (ft_heredoc_delimiter(&expand, &delim) == 1)
-			exit(EXIT_FAILURE);
-	}
-	ft_pid_0(fd, delim, e, &expand);
+	tmpfile = ft_strdup("herefile");
+	if (!tmpfile)
+		return (error(3, NULL), 1);
+	if (command->input_fd
+		&& ft_strncmp(command->input_file, "herefile", 8) == 0)
+		unlink(command->input_file);
+	if (command->input_fd > 2)
+		close(command->input_fd);
+	command->input_fd = open(tmpfile, O_RDWR | O_CREAT | O_TRUNC, 0600);
+	if (command->input_fd == -1)
+		return (free(tmpfile), error(3, NULL), 1);
+	if (ft_pid_0(command, e, &expand) == 1)
+		return (free(tmpfile), error(3, NULL), 1);
 	if (g_heredoc_variable == 1)
 	{
-		close(fd);
-		fd = open(tmpfile, O_RDWR | O_CREAT | O_TRUNC, 0600);
+		close(command->input_fd);
+		command->input_fd = open(tmpfile, O_RDWR | O_CREAT | O_TRUNC, 0600);
 	}
-	readline_cleanup(fd, e, tmpfile);
+	readline_cleanup(command, e, tmpfile);
+	return (0);
 }

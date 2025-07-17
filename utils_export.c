@@ -6,19 +6,17 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:27 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/05/29 16:24:30 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/17 14:03:30 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-int	is_valid(t_token *cur, int fd, t_expansion *e)
+int	is_valid(t_token *cur)
 {
 	int	i;
 
-	if (cur->type >= CMD && cur->type <= APPEND)
-		return (ft_print_export(&e->export, fd), 0);
-	else if (cur->input[0] != '_' && ft_isalpha(cur->input[0]) == 0)
+	if (cur->input[0] != '_' && ft_isalpha(cur->input[0]) == 0)
 		return (1);
 	i = 1;
 	if (cur->input[i])
