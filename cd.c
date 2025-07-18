@@ -30,18 +30,24 @@ int	update_node_with_cwd(char *name, t_envp **envp)
 {
 	t_envp	*env;
 	char	path[PATH_MAX];
+	char	*current_path;
 
 	if (!getcwd(path, PATH_MAX))
+	{
 		error(0, "getcwd error\n");
+		current_path = "(unknown)";
+	}
+	else
+		current_path = path;
 	env = find_node_env(envp, name);
 	if (!env)
 	{
-		if (add_export_to_envp(envp, path, name) == 1)
+		if (add_export_to_envp(envp, current_path, name) == 1)
 			return (-1);
 	}
 	else
 	{
-		if (ft_replace_value(path, env) == 1)
+		if (ft_replace_value(current_path, env) == 1)
 			return (-1);
 	}
 	return (0);
@@ -52,7 +58,11 @@ void	add_paremeter_env(char *name, t_expansion *e)
 	char	path[PATH_MAX];
 
 	if (!getcwd(path, PATH_MAX))
-		return (e->exit_stat = 127, error(0, "getcwd"));
+	{
+		error(0, "getcwd");
+		add_export_to_envp(&e->env, "(unknown)", name);
+		return ;
+	}
 	add_export_to_envp(&e->env, path, name);
 }
 

@@ -28,11 +28,8 @@ static int	wait_for_childs(int n_cmds, t_expansion *e)
 		if (e->pids[i] != -1)
 		{
 			if (waitpid(e->pids[i], &status, 0) == -1)
-			{
-				free(e->pids);
-				e->pids = NULL;
-				return (perror("waitpid"), 1);
-			}
+				return (free(e->pids),
+					e->pids = NULL, perror("waitpid"), 1);
 			close_fds(e->cmd[i]);
 			if (WIFEXITED(status))
 				last_exit_status = WEXITSTATUS(status);
