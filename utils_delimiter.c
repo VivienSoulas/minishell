@@ -67,23 +67,3 @@ int	ft_remove_quotes_int(char **delimiter, int first_quote)
 	*delimiter = temp;
 	return (0);
 }
-
-int	ft_variable(t_token **token, t_expansion *e)
-{
-	t_token	*current;
-
-	current = *token;
-	while (current)
-	{
-		if (current->prev && ft_strcmp(current->prev->input, "<<") == 0)
-		{
-			current = current->next;
-			continue ;
-		}
-		if (ft_variable_expansion(current, e) == 1)
-			return (1);
-		current = current->next;
-	}
-	ft_assign_types(*token);
-	return (0);
-}

@@ -49,21 +49,23 @@ void	ft_free_envp_list(t_envp **envp)
 	*envp = NULL;
 }
 
-void	ft_free_split(char **split)
+void	ft_free_export_list(t_export **envp)
 {
-	int	i;
+	t_export	*current;
+	t_export	*next;
 
-	i = 0;
-	if (split != NULL && *split != NULL)
+	if (envp == NULL || *envp == NULL)
+		return ;
+	current = *envp;
+	while (current)
 	{
-		while (split[i])
-		{
-			free(split[i]);
-			i++;
-		}
-		free(split);
-		split = NULL;
+		next = current->next;
+		free(current->name);
+		free(current->value);
+		free(current);
+		current = next;
 	}
+	*envp = NULL;
 }
 
 void	free_array(char **array)
@@ -79,4 +81,5 @@ void	free_array(char **array)
 		i++;
 	}
 	free(array);
+	array = NULL;
 }

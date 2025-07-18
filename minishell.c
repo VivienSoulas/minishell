@@ -67,38 +67,6 @@ int	ft_loop(t_token **token, t_expansion *e)
 	return (ft_free_list(token), free(input), 0);
 }
 
-/* split doesnt work for finding all args
-because not all args are separated by white space
-example : <infile grep '$USER' "$USER"|wc -l>outfile */
-int	ft_parse_input(char *in, t_expansion *e, t_token **token)
-{
-	char		**tokens;
-	t_split		*split;
-
-	if (in == NULL || in[0] == '\0' || (in[0] >= 7 && in[0] <= 13)
-		|| in[0] == ' ')
-		return (e->exit_stat = 1);
-	if (ft_check_quotes(in) == 1)
-		return (e->exit_stat = 1);
-	split = malloc(sizeof(t_split));
-	if (split == NULL)
-		return (error(3, NULL), e->exit = 1);
-	if (ft_initialise_split(split, in) == 1)
-		return (free(split), e->exit = 1);
-	tokens = ft_split_input(in, split, e);
-	if (tokens == NULL && e->exit == 1)
-		return (free(split), 1);
-	else if (tokens == NULL)
-		return (free(split), 0);
-	if (ft_list_tokens(tokens, token) == 1)
-		return (ft_free_split(tokens), free(split), e->exit = 1);
-	if (ft_variable(token, e) == 1)
-		return (ft_free_split(tokens), free(split), e->exit = 1);
-	if (ft_check_tokens(token, e) == 1)
-		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
-	return (ft_free_split(tokens), free(split), 0);
-}
-
 int	ft_exe(t_token **token, t_expansion *e)
 {
 	if (token_to_cmd(token, e) == NULL)
@@ -108,33 +76,4 @@ int	ft_exe(t_token **token, t_expansion *e)
 	command_cleanup(&e->cmd);
 	e->cmd = NULL;
 	return (0);
-}
-
-void	ft_assign_types(t_token *token)
-{
-	t_token	*current;
-	int		is_cmd_context;
-	int		is_redirection;
-
-	is_cmd_context = 0;
-	is_redirection = 0;
-	current = token;
-	if (token == NULL)
-		return ;
-	while (current)
-	{
-		if (assign_pipe(current, &is_cmd_context, &is_redirection))
-		{
-		}
-		else if (assign_redirection(current, &is_redirection))
-		{
-		}
-		else if (assign_file(current, &is_redirection))
-		{
-		}
-		else if (assign_cmd_or_arg(current, &is_cmd_context, &is_redirection))
-		{
-		}
-		current = current->next;
-	}
 }

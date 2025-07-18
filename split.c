@@ -29,7 +29,7 @@ char	**ft_split_input(char *input, t_split *s, t_expansion *e)
 			ft_handles_string(input, s);
 	}
 	if (s->error != 0)
-		return (ft_free_split(s->tokens), s->tokens = NULL, e->exit = 1, NULL);
+		return (free_array(s->tokens), s->tokens = NULL, e->exit = 1, NULL);
 	s->tokens[s->j] = NULL;
 	return (s->tokens);
 }

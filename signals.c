@@ -58,7 +58,7 @@ void	sig_hand(int sig)
 	if (sig == CHILD)
 	{
 		signal(SIGINT, &child);
-		signal(SIGQUIT, &child);
+		signal(SIGQUIT, SIG_IGN);
 	}
 	if (sig == HEREDOC)
 	{

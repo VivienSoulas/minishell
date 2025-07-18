@@ -1,42 +1,43 @@
 NAME	=	minishell
 SRC		=	minishell.c \
-			utils.c \
-			utils_list.c \
-			free.c \
-			split.c \
-			utils_split.c \
+			assign_type.c \
+			buildin.c \
+			cd.c \
+			cmds_free.c \
+			copy_literals.c \
+			cpy_env.c \
+			cpy_export.c \
+			echo.c \
+			env_utils.c \
+			error.c \
 			exec.c \
 			exec_utils.c \
-			find_exec.c \
-			token_to_command.c \
-			cmds_free.c \
-			variable_expansion.c \
-			cpy_env.c \
-			in_out.c \
-			process.c \
+			exit.c \
 			export.c \
 			export_equal.c \
-			env_utils.c \
-			buildin.c \
-			unset.c \
-			error.c \
-			utils_export.c \
-			utils_variable_expansion.c \
-			state.c \
-			copy_literals.c \
-			assign_type.c \
-			utils_parsing.c \
-			cd.c \
-			utils_process.c \
-			init_redirection.c \
-			exit.c \
-			signals.c \
-			heredoc.c \
-			utils_heredoc.c \
+			find_exec.c \
+			free.c \
 			free_e.c \
-			echo.c \
-			cpy_export.c \
-			utils_2.c \
+			heredoc.c \
+			in_out.c \
+			init_redirection.c \
+			parsing.c \
+			process.c \
+			signals.c \
+			split.c \
+			state.c \
+			token_to_command.c \
+			unset.c \
+			utils.c \
+			utils_delimiter.c \
+			utils_export.c \
+			utils_heredoc.c \
+			utils_list.c \
+			utils_process.c \
+			utils_split.c \
+			utils_token_to_cmd.c \
+			utils_variable_expansion.c \
+			variable_expansion.c
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)

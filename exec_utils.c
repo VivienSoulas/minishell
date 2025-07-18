@@ -71,7 +71,7 @@ int	execution(t_exec *exe, t_expansion *e, t_token **t, t_command **c)
 	if (pipe_init(exe, e))
 		return (clean_fds(exe), free(e->pids), e->pids = NULL, 1);
 	if (in_out_setup(exe, e))
-		return (0);
+		return (clean_fds(exe), free(e->pids), e->pids = NULL, 1);
 	if (exe->n_cmds == 1 && is_buildin(c[0]->args[0]))
 		return (clean_fds(exe), free(e->pids), e->pids = NULL,
 			exe_buildin(c[0], e, t));

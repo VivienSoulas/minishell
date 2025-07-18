@@ -49,8 +49,11 @@ int	input_fd(t_command *command, int i, int last_pipe_read)
 		command->input_fd = last_pipe_read;
 	else if (command->input_file)
 	{
-		if (open_input_file(command) != 0)
-			return (-1);
+		if (command->input_fd == -1)
+		{
+			if (open_input_file(command) != 0)
+				return (-1);
+		}
 	}
 	else
 		command->input_fd = -1;

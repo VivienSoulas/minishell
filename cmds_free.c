@@ -19,13 +19,25 @@ void	free_strings(t_command *command)
 	if (command->input_file && !ft_strncmp(command->input_file, "herefile", 8))
 		unlink(command->input_file);
 	if (command->input_file)
+	{
 		free(command->input_file);
+		command->input_file = NULL;
+	}
 	if (command->output_file)
+	{
 		free(command->output_file);
+		command->output_file = NULL;
+	}
 	if (command->heredoc_delimiter)
+	{
 		free(command->heredoc_delimiter);
+		command->heredoc_delimiter = NULL;
+	}
 	if (command->executable_path)
+	{
 		free(command->executable_path);
+		command->executable_path = NULL;
+	}
 }
 
 static int	count_cmds(t_command ***commands)

@@ -70,7 +70,6 @@ void	readline_cleanup(t_command *command, t_expansion *e, char *filename)
 		perror("open");
 		if (command->input_file)
 			free(command->input_file);
-		// return ;
 		exit(EXIT_SUCCESS);
 	}
 	if (command->input_file)
@@ -78,7 +77,7 @@ void	readline_cleanup(t_command *command, t_expansion *e, char *filename)
 	command->input_file = filename;
 }
 
-int	ft_pid_0(t_command *command, t_expansion *e, int *expand)
+int	ft_delimiter(t_command *command, t_expansion *e, int *expand)
 {
 	int	quote;
 
@@ -110,7 +109,7 @@ int	readline_here(t_command *command, t_expansion *e)
 	tmpfile = ft_strdup("herefile");
 	if (!tmpfile)
 		return (error(3, NULL), 1);
-	if (command->input_fd
+	if (command->input_fd && command->input_file
 		&& ft_strncmp(command->input_file, "herefile", 8) == 0)
 		unlink(command->input_file);
 	if (command->input_fd > 2)
@@ -118,7 +117,7 @@ int	readline_here(t_command *command, t_expansion *e)
 	command->input_fd = open(tmpfile, O_RDWR | O_CREAT | O_TRUNC, 0600);
 	if (command->input_fd == -1)
 		return (free(tmpfile), error(3, NULL), 1);
-	if (ft_pid_0(command, e, &expand) == 1)
+	if (ft_delimiter(command, e, &expand) == 1)
 		return (free(tmpfile), error(3, NULL), 1);
 	if (g_heredoc_variable == 1)
 	{

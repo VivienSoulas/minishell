@@ -60,22 +60,3 @@ void	ft_free_e_2(t_expansion **e)
 	if ((*e)->initial_stdout != -1)
 		close((*e)->initial_stdout);
 }
-
-void	ft_free_export_list(t_export **envp)
-{
-	t_export	*current;
-	t_export	*next;
-
-	if (envp == NULL || *envp == NULL)
-		return ;
-	current = *envp;
-	while (current)
-	{
-		next = current->next;
-		free(current->name);
-		free(current->value);
-		free(current);
-		current = next;
-	}
-	*envp = NULL;
-}

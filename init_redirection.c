@@ -15,6 +15,8 @@
 static int	grab_word(t_token **token, char **dest)
 {
 	*token = (*token)->next;
+	if (*token == NULL)
+		return (error(1, NULL), -1);
 	if (*dest && !ft_strncmp(*dest, "herefile", 8))
 		unlink(*dest);
 	if (*dest)
