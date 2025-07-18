@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.h"
+#include "minishell.h"
 
 char	*ft_copy_literal(t_token *token, t_expansion *exp)
 {

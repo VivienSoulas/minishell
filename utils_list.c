@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.h"
+#include "minishell.h"
 
 // create a linked list with each parts of the command (aka tokens)
 int	ft_list_tokens(char **tokens, t_token **token)

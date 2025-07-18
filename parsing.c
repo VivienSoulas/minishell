@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.h"
+#include "minishell.h"
 
 int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 {

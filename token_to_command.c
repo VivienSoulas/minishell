@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.h"
+#include "minishell.h"
 
 int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 {

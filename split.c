@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.h"
+#include "minishell.h"
 
 char	**ft_split_input(char *input, t_split *s, t_expansion *e)
 {

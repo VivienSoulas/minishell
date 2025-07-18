@@ -14,7 +14,7 @@
 // go through the input and split in order to find the different tokens
 // check tokens to find operators, input, output, args, redirections etc
 // assign each token to different type and redirect them to exec
-#include "parsing.h"
+#include "minishell.h"
 
 sig_atomic_t	g_heredoc_variable = 0;
 

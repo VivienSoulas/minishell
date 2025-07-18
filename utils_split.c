@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.h"
+#include "minishell.h"
 
 // initialise split struct
 int	ft_initialise_split(t_split *split, char *input)
