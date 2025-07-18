@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:34:39 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/07/17 15:46:00 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 12:26:55 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ void	clean_fds(t_exec *exec)
 {
 	if (exec->i < exec->n_cmds - 1)
 		close(exec->pipe_fds[1]);
-	if (exec->last_pipe_read != -1)
-		close(exec->last_pipe_read);
 	if (exec->i < exec->n_cmds - 1)
 		exec->last_pipe_read = exec->pipe_fds[0];
+	else
+		exec->last_pipe_read = -1;
 }
 
 static void	close_heredoc_fds(t_expansion *e, int n_cmds)
@@ -79,7 +79,9 @@ void	close_current_heredoc_fd(t_exec *exec, t_expansion *e)
 int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 {
 	t_exec	exec;
+	int		prev_pipe_read;
 
+	prev_pipe_read = -1;
 	exec.i = 0;
 	exec.n_cmds = command_count(c);
 	e->pids = malloc(sizeof(pid_t) * exec.n_cmds);
@@ -89,8 +91,11 @@ int	exe_cmds(t_command **c, t_expansion *e, t_token **token)
 	exec.last_pipe_read = -1;
 	while (exec.i < exec.n_cmds)
 	{
-		if (execution(exec, e, token, c) == 1)
+		if (execution(&exec, e, token, c) == 1)
 			return (1);
+		if (prev_pipe_read != -1)
+			close(prev_pipe_read);
+		prev_pipe_read = exec.last_pipe_read;
 		exec.i++;
 	}
 	if (exec.last_pipe_read != -1)

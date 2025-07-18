@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/17 14:46:57 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 13:29:35 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,8 +164,8 @@ int			update_node_with_cwd(char *name, t_envp **envp);
 int			cd(t_command *cmd, t_expansion *e);
 
 // echo
-int			echo(t_command *cmd, t_expansion *e, int fd);
-int			echo_print(char *current, t_expansion *e, t_command *cmd, int fd);
+int			echo(t_command *cmd, int fd);
+int			echo_print(char *current, t_command *cmd, int fd);
 
 // utils
 int			ft_count_args(char **tokens);
@@ -259,6 +259,11 @@ void		heredoc(int sig);
 // heredoc
 int			readline_here(t_command *command, t_expansion *e);
 
+// utils_2
+int			ft_remove_quotes_int(char **delimiter, int first_quote);
+int			ft_remove_quotes(char **delimiter);
+int			ft_variable(t_token **token, t_expansion *e);
+
 // heredoc utils
 int			init_pipe(int *fd);
 
@@ -293,7 +298,7 @@ int			exe_cmds(t_command **c, t_expansion *e, t_token **token);
 int			pipe_init(t_exec *exec, t_expansion *e);
 int			in_out_setup(t_exec *exec, t_expansion *e);
 int			exec_process(t_exec *exec, t_expansion *e);
-int			execution(t_exec exe, t_expansion *e, t_token **t, t_command **c);
+int			execution(t_exec *exe, t_expansion *e, t_token **t, t_command **c);
 void		clean_fds(t_exec *exec);
 void		close_current_heredoc_fd(t_exec *exec, t_expansion *e);
 

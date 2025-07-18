@@ -6,7 +6,7 @@
 /*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:25:10 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/07/17 12:14:01 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:23:34 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	update_node_with_cwd(char *name, t_envp **envp)
 	char	path[PATH_MAX];
 
 	if (!getcwd(path, PATH_MAX))
-		return (error(0, "getcwd error"), -1);
+		error(0, "getcwd error\n");
 	env = find_node_env(envp, name);
 	if (!env)
 	{

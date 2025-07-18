@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/17 16:34:39 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 13:29:42 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 	char		**tokens;
 	t_split		*split;
 
-	if (in == NULL || in[0] == '\0' || (in[0] >= 7 && in[0] <= 13))
+	if (in == NULL || in[0] == '\0' || (in[0] >= 7 && in[0] <= 13)
+		|| in[0] == ' ')
 		return (e->exit_stat = 1);
 	if (ft_check_quotes(in) == 1)
 		return (e->exit_stat = 1);
@@ -91,9 +92,8 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 		return (free(split), 0);
 	if (ft_list_tokens(tokens, token) == 1)
 		return (ft_free_split(tokens), free(split), e->exit = 1);
-	if (ft_variable_expansion(*token, e) == 1)
+	if (ft_variable(token, e) == 1)
 		return (ft_free_split(tokens), free(split), e->exit = 1);
-	ft_assign_types(*token);
 	if (ft_check_tokens(token, e) == 1)
 		return (error(1, NULL), ft_free_split(tokens), free(split), 1);
 	return (ft_free_split(tokens), free(split), 0);

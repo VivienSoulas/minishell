@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 15:56:02 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/17 13:58:31 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 13:28:57 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	line_read(t_command *command, int expand, t_expansion *e)
 	char		*line;
 	t_token		temp;
 
+	(void)e;
 	line = readline(">");
 	if (!line)
 		return (1);
@@ -31,8 +32,7 @@ int	line_read(t_command *command, int expand, t_expansion *e)
 		write(command->input_fd, temp.input, ft_strlen(temp.input));
 		write(command->input_fd, "\n", 1);
 		free((void *)temp.input);
-		free(line);
-		return (0);
+		return (free(line), 0);
 	}
 	write(command->input_fd, line, ft_strlen(line));
 	write(command->input_fd, "\n", 1);
@@ -71,10 +71,15 @@ void	readline_cleanup(t_command *command, t_expansion *e, char *filename)
 
 int	ft_pid_0(t_command *command, t_expansion *e, int *expand)
 {
+	int	quote;
+
 	if (command->heredoc_delimiter[0] == 34
 		|| command->heredoc_delimiter[0] == 39)
 	{
+		quote = command->heredoc_delimiter[0];
 		if (ft_heredoc_delimiter(expand, &command->heredoc_delimiter) == 1)
+			return (1);
+		if (ft_remove_quotes_int(&command->heredoc_delimiter, quote) == 1)
 			return (1);
 	}
 	else

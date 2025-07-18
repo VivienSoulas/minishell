@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:57 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/04/10 13:22:02 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 13:29:24 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,8 @@ int	ft_export_equal(t_token *current, t_expansion *e)
 
 int	ft_dollar(t_token *cur, t_variable *vari, t_expansion *e)
 {
+	(void)e;
 	if (ft_crop(cur) == 1)
-		return (free(vari->name), free(vari->value), 1);
-	if (ft_variable_expansion(cur, e) == 1)
 		return (free(vari->name), free(vari->value), 1);
 	free(vari->value);
 	vari->value = NULL;

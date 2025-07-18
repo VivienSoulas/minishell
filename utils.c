@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:39 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/17 14:38:50 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 13:00:45 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,34 +67,6 @@ int	ft_initialise_expansion(t_expansion *exp, char **env)
 		ft_free_export_list(&exp->export);
 		return (exp->exit_stat = 1);
 	}
-	return (0);
-}
-
-int	ft_remove_quotes(char **delimiter)
-{
-	int		i;
-	int		j;
-	int		len;
-	char	*temp;
-
-	i = 0;
-	j = 0;
-	len = ft_strlen((*delimiter));
-	temp = malloc(len + 1);
-	if (!temp)
-		return (1);
-	while (i < len)
-	{
-		if ((*delimiter)[i] != '\'' && (*delimiter)[i] != '\"')
-		{
-			temp[j] = (*delimiter)[i];
-			j++;
-		}
-		i++;
-	}
-	temp[j] = '\0';
-	free(*delimiter);
-	*delimiter = temp;
 	return (0);
 }
 

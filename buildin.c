@@ -6,7 +6,7 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:40 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/10 15:55:29 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 11:14:52 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 		return (env(cmd, e), e->exit_stat);
 	else if (!ft_strcmp(cmd->args[0], "echo")
 		|| !ft_strcmp(cmd->args[0], "/bin/echo"))
-		return (echo(cmd, e, fd), e->exit_stat = 0);
+		return (echo(cmd, fd), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (ft_exit(e, cmd));
 	else if (!ft_strcmp(cmd->args[0], "cd"))

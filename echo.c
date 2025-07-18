@@ -6,13 +6,13 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 15:55:34 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/11 11:35:06 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 11:14:24 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-int	echo_print(char *current, t_expansion *e, t_command *cmd, int fd)
+int	echo_print(char *current, t_command *cmd, int fd)
 {
 	t_token	token;
 	int		i;
@@ -25,8 +25,6 @@ int	echo_print(char *current, t_expansion *e, t_command *cmd, int fd)
 		token.input = ft_strdup(current);
 		if (token.input == NULL)
 			return (1);
-		if (ft_variable_expansion(&token, e) == 1)
-			return (free(token.input), 1);
 		write(fd, token.input, ft_strlen(token.input));
 		current = cmd->args[++i];
 		if (current)
@@ -37,7 +35,7 @@ int	echo_print(char *current, t_expansion *e, t_command *cmd, int fd)
 	return (0);
 }
 
-int	echo(t_command *cmd, t_expansion *e, int fd)
+int	echo(t_command *cmd, int fd)
 {
 	int		no_new_line;
 	char	*current;
@@ -50,7 +48,7 @@ int	echo(t_command *cmd, t_expansion *e, int fd)
 	{
 		no_new_line = 1;
 	}
-	if (echo_print(current, e, cmd, fd) == 1)
+	if (echo_print(current, cmd, fd) == 1)
 		return (1);
 	if (!no_new_line)
 		write(fd, "\n", 1);
