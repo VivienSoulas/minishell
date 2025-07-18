@@ -53,7 +53,7 @@ void	command_cleanup(t_command ***commands)
 	int			j;
 	int			count;
 
-	if (!commands || !*commands || !**commands)
+	if (!commands || !*commands)
 		return ;
 	count = count_cmds(commands);
 	i = -1;

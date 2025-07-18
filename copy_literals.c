@@ -47,7 +47,7 @@ char	*ft_copy_literal_double(t_token *token, t_expansion *exp)
 	char	*result;
 	int		start;
 
-	result = strdup("");
+	result = ft_strdup("");
 	if (result == NULL)
 		return (error(3, NULL), NULL);
 	while (token->input[exp->i] && token->input[exp->i] != '\"')

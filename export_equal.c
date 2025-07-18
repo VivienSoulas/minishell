@@ -21,7 +21,7 @@ int	ft_export_equal(t_token *current, t_expansion *e)
 		return (error(3, NULL), 1);
 	vari->name = copy_str_delimiter(current->input, 1);
 	if (vari->name == NULL)
-		return (1);
+		return (free(vari), 1);
 	vari->value = copy_str_delimiter(current->input, 0);
 	if (vari->value == NULL)
 		return (free(vari->name), free(vari), 1);

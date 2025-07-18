@@ -46,9 +46,21 @@ int	count_args(t_token *token)
 	return (n);
 }
 
-int	init_args(t_command *command, t_token **token, t_envp **envp_list)
+static void ft_free_partial_args(t_command *cmd, int up_to_index)
 {
 	int	i;
+
+	i = 0;
+	while (i < up_to_index)
+	{
+		free(cmd->args[i]);
+		i++;
+	}
+}
+
+int	init_args(t_command *command, t_token **token, t_envp **envp_list)
+{
+	int	i;	
 
 	i = 0;
 	if (is_buildin((*token)->input))
@@ -65,7 +77,7 @@ int	init_args(t_command *command, t_token **token, t_envp **envp_list)
 	{
 		command->args[i] = ft_strdup((*token)->input);
 		if (command->args[i] == NULL)
-			return (error(3, NULL), -1);
+			return (ft_free_partial_args(command, i), error(3, NULL), -1);
 		i++;
 		*token = (*token)->next;
 	}
@@ -86,9 +98,9 @@ int	init_command(t_token **token, t_command *cmd,
 	if (cmd->args == NULL)
 		return (error(3, NULL), -1);
 	if (init_args(cmd, token, envp_list) == -1)
-		return (-1);
+		return (free_array(cmd->args), cmd->args = NULL, -1);
 	if (init_redirection(token, cmd, e) == -1)
-		return (-1);
+		return (free_array(cmd->args), cmd->args = NULL, -1);
 	return (0);
 }
 
@@ -111,9 +123,10 @@ t_command	**token_to_cmd(t_token **tokens, t_expansion *e)
 	while (++i < n_cmd)
 	{
 		commands[i] = malloc(sizeof(t_command));
-		if (commands[i] == NULL
-			|| init_command(&current, commands[i], &e->env, e) == -1)
-			return (ft_free_list(tokens), NULL);
+		if (commands[i] == NULL)
+			return (command_cleanup(&commands), ft_free_list(tokens), NULL);
+		if (init_command(&current, commands[i], &e->env, e) == -1)
+			return (command_cleanup(&commands), ft_free_list(tokens), NULL);
 	}
 	commands[i] = NULL;
 	return (e->token = tokens, commands);

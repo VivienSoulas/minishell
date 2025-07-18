@@ -90,4 +90,4 @@ fclean: clean
 re: fclean all
 
 val:
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=rl.supp --track-fds=yes --trace-children=yes ./minishell
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=rl.supp --track-fds=yes ./minishell

@@ -62,7 +62,7 @@ char	*ft_dollar_exp(t_token *token, t_expansion *exp)
 {
 	char	*res;
 
-	res = strdup("");
+	res = ft_strdup("");
 	if (res == NULL)
 		return (error(3, NULL), NULL);
 	exp->i++;
@@ -93,7 +93,7 @@ char	*ft_no_expansion(char *input, char *res, t_expansion *exp)
 	char	*result;
 
 	free(res);
-	result = strdup("");
+	result = ft_strdup("");
 	var_name = extract_name(input, exp);
 	if (result == NULL || var_name == NULL)
 		return (free(result), error(3, NULL), NULL);

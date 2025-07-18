@@ -75,9 +75,7 @@ int	check_args(t_command *cmd, t_expansion *e, char **target)
 int	cd(t_command *cmd, t_expansion *e)
 {
 	char	*target;
-	int		i;
 
-	i = 0;
 	if (find_node_env(&e->env, "OLDPWD") == NULL)
 		add_paremeter_env("OLDPWD", e);
 	if (check_args(cmd, e, &target))

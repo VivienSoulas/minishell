@@ -20,14 +20,14 @@ int	line_read(t_command *command, int expand, t_expansion *e)
 	(void)e;
 	line = readline(">");
 	if (!line)
-		return (1);
+		return (2);
 	if (!ft_strcmp(line, command->heredoc_delimiter))
 		return (free(line), 1);
 	if (expand)
 	{
 		temp.input = ft_strdup(line);
 		if (temp.input == NULL)
-			error(3, NULL);
+			return (error(3, NULL), free(line), 1);
 		ft_variable_expansion(&temp, e);
 		write(command->input_fd, temp.input, ft_strlen(temp.input));
 		write(command->input_fd, "\n", 1);
@@ -43,12 +43,18 @@ int	line_read(t_command *command, int expand, t_expansion *e)
 
 void	ft_heredoc(t_command *command, t_expansion *e, int *expand)
 {
+	int	signal;
+
+	signal = 0;
 	rl_event_hook = forceout;
 	while (g_heredoc_variable == 0)
 	{
-		if (line_read(command, *expand, e) != 0)
+		signal = line_read(command, *expand, e);
+		if (signal != 0)
 			break ;
 	}
+	g_heredoc_variable = 0;
+	sig_hand(MAIN);
 }
 
 void	readline_cleanup(t_command *command, t_expansion *e, char *filename)
@@ -62,6 +68,10 @@ void	readline_cleanup(t_command *command, t_expansion *e, char *filename)
 		unlink(filename);
 		free(filename);
 		perror("open");
+		if (command->input_file)
+			free(command->input_file);
+		// return ;
+		exit(EXIT_SUCCESS);
 	}
 	if (command->input_file)
 		free(command->input_file);
@@ -88,7 +98,6 @@ int	ft_pid_0(t_command *command, t_expansion *e, int *expand)
 	}
 	sig_hand(HEREDOC);
 	ft_heredoc(command, e, expand);
-	sig_hand(MAIN);
 	return (0);
 }
 

@@ -62,7 +62,6 @@ int	ft_initialise_expansion(t_expansion *exp, char **env)
 	exp->envp = list_to_array(&exp->env);
 	if (!exp->envp)
 	{
-		free_array(exp->envp);
 		ft_free_envp_list(&exp->env);
 		ft_free_export_list(&exp->export);
 		return (exp->exit_stat = 1);
