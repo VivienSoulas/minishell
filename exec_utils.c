@@ -29,6 +29,7 @@ int	in_out_setup(t_exec *exec, t_expansion *e)
 			|| output_fd(c[exec->i], exec->pipe_fds,
 				exec->i < exec->n_cmds - 1) != 0))
 	{
+		close_fds(c[exec->i]);
 		if (exec->i < exec->n_cmds -1)
 		{
 			close(exec->pipe_fds[0]);

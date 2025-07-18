@@ -66,6 +66,8 @@ int	output_fd(t_command *command, int *fd, int is_not_last)
 		command->output_fd = fd[1];
 	else if (command->output_file)
 	{
+		if (is_not_last)
+			close(fd[1]);
 		if (open_output_file(command) != 0)
 			return (-1);
 	}

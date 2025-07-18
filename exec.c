@@ -25,15 +25,17 @@ static int	wait_for_childs(int n_cmds, t_expansion *e)
 	while (++i < n_cmds)
 	{
 		signal(SIGINT, &child);
-		if (waitpid(e->pids[i], &status, 0) == -1)
+		if (e->pids[i] != -1)
 		{
-			free(e->pids);
-			e->pids = NULL;
-			return (sig_hand(MAIN), 1);
-		}
-		if (WIFEXITED(status))
-		{
-			last_exit_status = WEXITSTATUS(status);
+			if (waitpid(e->pids[i], &status, 0) == -1)
+			{
+				free(e->pids);
+				e->pids = NULL;
+				return (perror("waitpid"), 1);
+			}
+			close_fds(e->cmd[i]);
+			if (WIFEXITED(status))
+				last_exit_status = WEXITSTATUS(status);
 		}
 	}
 	sig_hand(MAIN);
