@@ -6,7 +6,7 @@
 /*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 14:07:53 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/17 12:36:19 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/07/18 14:26:43 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,31 +28,49 @@ void	free_strings(t_command *command)
 		free(command->executable_path);
 }
 
-void	command_cleanup(t_command **commands)
+static int	count_cmds(t_command ***commands)
+{
+	int	count;
+
+	count = 0;
+	while ((*commands)[count])
+		count++;
+	return (count);
+}
+
+static void	free_set_null(void **data)
+{
+	if (data && *data)
+	{
+		free(*data);
+		*data = NULL;
+	}
+}
+
+void	command_cleanup(t_command ***commands)
 {
 	int			i;
 	int			j;
+	int			count;
 
-	i = -1;
-	if (!commands || !*commands)
+	if (!commands || !*commands || !**commands)
 		return ;
-	while (commands[++i])
+	count = count_cmds(commands);
+	i = -1;
+	while (++i < count)
 	{
-		free_strings(commands[i]);
-		if (commands[i]->args)
+		if ((*commands)[i])
+			free_strings((*commands)[i]);
+		if ((*commands)[i] && (*commands)[i]->args)
 		{
 			j = -1;
-			while (commands[i]->args[++j])
-			{
-				free(commands[i]->args[j]);
-				commands[i]->args[j] = NULL;
-			}
-			free(commands[i]->args);
-			commands[i]->args = NULL;
+			while ((*commands)[i]->args[++j])
+				free_set_null((void **)&((*commands)[i]->args[j]));
+			free_set_null((void **)&((*commands)[i]->args));
 		}
-		free(commands[i]);
-		commands[i] = NULL;
+		free((*commands)[i]);
+		(*commands)[i] = NULL;
 	}
-	free(commands);
-	commands = NULL;
+	free(*commands);
+	*commands = NULL;
 }

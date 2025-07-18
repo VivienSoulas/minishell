@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 15:56:02 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/18 13:28:57 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 14:03:24 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void	readline_cleanup(t_command *command, t_expansion *e, char *filename)
 		unlink(filename);
 		free(filename);
 		perror("open");
-		exit(EXIT_FAILURE);
 	}
 	if (command->input_file)
 		free(command->input_file);

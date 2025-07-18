@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:04:58 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/18 13:29:35 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 14:15:47 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +272,7 @@ int			ft_exit(t_expansion *e, t_command *cmd);
 
 // commandes free
 void		free_strings(t_command *command);
-void		command_cleanup(t_command **commands);
+void		command_cleanup(t_command ***commands);
 
 // copy envp
 char		*copy_str_delimiter(char *str, int check);

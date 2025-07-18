@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 11:09:10 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/18 13:29:42 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 14:28:43 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,10 @@ int	ft_parse_input(char *in, t_expansion *e, t_token **token)
 int	ft_exe(t_token **token, t_expansion *e)
 {
 	if (token_to_cmd(token, e) == NULL)
-		return (ft_free_list(token), e->exit_stat = 1, 0);
+		return (command_cleanup(&e->cmd),
+			ft_free_list(token), e->exit_stat = 1, 0);
 	e->exit_stat = exe_cmds(e->cmd, e, token);
-	command_cleanup(e->cmd);
+	command_cleanup(&e->cmd);
 	e->cmd = NULL;
 	return (0);
 }

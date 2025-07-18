@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_e.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 15:55:42 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/10 15:55:43 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/07/18 14:15:24 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	ft_free_e_2(t_expansion **e)
 {
 	if ((*e)->cmd)
 	{
-		command_cleanup((*e)->cmd);
+		command_cleanup(&(*e)->cmd);
 		(*e)->cmd = NULL;
 	}
 	if ((*e)->token)
