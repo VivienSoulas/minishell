@@ -6,13 +6,13 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:17 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/18 13:29:05 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/04/10 12:01:18 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
-char	**ft_split_input(char *input, t_split *s, t_expansion *e)
+char	**ft_split_input(char *input, t_split *s, int exit)
 {
 	while (s->i < s->len && s->error == 0)
 	{
@@ -29,7 +29,7 @@ char	**ft_split_input(char *input, t_split *s, t_expansion *e)
 			ft_handles_string(input, s);
 	}
 	if (s->error != 0)
-		return (free_array(s->tokens), s->tokens = NULL, e->exit = 1, NULL);
+		return (ft_free_split(s->tokens), s->tokens = NULL, exit = 1, NULL);
 	s->tokens[s->j] = NULL;
 	return (s->tokens);
 }

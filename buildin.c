@@ -6,11 +6,11 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:00:40 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/18 11:14:52 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/06/05 15:38:41 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
 int	is_buildin(char *command)
 {
@@ -21,13 +21,12 @@ int	is_buildin(char *command)
 		"env",
 		"exit",
 		"echo",
-		"/bin/echo",
-		"export"
+		"/bin/echo"
 	};
 	int			i;
 
 	i = 0;
-	while (i < 8)
+	while (i < 7)
 	{
 		if (ft_strcmp(command, buildins[i]) == 0)
 			return (1);
@@ -42,51 +41,51 @@ int	exec_buildin(t_command *cmd, t_expansion *e, t_token **t)
 
 	fd = STDOUT_FILENO;
 	if (!ft_strcmp(cmd->args[0], "pwd"))
-		return (pwd(&e->env, cmd, e));
-	else if (!ft_strcmp(cmd->args[0], "unset"))
 	{
-		unset(cmd, &e->env);
-		unset_export(cmd, &e->export);
-		return (e->exit_stat = 0);
+		if (cmd->args[1])
+			return (printf("pwd: too many arguments\n"), e->exit_stat = 0);
+		return (pwd(&e->env), e->exit_stat = 0);
 	}
+	else if (!ft_strcmp(cmd->args[0], "unset"))
+		return (unset(cmd, &e->env), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "env"))
-		return (env(cmd, e), e->exit_stat);
+	{
+		if (cmd->args[1])
+			return (printf("env: too many arguments\n"), e->exit_stat = 0);
+		return (env(&e->env, t, e), e->exit_stat);
+	}
 	else if (!ft_strcmp(cmd->args[0], "echo")
 		|| !ft_strcmp(cmd->args[0], "/bin/echo"))
-		return (echo(cmd, fd), e->exit_stat = 0);
+		return (echo(cmd, e, fd), e->exit_stat = 0);
 	else if (!ft_strcmp(cmd->args[0], "exit"))
 		return (ft_exit(e, cmd));
 	else if (!ft_strcmp(cmd->args[0], "cd"))
-		return (cd(cmd, e));
-	else if (!ft_strcmp(cmd->args[0], "export"))
-		return (ft_export_check(t, e, fd), e->exit_stat = 0);
+		return (cd(cmd, e), e->exit_stat = 1);
 	return (e->exit);
 }
 
-int	env(t_command *cmd, t_expansion *e)
+int	env(t_envp **env, t_token **t, t_expansion *e)
 {
-	t_envp	*current;
+	int	i;
 
-	if (cmd->args[1])
-		return (printf("env: too many arguments\n"), e->exit_stat = 1);
-	current = e->env;
-	while (current)
+	i = 0;
+	if ((*t)->next && (*t)->next->type == ARG)
 	{
-		printf("%s", current->name);
-		if (current->value)
-			printf("=%s", current->value);
-		printf("\n");
-		current = current->next;
+		printf(" Permission denied\n");
+		return (error(0, (*t)->next->input), e->exit_stat = 126);
+	}
+	while (e->envp[i])
+	{
+		printf("%s\n", e->envp[i]);
+		i++;
 	}
 	return (e->exit_stat = 0);
 }
 
-int	pwd(t_envp **env, t_command *cmd, t_expansion *e)
+void	pwd(t_envp **env)
 {
 	t_envp	*current;
 
-	if (cmd->args[1])
-		return (printf("pwd: too many arguments\n"), e->exit_stat = 0);
 	current = *env;
 	while (current)
 	{
@@ -96,35 +95,5 @@ int	pwd(t_envp **env, t_command *cmd, t_expansion *e)
 			break ;
 		}
 		current = current->next;
-	}
-	return (0);
-}
-
-void	unset(t_command *command, t_envp **list)
-{
-	t_envp	*current;
-	t_envp	*prev;
-	int		i;
-
-	i = 1;
-	if (!command->args[i])
-		return ;
-	while (command->args[i])
-	{
-		if (!ft_strcmp((*list)->name, command->args[i]))
-			return (ft_name_found(prev, list));
-		current = *list;
-		prev = current;
-		while (current && ft_strcmp(current->name, command->args[i]))
-		{
-			prev = current;
-			current = current->next;
-		}
-		if (current)
-		{
-			prev->next = current->next;
-			ft_free_env(current);
-		}
-		i++;
 	}
 }

@@ -1,49 +1,45 @@
 NAME	=	minishell
 SRC		=	minishell.c \
-			assign_type.c \
-			buildin.c \
-			cd.c \
-			cmds_free.c \
-			copy_literals.c \
-			cpy_env.c \
-			cpy_export.c \
-			echo.c \
-			env_utils.c \
-			error.c \
+			utils.c \
+			utils_list.c \
+			free.c \
+			split.c \
+			utils_split.c \
 			exec.c \
-			exec_utils.c \
-			exit.c \
+			find_exec.c \
+			token_to_command.c \
+			cmds_free.c \
+			variable_expansion.c \
+			cpy_env.c \
+			in_out.c \
+			process.c \
 			export.c \
 			export_equal.c \
-			find_exec.c \
-			free.c \
-			free_e.c \
-			heredoc.c \
-			in_out.c \
-			init_redirection.c \
-			parsing.c \
-			process.c \
-			signals.c \
-			split.c \
-			state.c \
-			token_to_command.c \
+			env_utils.c \
+			buildin.c \
 			unset.c \
-			utils.c \
-			utils_delimiter.c \
+			error.c \
 			utils_export.c \
-			utils_heredoc.c \
-			utils_list.c \
-			utils_process.c \
-			utils_split.c \
-			utils_token_to_cmd.c \
 			utils_variable_expansion.c \
-			variable_expansion.c
+			state.c \
+			copy_literals.c \
+			assign_type.c \
+			utils_parsing.c \
+			cd.c \
+			utils_process.c \
+			init_redirection.c \
+			exit.c \
+			signals.c \
+			heredoc.c \
+			utils_heredoc.c \
+			free_e.c \
+			echo.c
 
 OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 
 CC		=	cc
-CFLAGS	=	-Werror -Wall -Wextra -g
+CFLAGS	=	-Werror -Wall -g
 RDFLAG	=	-lreadline
 
 # ANSI color codes
@@ -57,7 +53,7 @@ RESET	=	\033[0m # No Color
 
 # compile source files into object files in a directory
 $(OBJ_DIR)/%.o:%.c
-	@mkdir -p $(dir $@)
+	@mkdir -p $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 # LIBft library
@@ -91,4 +87,4 @@ fclean: clean
 re: fclean all
 
 val:
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=rl.supp --track-fds=yes ./minishell
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=rl.supp --track-fds=yes --trace-children=yes ./minishell

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
 char	*ft_while_loop(t_expansion *exp, t_token *token)
 {
@@ -62,7 +62,7 @@ char	*ft_dollar_exp(t_token *token, t_expansion *exp)
 {
 	char	*res;
 
-	res = ft_strdup("");
+	res = strdup("");
 	if (res == NULL)
 		return (error(3, NULL), NULL);
 	exp->i++;
@@ -93,7 +93,7 @@ char	*ft_no_expansion(char *input, char *res, t_expansion *exp)
 	char	*result;
 
 	free(res);
-	result = ft_strdup("");
+	result = strdup("");
 	var_name = extract_name(input, exp);
 	if (result == NULL || var_name == NULL)
 		return (free(result), error(3, NULL), NULL);

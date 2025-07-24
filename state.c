@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
 // no quotations
 char	*ft_state_0(t_expansion *exp, t_token *token)

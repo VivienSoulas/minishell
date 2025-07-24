@@ -6,19 +6,15 @@
 /*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:51:59 by jdavtian          #+#    #+#             */
-/*   Updated: 2025/07/17 12:31:32 by jdavtian         ###   ########.fr       */
+/*   Updated: 2025/06/03 15:10:03 by jdavtian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
 static int	grab_word(t_token **token, char **dest)
 {
 	*token = (*token)->next;
-	if (*token == NULL)
-		return (error(1, NULL), -1);
-	if (*dest && !ft_strncmp(*dest, "herefile", 8))
-		unlink(*dest);
 	if (*dest)
 		free(*dest);
 	*dest = ft_strdup((*token)->input);
@@ -27,8 +23,30 @@ static int	grab_word(t_token **token, char **dest)
 	return (0);
 }
 
+int	ft_cmd_out(t_command *command)
+{
+	int	temp_fd;
+
+	if (command->is_append)
+		temp_fd = open(command->output_file,
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		temp_fd = open(command->output_file,
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (temp_fd != -1)
+		close(temp_fd);
+	else
+		return (-1);
+	return (0);
+}
+
 int	ft_out_append(t_command *command, t_token **token)
 {
+	if (command->output_file)
+	{
+		if (ft_cmd_out(command) == -1)
+			return (-1);
+	}
 	if ((*token)->type == APPEND)
 		command->is_append = 1;
 	else
@@ -38,16 +56,7 @@ int	ft_out_append(t_command *command, t_token **token)
 	return (0);
 }
 
-int	handle_here(t_command *command, t_token **token, t_expansion *e)
-{
-	command->is_heredoc = 1;
-	if (grab_word(token, &command->heredoc_delimiter) == -1)
-		return (1);
-	readline_here(command, e);
-	return (0);
-}
-
-int	init_redirection(t_token **token, t_command *command, t_expansion *e)
+int	init_redirection(t_token **token, t_command *command)
 {
 	while (*token && ((*token)->type > 0 && (*token)->type < 6))
 	{
@@ -55,16 +64,20 @@ int	init_redirection(t_token **token, t_command *command, t_expansion *e)
 			command->is_pipe = 1;
 		else if ((*token)->type == IN)
 		{
-			if (grab_word(token, &command->input_file) == -1
-				|| open_input_file(command) == -1)
+			if (grab_word(token, &command->input_file) == -1)
 				return (-1);
 		}
-		else if ((*token)->type == HEREDOC && handle_here(command, token, e))
-			return (-1);
-		else if ((*token)->type == OUT || (*token)->type == APPEND)
-			if (ft_out_append(command, token) == -1
-				|| open_output_file(command) == -1)
+		else if ((*token)->type == HEREDOC)
+		{
+			command->is_heredoc = 1;
+			if (grab_word(token, &command->heredoc_delimiter) == -1)
 				return (-1);
+		}
+		else if ((*token)->type == OUT || (*token)->type == APPEND)
+		{
+			if (ft_out_append(command, token) == -1)
+				return (-1);
+		}
 		*token = (*token)->next;
 	}
 	return (0);

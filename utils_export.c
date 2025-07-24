@@ -6,24 +6,24 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:27 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/17 14:03:30 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 16:24:30 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
-int	is_valid(t_token *cur)
+int	is_valid(char *str)
 {
 	int	i;
 
-	if (cur->input[0] != '_' && ft_isalpha(cur->input[0]) == 0)
+	if (str[0] != '_' && ft_isalpha(str[0]) == 0)
 		return (1);
 	i = 1;
-	if (cur->input[i])
+	if (str[i])
 	{
-		while (cur->input[i] && cur->input[i] != '=')
+		while (str[i] && str[i] != '=')
 		{
-			if ((ft_isalnum(cur->input[i]) == 0) && cur->input[i] != '_')
+			if ((ft_isalnum(str[i]) == 0) && str[i] != '_')
 				return (1);
 			i++;
 		}
@@ -54,21 +54,17 @@ int	ft_replace_value(char *export, t_envp *current)
 	return (0);
 }
 
-void	ft_print(t_envp **list, int total, int fd)
+void	ft_print(t_envp **list, int total)
 {
 	int	i;
 
 	i = 0;
 	while (i < total)
 	{
-		write(fd, "declare -x ", 11);
-		write(fd, list[i]->name, ft_strlen(list[i]->name));
+		printf("declare -x %s", list[i]->name);
 		if (list[i]->value)
-		{
-			write(fd, "=", 1);
-			write(fd, list[i]->value, ft_strlen(list[i]->value));
-		}
-		write(fd, "\n", 1);
+			printf("=%s", list[i]->value);
+		printf("\n");
 		i++;
 	}
 }

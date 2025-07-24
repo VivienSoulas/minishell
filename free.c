@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
 void	ft_free_list(t_token **token)
 {
@@ -49,23 +49,21 @@ void	ft_free_envp_list(t_envp **envp)
 	*envp = NULL;
 }
 
-void	ft_free_export_list(t_export **envp)
+void	ft_free_split(char **split)
 {
-	t_export	*current;
-	t_export	*next;
+	int	i;
 
-	if (envp == NULL || *envp == NULL)
-		return ;
-	current = *envp;
-	while (current)
+	i = 0;
+	if (split != NULL && *split != NULL)
 	{
-		next = current->next;
-		free(current->name);
-		free(current->value);
-		free(current);
-		current = next;
+		while (split[i])
+		{
+			free(split[i]);
+			i++;
+		}
+		free(split);
+		split = NULL;
 	}
-	*envp = NULL;
 }
 
 void	free_array(char **array)
@@ -81,5 +79,4 @@ void	free_array(char **array)
 		i++;
 	}
 	free(array);
-	array = NULL;
 }

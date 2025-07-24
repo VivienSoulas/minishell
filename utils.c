@@ -6,11 +6,11 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:39 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/18 13:00:45 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/30 16:17:26 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
 int	ft_count_args(char **tokens)
 {
@@ -53,32 +53,12 @@ int	ft_initialise_expansion(t_expansion *exp, char **env)
 	exp->env = copy_envp(env);
 	if (exp->env == NULL)
 		return (ft_free_envp_list(&exp->env), exp->exit_stat = 1);
-	exp->export = copy_export(env);
-	if (exp->export == NULL)
-	{
-		ft_free_export_list(&exp->export);
-		return (ft_free_envp_list(&exp->env), exp->exit_stat = 1);
-	}
 	exp->envp = list_to_array(&exp->env);
 	if (!exp->envp)
 	{
+		free_array(exp->envp);
 		ft_free_envp_list(&exp->env);
-		ft_free_export_list(&exp->export);
 		return (exp->exit_stat = 1);
 	}
 	return (0);
-}
-
-int	command_count(t_command **commands)
-{
-	int	res;
-
-	res = 0;
-	if (commands == NULL)
-		return (res);
-	while (commands[res])
-	{
-		res++;
-	}
-	return (res);
 }

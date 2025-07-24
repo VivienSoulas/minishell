@@ -6,11 +6,11 @@
 /*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:01:02 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/17 14:15:02 by vsoulas          ###   ########.fr       */
+/*   Updated: 2025/05/29 16:22:50 by vsoulas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
 int	ft_crop(t_token *token)
 {
@@ -29,27 +29,24 @@ int	ft_crop(t_token *token)
 // if export is called, prints list of env + variable in order
 // if no equal sign, prints only when export is called as VAR
 // if no arg value VAR= only print when export is called
-int	ft_export_check(t_token **token, t_expansion *e, int fd)
+int	ft_export_check(t_token **token, t_expansion *e)
 {
 	t_token	*current;
 
 	current = (*token)->next;
 	if (current == NULL)
-		return (ft_print_export(&e->export, fd));
-	if (current->type >= CMD && current->type <= APPEND)
-		return (ft_print_export(&e->export, fd), 0);
+		return (ft_print_export(&e->env));
 	while (current)
 	{
-		if (is_valid(current) == 0)
+		if (is_valid(current->input) == 0)
 		{
 			if (ft_strchr(current->input, '=') != 0)
 			{
 				if (ft_export_equal(current, e) == 1)
 					return (e->exit_stat = 1);
 			}
-			else
-				if (add_export_to_export(&e->export, NULL, current->input) == 1)
-					return (e->exit_stat = 1);
+			else if (add_export_to_envp(&e->env, NULL, current->input) == 1)
+				return (e->exit_stat = 1);
 		}
 		else
 			return (error(2, current->input), e->exit_stat = 1, 0);
@@ -57,10 +54,6 @@ int	ft_export_check(t_token **token, t_expansion *e, int fd)
 	}
 	return (0);
 }
-
-// export Z gets added to export list only
-// export Z = without variable gets added to both with ""
-// export Z = var gets added to both
 
 int	add_export_to_envp(t_envp **env, char *value, char *name)
 {
@@ -107,32 +100,32 @@ t_envp	*ft_new_export(char *value, char *name)
 	return (new);
 }
 
-// prints export list in alphabetic order
-int	ft_print_export(t_export **export, int fd)
+// prints env in alphabetic order
+int	ft_print_export(t_envp **env)
 {
-	t_export	**list;
-	int			total;
-	int			i;
-	t_export	*current;
+	t_envp	**list;
+	int		total;
+	int		i;
+	t_envp	*current;
 
-	current = *export;
+	current = *env;
 	total = 0;
 	while (current)
 	{
 		total++;
 		current = current->next;
 	}
-	list = malloc(sizeof(t_export *) * (total + 1));
+	list = malloc(sizeof(t_envp *) * (total + 1));
 	if (list == NULL)
 		return (error(3, NULL), 1);
-	current = *export;
+	current = *env;
 	i = 0;
 	while (current)
 	{
 		list[i++] = current;
 		current = current->next;
 	}
-	ft_sort_list((t_envp **)list, total);
-	ft_print((t_envp **)list, total, fd);
+	ft_sort_list(list, total);
+	ft_print(list, total);
 	return (free(list), 0);
 }

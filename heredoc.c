@@ -1,129 +1,99 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   heredoc.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jdavtian <jdavtian@student.codam.nl>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/10 15:56:02 by vsoulas           #+#    #+#             */
-/*   Updated: 2025/07/18 14:03:24 by jdavtian         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "parsing.h"
 
-#include "minishell.h"
-
-int	line_read(t_command *command, int expand, t_expansion *e)
+int	line_read(char *delim, int *here_pipe, int expand, t_expansion *e)
 {
 	char		*line;
 	t_token		temp;
 
-	(void)e;
 	line = readline(">");
 	if (!line)
-		return (2);
-	if (!ft_strcmp(line, command->heredoc_delimiter))
+		return (1);
+	if (!ft_strcmp(line, delim))
 		return (free(line), 1);
 	if (expand)
 	{
 		temp.input = ft_strdup(line);
 		if (temp.input == NULL)
-			return (error(3, NULL), free(line), 1);
+			error(3, NULL);
 		ft_variable_expansion(&temp, e);
-		write(command->input_fd, temp.input, ft_strlen(temp.input));
-		write(command->input_fd, "\n", 1);
+		write(here_pipe[1], temp.input, ft_strlen(temp.input));
+		write(here_pipe[1], "\n", 1);
 		free((void *)temp.input);
-		return (free(line), 0);
+		free(line);
+		return (0);
 	}
-	write(command->input_fd, line, ft_strlen(line));
-	write(command->input_fd, "\n", 1);
+	write(here_pipe[1], line, ft_strlen(line));
+	write(here_pipe[1], "\n", 1);
 	if (line)
 		free(line);
 	return (0);
 }
 
-void	ft_heredoc(t_command *command, t_expansion *e, int *expand)
+void	ft_heredoc(char *deli, t_expansion *e, int *here_pipe, int *expand)
 {
-	int	signal;
-
-	signal = 0;
-	rl_event_hook = forceout;
-	while (g_heredoc_variable == 0)
+	while (1)
 	{
-		signal = line_read(command, *expand, e);
-		if (signal != 0)
+		if (line_read(deli, here_pipe, *expand, e) != 0)
 			break ;
 	}
-	g_heredoc_variable = 0;
-	sig_hand(MAIN);
+	ft_free_e(&e);
+	close(here_pipe[1]);
+	exit(EXIT_SUCCESS);
 }
 
-void	readline_cleanup(t_command *command, t_expansion *e, char *filename)
+void	readline_cleanup(pid_t pid, int *here_pipe, t_expansion *e)
 {
+	int	status;
+
+	waitpid(pid, &status, 0);
 	signal(SIGINT, &heredoc);
-	close(command->input_fd);
-	command->input_fd = open(filename, O_RDONLY);
-	if (command->input_fd == -1)
+	if (WEXITSTATUS(status) != 0)
 	{
 		ft_free_e(&e);
-		unlink(filename);
-		free(filename);
-		perror("open");
-		if (command->input_file)
-			free(command->input_file);
-		exit(EXIT_SUCCESS);
+		close(here_pipe[0]);
+		exit(130);
 	}
-	if (command->input_file)
-		free(command->input_file);
-	command->input_file = filename;
+	if (dup2(here_pipe[0], STDIN_FILENO) == -1)
+	{
+		ft_free_e(&e);
+		close(here_pipe[0]);
+		perror("dup2");
+		exit(EXIT_FAILURE);
+	}
+	close(here_pipe[0]);
 }
 
-int	ft_delimiter(t_command *command, t_expansion *e, int *expand)
+void	ft_pid_0(int *here_pipe, char *delim, t_expansion *e, int *expand)
 {
-	int	quote;
-
-	if (command->heredoc_delimiter[0] == 34
-		|| command->heredoc_delimiter[0] == 39)
-	{
-		quote = command->heredoc_delimiter[0];
-		if (ft_heredoc_delimiter(expand, &command->heredoc_delimiter) == 1)
-			return (1);
-		if (ft_remove_quotes_int(&command->heredoc_delimiter, quote) == 1)
-			return (1);
-	}
-	else
-	{
-		if (ft_remove_quotes(&command->heredoc_delimiter) == 1)
-			return (1);
-	}
 	sig_hand(HEREDOC);
-	ft_heredoc(command, e, expand);
-	return (0);
+	close(here_pipe[0]);
+	ft_heredoc(delim, e, here_pipe, expand);
 }
 
-int	readline_here(t_command *command, t_expansion *e)
+void	readline_here(char *delim, t_expansion *e)
 {
-	int			expand;
-	char		*tmpfile;
+	int		here_pipe[2];
+	pid_t	pid;
+	int		expand;
 
 	expand = 1;
-	tmpfile = ft_strdup("herefile");
-	if (!tmpfile)
-		return (error(3, NULL), 1);
-	if (command->input_fd && command->input_file
-		&& ft_strncmp(command->input_file, "herefile", 8) == 0)
-		unlink(command->input_file);
-	if (command->input_fd > 2)
-		close(command->input_fd);
-	command->input_fd = open(tmpfile, O_RDWR | O_CREAT | O_TRUNC, 0600);
-	if (command->input_fd == -1)
-		return (free(tmpfile), error(3, NULL), 1);
-	if (ft_delimiter(command, e, &expand) == 1)
-		return (free(tmpfile), error(3, NULL), 1);
-	if (g_heredoc_variable == 1)
+	if (delim[0] == 34 || delim[0] == 39)
 	{
-		close(command->input_fd);
-		command->input_fd = open(tmpfile, O_RDWR | O_CREAT | O_TRUNC, 0600);
+		if (ft_heredoc_delimiter(&expand, &delim) == 1)
+			exit(EXIT_FAILURE);
 	}
-	readline_cleanup(command, e, tmpfile);
-	return (0);
+	if (init_pipe(here_pipe) != 0)
+		exit(EXIT_FAILURE);
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		close(here_pipe[0]);
+		close(here_pipe[1]);
+		exit(EXIT_FAILURE);
+	}
+	if (pid == 0)
+		ft_pid_0(here_pipe, delim, e, &expand);
+	close(here_pipe[1]);
+	readline_cleanup(pid, here_pipe, e);
 }

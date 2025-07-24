@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
 int	assign_pipe(t_token *current, int *is_cmd, int *is_red)
 {
