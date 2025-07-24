@@ -39,7 +39,7 @@ OBJ_DIR	=	objects
 OBJ		=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 
 CC		=	cc
-CFLAGS	=	-Werror -Wall -g
+CFLAGS	=	-Werror -Wall -Wextra -g
 RDFLAG	=	-lreadline
 
 # ANSI color codes
