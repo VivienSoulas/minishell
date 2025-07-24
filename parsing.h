@@ -21,10 +21,6 @@
 # include <signal.h>
 # include <errno.h>
 # include <sys/wait.h>
-# include <stdbool.h>
-
-# define MAIN 0
-# define CHILD 1
 
 // PIPE (1): pipe symbol ('|') indicating a command pipeline.
 // IN (2): input redirection ('<') indicating input redirection from a file.
