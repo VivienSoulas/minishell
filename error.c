@@ -1,0 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsoulas <vsoulas@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/10 12:00:53 by vsoulas           #+#    #+#             */
+/*   Updated: 2025/04/18 16:11:27 by vsoulas          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+void	error(int i, char *str)
+{
+	if (i == 1)
+		write(2, "Invalid Input\n", 14);
+	else if (i == 2)
+		write(2, " not a valid identifier\n", 24);
+	else if (i == 3)
+		write(2, "Malloc error, exiting minishell\n", 32);
+	else if (i == 4)
+		write(2, " numeric argument required\n", 27);
+	else if (i == 5)
+		write(2, " too many arguments\n", 20);
+	else
+		write(2, str, ft_strlen(str));
+}
